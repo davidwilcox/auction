@@ -75,14 +75,16 @@ router.get('/guest/:guestid', function(req, res, next) {
     });
 });
 
-router.get("/allguests", function(req, res, next) {
-    sdb.select('select * from guests', function(error, selectResult, meta) {
+
+router.get("/all/:table", function(req, res, next) {
+    sdb.select('select * from ' + req.params.table, function(error, selectResult, meta) {
         console.log(selectResult);
         res.json(selectResult);
     });
 });
 
 
+var jwtsign = require('jsonwebtoken');
 
 
 router.post('/register', function(req, res, next) {
@@ -97,11 +99,17 @@ router.post('/register', function(req, res, next) {
     req.body.salt = salt;
     sdb.putItem('users', req.body.username, req.body, function(error) {
         console.log(error);
-        res.json({Error:error});
+        res.json({token: jwtsign.sign({
+            username: req.body.username,
+            exp: parseInt(exp.getTime()/1000),
+        }, 'SECRET')});
     });
 });
 
-var jwt = require('jsonwebtoken');
+var jwt = require('express-jwt');
+var auth = jwt({secret: "SECRET", userProperty: "payload"});
+var crypto = require('crypto');
+var passport = require('passport');
 
 router.post('/login', function(req, res, next) {
     if ( !req.body.username || !req.body.password ) {
@@ -109,32 +117,19 @@ router.post('/login', function(req, res, next) {
     }
 
     passport.authenticate('local', function(err, user, info) {
-        if ( err ) {
-            return next(err);
-        }
+        console.log("auth");
 
-        sdb.getItem('users', req.body.username, function(error, getItemResult, meta) {
-            if ( error ) {
-                return next(err);
-            }
+        var today = new Date();
+        var exp = new Date(today);
+        exp.setDate(today.getDate() + 60);
 
-            hash = getItemResult.hash;
-            salt = getItemResult.salt;
-            test_hash = crypto.pbkdf2Sync(req.body.password, salt, 1000, 64).toString('hex');
-            if ( test_hash != hash ) {
-                return next(err);
-            }
-
-            var today = new Date();
-            var exp = new Date(today);
-            exp.setDate(today.getDate() + 60);
-
-            return jwt.sign({
-                username: req.body.username,
-                exp: parseInt(exp.getTime()/1000),
-            }, 'SECRET');
-        });
-    });
+        res.json({token: jwtsign.sign({
+            username: user.username,
+            exp: parseInt(exp.getTime()/1000),
+        }, 'SECRET')});
+        console.log("after");
+    })(req.body, res, next);
+    console.log("end");
 });
 
 
