@@ -4,7 +4,7 @@ var router = express.Router();
 
 var simpledb = require('simpledb');
 var sdb      = new simpledb.SimpleDB(
-    {keyid:'AKIAIZELJIBWQ3ETHZ4A',secret:'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'})
+    {keyid:'AKIAIZELJIBWQ3ETHZ4A',secret:'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'});
 
 
 function guid() {
@@ -81,5 +81,61 @@ router.get("/allguests", function(req, res, next) {
         res.json(selectResult);
     });
 });
+
+
+
+
+router.post('/register', function(req, res, next) {
+    if ( !req.body.username || !req.body.password ) {
+        return res.status(400).json({message: 'Please fill out username and password.'});
+    }
+
+    salt = crypto.randomBytes(16).toString('hex');
+    hash = crypto.pbkdf2Sync(req.body.password, salt, 1000, 64).toString('hex');
+    delete req.body.password;
+    req.body.hash = hash;
+    req.body.salt = salt;
+    sdb.putItem('users', req.body.username, req.body, function(error) {
+        console.log(error);
+        res.json({Error:error});
+    });
+});
+
+var jwt = require('jsonwebtoken');
+
+router.post('/login', function(req, res, next) {
+    if ( !req.body.username || !req.body.password ) {
+        return res.status(400).json({message: "Please fill out both 'username' and 'password'"});
+    }
+
+    passport.authenticate('local', function(err, user, info) {
+        if ( err ) {
+            return next(err);
+        }
+
+        sdb.getItem('users', req.body.username, function(error, getItemResult, meta) {
+            if ( error ) {
+                return next(err);
+            }
+
+            hash = getItemResult.hash;
+            salt = getItemResult.salt;
+            test_hash = crypto.pbkdf2Sync(req.body.password, salt, 1000, 64).toString('hex');
+            if ( test_hash != hash ) {
+                return next(err);
+            }
+
+            var today = new Date();
+            var exp = new Date(today);
+            exp.setDate(today.getDate() + 60);
+
+            return jwt.sign({
+                username: req.body.username,
+                exp: parseInt(exp.getTime()/1000),
+            }, 'SECRET');
+        });
+    });
+});
+
 
 module.exports = router;
