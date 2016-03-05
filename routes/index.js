@@ -132,5 +132,22 @@ router.post('/login', function(req, res, next) {
     console.log("end");
 });
 
+router.post('/donateitem', auth, function(req, res, next) {
+    item = req.body;
+    if ( !item.itemname || !item.quantity || !item.fmv ||
+         !item.description || !item.restrictions ) {
+        return res.status(400).json({message: "Please fill out 'itemname', " +
+                                     "'quantity', 'fmv', " +
+                                     "'description', and 'restrictions'"});
+    }
+
+    item.itemid = guid();
+
+    sdb.putItem('items', item.id, item, function(error) {
+        console.log(error);
+        res.json({Error: error});
+    });
+});
+
 
 module.exports = router;
