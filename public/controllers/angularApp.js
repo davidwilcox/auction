@@ -1,24 +1,24 @@
 var app = angular.module('auction', ['ui.router'])
 
 app.config([
-    '$stateProvider',
-    '$urlRouterProvider',
-    function($stateProvider, $urlRouterProvider) {
+	'$stateProvider',
+	'$urlRouterProvider',
+	function($stateProvider, $urlRouterProvider) {
 
-        $stateProvider
-            .state('home', {
-                url: '/home',
-                templateUrl: '/templates/home.html',
-                controller: 'MainCtrl'
-            })
-            .state('register', {
-                url: '/register',
-                templateUrl: '/templates/adduser.html',
-                controller: 'AddUserCtrl'
-            })
+		$stateProvider
+			.state('buytickets', {
+				url: '/buytickets',
+				templateUrl: '/templates/buytickets.html',
+				controller: 'MainCtrl'
+			})
+			.state('register', {
+				url: '/register',
+				templateUrl: '/templates/adduser.html',
+				controller: 'AddUserCtrl'
+			})
 
-        $urlRouterProvider.otherwise('home');
-    }]);
+		$urlRouterProvider.otherwise('buytickets');
+	}]);
 
 
 app.controller('MainCtrl', [
@@ -42,7 +42,7 @@ app.controller('MainCtrl', [
 				foodRes: "none"
 			};
 
-			$scope.tickets.push(ticket);			
+			$scope.tickets.push(ticket);
 		}
 	
     }]);
