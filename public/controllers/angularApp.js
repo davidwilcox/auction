@@ -11,6 +11,16 @@ app.config([
 				templateUrl: '/templates/buytickets.html',
 				controller: 'BuyTicketsCtrl'
 			})
+			.state('donateitem', {
+				url: '/donateitem',
+				templateUrl: '/templates/donateitem.html',
+				controller: 'DonateItemCtrl'
+			})
+			.state('viewregisteredpeople', {
+				url: '/viewregisteredpeople',
+				templateUrl: '/templates/viewregisteredpeople.html',
+				controller: 'ViewRegisteredPeopleCtrl'
+			})
 			.state('register', {
 				url: '/register',
 				templateUrl: '/templates/adduser.html',
@@ -19,6 +29,23 @@ app.config([
 
 		$urlRouterProvider.otherwise('buytickets');
 	}]);
+
+
+app.controller('DonateItemCtrl', [
+	'$scope',
+	function($scope) {
+
+		
+	}]);
+
+
+app.controller('ViewRegisteredPeopleCtrl', [
+	'$scope',
+	function($scope) {
+
+		
+	}]);
+
 
 
 app.controller('BuyTicketsCtrl', [
