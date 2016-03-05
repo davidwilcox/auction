@@ -24,7 +24,27 @@ app.config([
 app.controller('MainCtrl', [
     '$scope',
     function($scope){
+		
+		$scope.tickets = [];
+		
+		$scope.ticket = {
+			name: "",
+			age: "Adult",
+			foodRes: "none"
+		};
 
+		$scope.tickets.push($scope.ticket);
+
+		$scope.addTicket = function() {
+			var ticket = {
+				name: "",
+				age: "Adult",
+				foodRes: "none"
+			};
+
+			$scope.tickets.push(ticket);			
+		}
+	
     }]);
 
 
