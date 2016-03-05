@@ -9,7 +9,7 @@ app.config([
 			.state('buytickets', {
 				url: '/buytickets',
 				templateUrl: '/templates/buytickets.html',
-				controller: 'MainCtrl'
+				controller: 'BuyTicketsCtrl'
 			})
 			.state('register', {
 				url: '/register',
@@ -21,7 +21,7 @@ app.config([
 	}]);
 
 
-app.controller('MainCtrl', [
+app.controller('BuyTicketsCtrl', [
     '$scope',
     function($scope){
 		
@@ -45,11 +45,4 @@ app.controller('MainCtrl', [
 			$scope.tickets.push(ticket);
 		}
 	
-    }]);
-
-
-app.controller('AddUserCtrl', [
-    '$scope',
-    function($scope){
-
     }]);
