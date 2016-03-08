@@ -24,12 +24,22 @@ app.config([
 			.state('viewregisteredpeople', {
 				url: '/viewregisteredpeople',
 				templateUrl: '/templates/viewregisteredpeople.html',
-				controller: 'ViewRegisteredPeopleCtrl'
+				controller: 'ViewRegisteredPeopleCtrl',
+				resolve: {
+					registeredPromise: ['tickets', function(tickets) {
+						return tickets.getAll();
+					}]
+				}
 			})
 			.state('viewdonateditems', {
 				url: '/viewdonateditems',
 				templateUrl: '/templates/viewdonateditems.html',
 				controller: 'ViewDonatedItemsCtrl'
+			})
+			.state('buyticketsconfirmation', {
+				url: '/buyticketsconfirmation',
+				templateUrl: '/templates/buyticketsconfirmation.html',
+				controller: 'BuyticketsconfirmationCtrl'
 			})
 			.state('register', {
 				url: '/register',
@@ -63,12 +73,11 @@ app.controller('HomeCtrl', [
 	}]);
 
 
-app.controller('ViewRegisteredPeopleCtrl', [
+app.controller("BuyticketsconfirmationCtrl", [
 	'$scope',
 	function($scope) {
 		
 	}]);
-
 
 app.controller("ViewDonatedItemsCtrl", [
 	'$scope',
@@ -76,13 +85,13 @@ app.controller("ViewDonatedItemsCtrl", [
 		
 	}]);
 
-app.factory('tickets', [function() {
+app.factory('tickets', ['$http', '$q', function($http, $q) {
 	var o = {
 		tickets: [],
 		createticket: function() {
 			var ticket = {
 				name: "",
-				age: "Adult",
+				agegroup: "adult",
 				foodRes: "none"
 			};
 			return ticket;
@@ -91,18 +100,52 @@ app.factory('tickets', [function() {
 	o.addticket = function() {
 		o.tickets.push(o.createticket());
 	};
+	o.purchase = function(ticket) {
+		return $http.post('/createguest', ticket);
+	};
+	o.getAll = function() {
+		return $http.get('/all/guests').then(function(data) {
+			angular.copy(data.data, o.tickets);
+			console.log("FOO");
+		}, function(data) {
+			console.log("ERROR");
+		});
+	};
 	o.addticket();
 	return o;
 }]);
 
 
 
-app.controller('BuyTicketsCtrl', [
-    '$scope',
+app.controller('ViewRegisteredPeopleCtrl', [
+	'$scope',
 	'tickets',
-    function($scope, tickets){
+	function($scope, tickets) {
+		$scope.tickets = tickets.tickets;
+		console.log($scope.tickets);
+	}]);
 
+
+app.controller('BuyTicketsCtrl', [
+	'$scope',
+	'$q',
+	'$state',
+	'tickets',
+	function($scope, $q, $state, tickets) {
 		$scope.tickets = tickets.tickets;
 		$scope.addTicket = tickets.addticket;
-	
-    }]);
+		$scope.purchase = function() {
+			var promises = [];
+			$scope.tickets.forEach(function(ticket) {
+				promises.push(tickets.purchase(ticket));
+			});
+			$q.all(promises).then(function(data) {
+				// route to confirmation page.
+				$state.go('buyticketsconfirmation');
+			}, function(data) {
+				// route to error page.
+				console.log("ERROR");
+				console.log(data);
+			});
+		};
+	}]);

@@ -38,26 +38,26 @@ router.post('/deletedomain/:domain', function(req, res, next) {
 
 router.post('/createguest', function(req, res, next) {
 	guest = req.body;
-	if ( !('firstname' in guest) ) {
-		res.status(300).send({Message:"'firstname' attribute note defined."});
+	console.log(guest);
+	if ( !('name' in guest) ) {
+		res.status(300).send({Message:"'name' attribute not defined."});
+		console.log("1");
 		return;
-	} else if ( !('lastname' in guest) ) {
-		res.status(300).send({Message:"'lastname' attribute note defined."});
-		return;
-	} else if ( !('email' in guest) ) {
-		res.status(300).send({Message:"'email' attribute note defined."});
-		return;
-	} else if ( !('food' in guest) ) {
-		res.status(300).send({Message:"'food' attribute note defined."});
+	} else if ( !('foodRes' in guest) ) {
+		res.status(300).send({Message:"'foodRes' attribute not defined."});
+		console.log("2");
 		return;
 	} else if ( !('agegroup' in guest) ) {
-		res.status(300).send({Message:"'agegroup' attribute note defined."});
+		res.status(300).send({Message:"'agegroup' attribute not defined."});
+		console.log("3");
 		return;
 	} else if ( guest.agegroup != 'adult' && guest.agegroup != 'teen' && guest.agegroup != 'child' ) {
 		res.status(300).send({Message:"'agegroup' should be set to 'adult', 'teen' or 'child'"});
+		console.log("4");
 		return;
-	} else if ( guest.food != 'meat' && guest.food != 'vegan' && guest.food != 'glutenfree' ) {
-		res.status(300).send({Message:"'food' should be set to 'vegan', 'meat' or 'glutenfree'"});
+	} else if ( guest.foodRes != 'none' && guest.foodRes != 'vegan' && guest.foodRes != 'glutenfree' ) {
+		res.status(300).send({Message:"'foodRes' should be set to 'vegan', 'meat' or 'glutenfree'"});
+		console.log("5");
 		return;
 	}
 	guest.guestid = guid();

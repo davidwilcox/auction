@@ -8,7 +8,7 @@
 	<div class="panel panel-default">
 	  <div class="panel-body">
 		<button style="float:right; background-color: white; border: 0px"><i class="glyphicon glyphicon-remove"></i></button>
-		<h4>1 {{ticket.age}} Ticket</h4>
+		<h4>1 {{ticket.agegroup}} Ticket</h4>
 		<div style="padding-left:50px">
 		  <div class="row" style="padding-bottom:10px">
 			<label>Name</label>
@@ -16,16 +16,16 @@
 		  </div>
 
 		  <div class="row" style="padding-bottom:10px">
-			<label>Age</label>
+			<label>Age Group</label>
 
 			<label>
-			  <input type="radio" ng-model="ticket.age" value="Adult">Adult</input>
+			  <input type="radio" ng-model="ticket.agegroup" value="adult">Adult</input>
 	  		</label>
 			<label>
-			  <input type="radio" ng-model="ticket.age" value="Teenager">Teenager</input>
+			  <input type="radio" ng-model="ticket.agegroup" value="teen">Teenager</input>
 			</label>
 			<label>
-			  <input type="radio" ng-model="ticket.age" value="Child">Child</input>
+			  <input type="radio" ng-model="ticket.agegroup" value="child">Child</input>
 			</label>
 		  </div>
 		  
@@ -33,9 +33,8 @@
 			<label>Dietary Restrictions</label>
 			<select ng-model="ticket.foodRes">
 			  <option value="none">None</option>
-			  <option value="vegetarian">Vegetarian</option>
 			  <option value="vegan">Vegan</option>
-			  <option value="gluten">Gluten-free</option>
+			  <option value="glutenfree">Gluten-free</option>
 			</select>
 		  </div>
 		</div>
@@ -43,4 +42,5 @@
 	</div>
   </div>
   <button ng-click="addTicket()">Add additional ticket to order</button>
+  <button ng-click="purchase()">Purchase Tickets</button>
 </div>
