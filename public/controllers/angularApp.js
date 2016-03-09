@@ -85,25 +85,15 @@ app.controller("ViewDonatedItemsCtrl", [
 		
 	}]);
 
-app.factory('tickets', ['$http', '$q', function($http, $q) {
-	var o = {
-		tickets: [],
-		createticket: function() {
-			var ticket = {
-				name: "",
-				agegroup: "adult",
-				foodRes: "none"
-			};
-			return ticket;
-		}
-	};
-	o.addticket = function() {
-		o.tickets.push(o.createticket());
-	};
-	o.purchase = function(ticket) {
+app.service('tickets', ['$http', '$q', function($http, $q) {
+	
+	
+
+	purchase = function(ticket) {
 		return $http.post('/createguest', ticket);
 	};
-	o.getAll = function() {
+	
+	getAll = function() {
 		return $http.get('/all/guests').then(function(data) {
 			angular.copy(data.data, o.tickets);
 			console.log("FOO");
@@ -111,8 +101,7 @@ app.factory('tickets', ['$http', '$q', function($http, $q) {
 			console.log("ERROR");
 		});
 	};
-	o.addticket();
-	return o;
+	
 }]);
 
 
@@ -132,8 +121,61 @@ app.controller('BuyTicketsCtrl', [
 	'$state',
 	'tickets',
 	function($scope, $q, $state, tickets) {
-		$scope.tickets = tickets.tickets;
-		$scope.addTicket = tickets.addticket;
+		$scope.tickets = [];
+		$scope.numAdultTickets = 1;
+		$scope.numTeenTickets = 0;
+		$scope.numChildTickets = 0;
+
+		var createTicket = function() {
+			var ticket = {
+				name: "",
+				agegroup: "adult",
+				foodRes: "none"
+			};
+			return ticket;
+		}
+
+		var initializeTickets = function() {
+			$scope.tickets = [];
+			$scope.tickets[0] = createTicket();	
+		}
+
+		initializeTickets();
+		
+		
+		$scope.addTicket = function() {
+			$scope.tickets.push(createTicket());
+			$scope.computeOrderDetails();
+		};
+
+		$scope.removeTicket = function(index) {
+			$scope.tickets.splice(index, 1);
+			$scope.computeOrderDetails();
+		};
+
+		$scope.computeOrderDetails = function() {
+			var adultTickets = 0;
+			var teenTickets = 0;
+			var childTickets = 0;
+			$scope.tickets.forEach(function(ticket) {
+				switch (ticket.agegroup) {
+					case "adult":
+						adultTickets++;
+						break;
+					case "teen":
+						teenTickets++;
+						break;
+					case "child":
+						childTickets++;
+						break;
+				}
+			});
+
+			$scope.numAdultTickets = adultTickets;
+			$scope.numTeenTickets = teenTickets;
+			$scope.numChildTickets = childTickets;		
+		};
+
 		$scope.purchase = function() {
 			var promises = [];
 			$scope.tickets.forEach(function(ticket) {

@@ -1,46 +1,89 @@
-<!-- <div class="container col-md-12">
-	 <div class="col-xs-3" style="background-color:grey; height: 100vh; padding-left: 0px; padding-right: 0px">
-       <h4 class="text-center" style="padding-top: 50px">Ticket options</h4>
-	 </div> -->
-<div class="container col-xs-12 col-sm-offset-1 col-sm-10">
+<div class="container col-xs-12">
   <h1 class="text-center" style="padding-top: 10px; padding-bottom: 20px">Purchase Tickets</h1>
-  <div ng-repeat="ticket in tickets">
-	<div class="panel panel-default">
-	  <div class="panel-body">
-		<button style="float:right; background-color: white; border: 0px"><i class="glyphicon glyphicon-remove"></i></button>
-		<h4>1 {{ticket.agegroup}} Ticket</h4>
-		<div style="padding-left:50px">
-		  <div class="row" style="padding-bottom:10px">
-			<label>Name</label>
-			<input type="text" ng-model="ticket.name"></input>
-		  </div>
-
-		  <div class="row" style="padding-bottom:10px">
-			<label>Age Group</label>
-
-			<label>
-			  <input type="radio" ng-model="ticket.agegroup" value="adult">Adult</input>
-	  		</label>
-			<label>
-			  <input type="radio" ng-model="ticket.agegroup" value="teen">Teenager</input>
-			</label>
-			<label>
-			  <input type="radio" ng-model="ticket.agegroup" value="child">Child</input>
-			</label>
-		  </div>
+  
+  <div class="container col-xs-7">
+    
+    <div ng-repeat="ticket in tickets track by $index">
+	    <div class="panel panel-default">
+	      <div class="panel-body">
+		      <button ng-click="removeTicket($index)" style="float:right; background-color: white; border: 0px"><i class="glyphicon glyphicon-remove"></i></button>
 		  
-		  <div class="row">
-			<label>Dietary Restrictions</label>
-			<select ng-model="ticket.foodRes">
-			  <option value="none">None</option>
-			  <option value="vegan">Vegan</option>
-			  <option value="glutenfree">Gluten-free</option>
-			</select>
-		  </div>
-		</div>
-	  </div>
-	</div>
+		  		<h4>1 {{ticket.agegroup}} Ticket</h4>
+		  
+				  <div class="row" style="padding-bottom:10px">
+					  <label>Name</label>
+					  <input type="text" ng-model="ticket.name"></input>
+				  </div>
+		  
+		  
+				  <div class="row" style="padding-bottom:10px">
+					  <label>Age Group</label>
+
+					  <label>
+					    <input type="radio" ng-model="ticket.agegroup" value="adult" ng-change="computeOrderDetails()">Adult</input>
+			  			</label>
+					  <label>
+					    <input type="radio" ng-model="ticket.agegroup" value="teen" ng-change="computeOrderDetails()">Teenager</input>
+					  </label>
+					  <label>
+					    <input type="radio" ng-model="ticket.agegroup" value="child" ng-change="computeOrderDetails()">Child</input>
+					  </label>
+				  </div>
+		  
+				  <div class="row">
+					  <label>Dietary Restrictions</label>
+					  <select ng-model="ticket.foodRes">
+					    <option value="none">None</option>
+					    <option value="vegan">Vegetarian/Vegan</option>
+					    <option value="glutenfree">Gluten-free</option>
+					  </select>
+				  </div>
+
+				</div> <!--panel-body-->
+			</div> <!--panel-default-->
+		</div> <!--ticket repeater-->
+
+		<button ng-click="addTicket()">Add additional ticket to order</button>
+    
+  </div> <!--ticket purchase container-->
+    
+  <div class="container col-xs-5">
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <div>Order Details</div>
+        
+        <div>
+        	<span>{{numAdultTickets}}</span>
+        	<span>Adult Tickets</span>
+        	<span>x $15 =</span>
+        	<span>${{numAdultTickets*15}}</span>
+        </div>
+        
+        <div>
+        	<span>{{numTeenTickets}}</span>
+        	<span>Teenager Tickets</span>
+        	<span>x $10 =</span>
+        	<span>${{numTeenTickets*10}}</span>
+        </div>
+        
+        <div>
+        	<span>{{numChildTickets}}</span>
+        	<span>Child Tickets</span>
+        	<span>x $5 =</span>
+        	<span>${{numChildTickets*5}}</span>
+        </div>
+
+        <div>
+        	Total: ${{numAdultTickets*15 + numTeenTickets*10 + numChildTickets*5}}
+        </div>
+        
+        <div>
+        	<button ng-click="purchase()">Purchase Tickets</button>
+        </div>
+      </div>
+    </div>
   </div>
-  <button ng-click="addTicket()">Add additional ticket to order</button>
-  <button ng-click="purchase()">Purchase Tickets</button>
-</div>
+  
+  
+
+</div> <!--main container-->
