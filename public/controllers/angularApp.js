@@ -85,23 +85,25 @@ app.controller("ViewDonatedItemsCtrl", [
 		
 	}]);
 
-app.service('tickets', ['$http', '$q', function($http, $q) {
+app.factory('tickets', ['$http', '$q', function($http, $q) {
 	
-	
+	return {
+		purchase: function(ticket) {
+			return $http.post('/createguest', ticket);
+		},
 
-	purchase = function(ticket) {
-		return $http.post('/createguest', ticket);
+		getAll: function() {
+			rtval = $http.get('/all/guests').then(function(data) {
+				console.log(data.data);
+				return data.data;
+			}, function(data) {
+				console.log("ERROR");
+			});
+			console.log(rtval);
+			return rtval;
+		}
 	};
-	
-	getAll = function() {
-		return $http.get('/all/guests').then(function(data) {
-			angular.copy(data.data, o.tickets);
-			console.log("FOO");
-		}, function(data) {
-			console.log("ERROR");
-		});
-	};
-	
+
 }]);
 
 
@@ -110,7 +112,10 @@ app.controller('ViewRegisteredPeopleCtrl', [
 	'$scope',
 	'tickets',
 	function($scope, tickets) {
-		$scope.tickets = tickets.tickets;
+		tickets.getAll().then(
+			function(result) {
+				$scope.tickets = result;
+			});
 		console.log($scope.tickets);
 	}]);
 
@@ -137,7 +142,7 @@ app.controller('BuyTicketsCtrl', [
 
 		var initializeTickets = function() {
 			$scope.tickets = [];
-			$scope.tickets[0] = createTicket();	
+			$scope.tickets[0] = createTicket();
 		}
 
 		initializeTickets();
@@ -173,7 +178,7 @@ app.controller('BuyTicketsCtrl', [
 
 			$scope.numAdultTickets = adultTickets;
 			$scope.numTeenTickets = teenTickets;
-			$scope.numChildTickets = childTickets;		
+			$scope.numChildTickets = childTickets;
 		};
 
 		$scope.purchase = function() {

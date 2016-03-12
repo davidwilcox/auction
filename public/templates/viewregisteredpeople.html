@@ -4,23 +4,24 @@
 	 </div> -->
 <div class="container col-xs-12 col-sm-offset-1 col-sm-10">
   <h1 class="text-center" style="padding-top: 10px; padding-bottom: 20px">View Registered People</h1>
-  <div ng-repeat="ticket in tickets">
-	<div class="panel panel-default">
-	  <div>
-		<div class="panel-body">
-		  <div class="row">
-			<label>Name</label>
-			{{ticket.name}}
+  <div class="container col-xs-7">
+	<div ng-repeat="ticket in tickets">
+	  <div class="panel panel-default">
+		<div>
+		  <div class="panel-body">
+			<div class="row">
+			  <label>Name</label>
+			  {{ticket.name}}
+			</div>
+			<div class="row">
+			  <label>Age</label>
+			  {{ticket.agegroup}}
+			</div>
+			<div class="row">
+			  <label>Dietary Restrictions</label>
+			  {{ticket.foodRes}}
+			</div>
 		  </div>
-		  <div class="row">
-			<label>Age</label>
-			{{ticket.agegroup}}
-		  </div>
-		  <div class="row">
-			<label>Dietary Restrictions</label>
-			{{ticket.foodRes}}
-		  </div>
-		</div>
 		<!--
 		<button style="float:right; background-color: white; border: 0px"><i class="glyphicon glyphicon-remove"></i></button>
 		<h4>1 {{ticket.age}} Ticket</h4>
@@ -54,7 +55,8 @@
 			</select>
 		  </div>
 		</div>
--->
+		-->
+		</div>
 	  </div>
 	</div>
   </div>
