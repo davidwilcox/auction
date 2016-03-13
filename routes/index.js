@@ -88,8 +88,8 @@ var jwtsign = require('jsonwebtoken');
 
 
 router.post('/register', function(req, res, next) {
-	if ( !req.body.username || !req.body.password ) {
-		return res.status(400).json({message: 'Please fill out username and password.'});
+	if ( !req.body.email || !req.body.password ) {
+		return res.status(400).json({message: 'Please fill out email and password.'});
 	}
 
 	salt = crypto.randomBytes(16).toString('hex');
@@ -97,10 +97,15 @@ router.post('/register', function(req, res, next) {
 	delete req.body.password;
 	req.body.hash = hash;
 	req.body.salt = salt;
-	sdb.putItem('users', req.body.username, req.body, function(error) {
+	sdb.putItem('users', req.body.email, req.body, function(error) {
 		console.log(error);
+
+		var today = new Date();
+		var exp = new Date(today);
+		exp.setDate(today.getDate() + 60);
+
 		res.json({token: jwtsign.sign({
-			username: req.body.username,
+			email: req.body.email,
 			exp: parseInt(exp.getTime()/1000),
 		}, 'SECRET')});
 	});
@@ -112,8 +117,8 @@ var crypto = require('crypto');
 var passport = require('passport');
 
 router.post('/login', function(req, res, next) {
-	if ( !req.body.username || !req.body.password ) {
-		return res.status(400).json({message: "Please fill out both 'username' and 'password'"});
+	if ( !req.body.email || !req.body.password ) {
+		return res.status(400).json({message: "Please fill out both 'email' and 'password'"});
 	}
 
 	passport.authenticate('local', function(err, user, info) {
@@ -124,7 +129,7 @@ router.post('/login', function(req, res, next) {
 		exp.setDate(today.getDate() + 60);
 
 		res.json({token: jwtsign.sign({
-			username: user.username,
+			email: user.email,
 			exp: parseInt(exp.getTime()/1000),
 		}, 'SECRET')});
 		console.log("after");

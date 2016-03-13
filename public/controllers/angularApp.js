@@ -1,4 +1,4 @@
-var app = angular.module('auction', ['ui.router'])
+var app = angular.module('auction', ['ngMessages', 'ui.router'])
 
 app.config([
 	'$stateProvider',
@@ -41,10 +41,25 @@ app.config([
 				templateUrl: '/templates/buyticketsconfirmation.html',
 				controller: 'BuyticketsconfirmationCtrl'
 			})
+			.state('login', {
+				url: '/login',
+				templateUrl: '/templates/login.html',
+				controller: 'LoginCtrl',
+				onEnter: [ '$state', 'auth', function($state, auth) {
+					if ( auth.isLoggedIn() ) {
+						$state.go('home');
+					}
+				}]
+			})
 			.state('register', {
 				url: '/register',
-				templateUrl: '/templates/adduser.html',
-				controller: 'AddUserCtrl'
+				templateUrl: '/templates/register.html',
+				controller: 'RegisterCtrl',
+				onEnter: [ '$state', 'auth', function($state, auth) {
+					if ( auth.isLoggedIn() ) {
+						$state.go('home');
+					}
+				}]
 			})
 
 		$urlRouterProvider.otherwise('home');
@@ -85,6 +100,44 @@ app.controller("ViewDonatedItemsCtrl", [
 		
 	}]);
 
+app.factory('auth', ['$http', '$window', function($http, $window) {
+	var o = {
+	};
+	o.saveToken = function(token) {
+		$window.localStorage['auction-token'] = token;
+	};
+	o.getToken = function(token) {
+		return $window.localStorage['auction-token'];
+	};
+	o.isLoggedIn = function() {
+		var token = o.getToken();
+
+		if ( token ) {
+			var payload = JSON.parse($window.atob(token.split('.')[1]));
+			return payload.exp > Date.now() / 1000;
+		} else {
+			return false;
+		}
+	};
+	o.register = function(user) {
+		if ( user.confirmPassword == user.password ) {
+			delete user['confirmPassword'];
+			return $http.post('/register', user).success(function(data) {
+				o.saveToken(data.token);
+			});
+		}
+	};
+	o.logIn = function(user) {
+		return $http.post('/login', user).success(function(data) {
+			o.saveToken(data.token);
+		});
+	};
+	o.logOut = function(user) {
+		$window.localStorage.removeItem('auction-token')
+	};
+	return o;
+}]);
+
 app.factory('tickets', ['$http', '$q', function($http, $q) {
 	
 	return {
@@ -106,6 +159,67 @@ app.factory('tickets', ['$http', '$q', function($http, $q) {
 
 }]);
 
+
+var compareTo = function() {
+    return {
+		require: "ngModel",
+		scope: {
+			otherModelValue: "=compareTo"
+		},
+		link: function(scope, element, attributes, ngModel) {
+
+			ngModel.$validators.compareTo = function(modelValue) {
+				return modelValue == scope.otherModelValue;
+			};
+
+			scope.$watch("otherModelValue", function() {
+				ngModel.$validate();
+			});
+		}
+    };
+};
+
+app.directive("compareTo", compareTo);
+
+app.controller('LoginCtrl', [
+	'$scope',
+	'$state',
+	'auth',
+	function($scope, $state, auth) {
+		$scope.user = {};
+		$scope.logIn = function() {
+			auth.register($scope.user).error(function(error) {
+				console.log($scope.user);
+				$scope.error = error;
+			}).then(function() {
+				$scope.go('home');
+			});
+		};
+	}]);
+
+app.controller('RegisterCtrl', [
+	'$scope',
+	'$state',
+	'auth',
+	function($scope, $state, auth) {
+		$scope.user = {};
+
+		$scope.register = function() {
+			auth.register($scope.user).error(function(error) {
+				$scope.error = error;
+			}).then(function() {
+				$state.go('home');
+			});
+		};
+	}]);
+
+
+app.controller('NavCtrl', [
+	'$scope', 'auth', function($scope, auth) {
+		$scope.isLoggedIn = auth.isLoggedIn;
+		$scope.currentUser = auth.currentUser;
+		$scope.logOut = auth.logOut;
+	}]);
 
 
 app.controller('ViewRegisteredPeopleCtrl', [
@@ -196,3 +310,31 @@ app.controller('BuyTicketsCtrl', [
 			});
 		};
 	}]);
+
+
+
+
+
+var RegistrationController = function() {
+    var model = this;
+
+    model.message = "";
+
+    model.user = {
+      username: "",
+      password: "",
+      confirmPassword: ""
+    };
+
+    model.submit = function(isValid) {
+      console.log("h");
+      if (isValid) {
+        model.message = "Submitted " + model.user.username;
+      } else {
+        model.message = "There are still invalid fields below";
+      }
+    };
+
+  };
+
+app.controller("RegistrationController", RegistrationController);
