@@ -99,6 +99,17 @@ router.post('/register', function(req, res, next) {
 	});
 });
 
+router.get('/accountexists/:email', function(req, res, next) {
+	sdb.getItem('users', req.params.email, function(error, getItemResult, meta) {
+		console.log(error);
+		if ( error )
+			return next(error);
+		if ( !getItemResult )
+			return res.json( {exists: "false"} );
+		return res.json( {exists: "true"} );
+	});
+});
+
 var jwt = require('express-jwt');
 var auth = jwt({secret: "SECRET", userProperty: "payload"});
 var crypto = require('crypto');
