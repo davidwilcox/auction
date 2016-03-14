@@ -9,22 +9,26 @@ var crypto = require('crypto');
 
 
 passport.use(new LocalStrategy(
-    function(username, password, done) {
-        console.log("passport");
+	{ // or whatever you want to use
+		usernameField: 'email',
+		passwordField: 'password'
+	},
+	function(email, password, done) {
 
-        sdb.getItem('users', req.body.username, function(error, getItemResult, meta) {
-            if ( error ) {
-                console.log("err2");
-                return done(null, false, { message: error });
-            }
-            hash = getItemResult.hash;
-            salt = getItemResult.salt;
-            test_hash = crypto.pbkdf2Sync(req.body.password, salt, 1000, 64).toString('hex');
-            if ( test_hash != hash ) {
-                console.log("err3");
-                return done(null, false, { message: "Invalid password." });
-            }
-            return done(null, getItemResult);
-        });
-    }
+		sdb.getItem('users', email, function(error, getItemResult, meta) {
+			if ( error ) {
+				return done(null, false, { message: error });
+			}
+			if ( !getItemResult ) {
+				return done(null, false, { message: "User doesn't exist." });
+			}
+			hash = getItemResult.hash;
+			salt = getItemResult.salt;
+			test_hash = crypto.pbkdf2Sync(password, salt, 1000, 64).toString('hex');
+			if ( test_hash != hash ) {
+				return done(null, false, { message: "Invalid password." });
+			}
+			return done(null, getItemResult);
+		});
+	}
 ));

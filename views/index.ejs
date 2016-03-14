@@ -9,9 +9,9 @@
 		<script src="/javascripts/angular-messages.min.js"/></script>
     	<script src="/controllers/angularApp.js"></script>
 	</head>
-	<body ng-app="auction" ng-controller="RegistrationController as registration">
+	<body ng-app="auction">
 	  <nav class="navbar navbar-default pull-right" ng-controller="NavCtrl">
-		<ul class="nav navbar-nav">
+		<ul class="nav navbar-nav" >
 		  <li ng-show="isLoggedIn()"><a>{{ currentUser() }}</a></li>
 		  <li ng-show="isLoggedIn()"><a href="" ng-click="logOut()">Log Out</a></li>
 		  <li ng-hide="isLoggedIn()"><a href="/#/login">Log In</a></li>

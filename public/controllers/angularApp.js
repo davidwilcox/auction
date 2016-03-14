@@ -9,7 +9,13 @@ app.config([
 			.state('buytickets', {
 				url: '/buytickets',
 				templateUrl: '/templates/buytickets.html',
-				controller: 'BuyTicketsCtrl'
+				controller: 'BuyTicketsCtrl'/*,
+				onEnter: [ '$state', 'auth', function($state, auth) {
+					if ( !auth.isLoggedIn() ) {
+						$window.sessionStorage['targetPage'] =
+						$state.go('login');
+					}
+				}]*/
 			})
 			.state('donateitem', {
 				url: '/donateitem',
@@ -24,12 +30,12 @@ app.config([
 			.state('viewregisteredpeople', {
 				url: '/viewregisteredpeople',
 				templateUrl: '/templates/viewregisteredpeople.html',
-				controller: 'ViewRegisteredPeopleCtrl',
+				controller: 'ViewRegisteredPeopleCtrl'/*,
 				resolve: {
 					registeredPromise: ['tickets', function(tickets) {
 						return tickets.getAll();
 					}]
-				}
+				}*/
 			})
 			.state('viewdonateditems', {
 				url: '/viewdonateditems',
@@ -100,7 +106,7 @@ app.controller("ViewDonatedItemsCtrl", [
 		
 	}]);
 
-app.factory('auth', ['$http', '$window', function($http, $window) {
+app.factory('auth', ['$http', '$window', '$q', function($http, $window, $q) {
 	var o = {
 	};
 	o.saveToken = function(token) {
@@ -126,6 +132,8 @@ app.factory('auth', ['$http', '$window', function($http, $window) {
 				o.saveToken(data.token);
 			});
 		}
+		$q.reject("password and confirm password did not match.");
+		
 	};
 	o.logIn = function(user) {
 		return $http.post('/login', user).success(function(data) {
@@ -188,11 +196,11 @@ app.controller('LoginCtrl', [
 	function($scope, $state, auth) {
 		$scope.user = {};
 		$scope.logIn = function() {
-			auth.register($scope.user).error(function(error) {
+			auth.logIn($scope.user).error(function(error) {
 				console.log($scope.user);
 				$scope.error = error;
 			}).then(function() {
-				$scope.go('home');
+				$state.go('home');
 			});
 		};
 	}]);
@@ -310,31 +318,3 @@ app.controller('BuyTicketsCtrl', [
 			});
 		};
 	}]);
-
-
-
-
-
-var RegistrationController = function() {
-    var model = this;
-
-    model.message = "";
-
-    model.user = {
-      username: "",
-      password: "",
-      confirmPassword: ""
-    };
-
-    model.submit = function(isValid) {
-      console.log("h");
-      if (isValid) {
-        model.message = "Submitted " + model.user.username;
-      } else {
-        model.message = "There are still invalid fields below";
-      }
-    };
-
-  };
-
-app.controller("RegistrationController", RegistrationController);
