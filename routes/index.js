@@ -89,7 +89,6 @@ router.get('/guest/:guestid', function(req, res, next) {
 		}
 	};
 
-	console.log(params);
 	docClient.get(params, function(err, data) {
 		res.json(data);
 	});
@@ -140,10 +139,15 @@ router.post('/register', function(req, res, next) {
 
 	var params = {
 		TableName: "users",
-		Item: req.body
+		Item: req.body,
+		ConditionExpression: "(attribute_not_exists(email))"
 	};
 
 	docClient.put(params, function(err, data) {
+
+		if ( err ) {
+			return res.status(401).json({message: "username already used."});
+		}
 
 		var today = new Date();
 		var exp = new Date(today);
@@ -165,7 +169,6 @@ router.get('/accountexists/:email', function(req, res, next) {
 		}
 	};
 	docClient.get(params, function(err, data) {
-		console.log(data);
 		if (err) {
 			console.error("Unable to scan the table. Error JSON:", JSON.stringify(err, null, 2));
 		} else {
