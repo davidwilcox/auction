@@ -5,6 +5,12 @@ var router = express.Router();
 var simpledb = require('simpledb');
 var sdb		 = new simpledb.SimpleDB(
 	{keyid:'AKIAIZELJIBWQ3ETHZ4A',secret:'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'});
+var AWS = require("aws-sdk");
+AWS.config.update({
+	region: "us-west-2"
+});
+var dynamodb = new AWS.DynamoDB();
+var docClient = new AWS.DynamoDB.DocumentClient();
 
 
 function guid() {
@@ -21,7 +27,7 @@ function guid() {
 /* GET home page. */
 router.get('/', function(req, res, next) {
 	res.render('index', { title: 'Express' });
-});
+})
 
 router.post('/createdomain/:domain', function(req, res, next) {
 	sdb.createDomain( req.params.domain, function( error ) {
@@ -54,21 +60,66 @@ router.post('/createguest', function(req, res, next) {
 		return;
 	}
 	guest.guestid = guid();
-	sdb.putItem('guests', guest.guestid, guest, function( error ) {
-		res.status(200).json(guest);
+	var params = {
+		TableName: "tickets",
+		Item: {
+			"id": guest.guestid,
+			"name": guest.name,
+			"foodRes": guest.foodRes,
+			"agegroup": guest.agegroup
+		}
+	};
+
+	docClient.put(params, function(err, data) {
+		if (err) {
+			console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
+			res.status(400).json({error: "Unable to add item. Error JSON:", err});
+		} else {
+			console.log("Added item:", JSON.stringify(data, null, 2));
+			res.status(200).json(data);
+		}
 	});
 });
 
 router.get('/guest/:guestid', function(req, res, next) {
-	sdb.getItem('guests', req.params.guestid, function( error, getItemResult, meta ) {
-		res.json(getItemResult);
+	var params = {
+		TableName: "tickets",
+		Key: {
+			"id": req.params.guestid
+		}
+	};
+
+	console.log(params);
+	docClient.get(params, function(err, data) {
+		res.json(data);
+	});
+});
+
+
+router.get('/allguests', function(req, res, next) {
+	var params = {
+		TableName: "tickets"
+	};
+	docClient.scan(params, function(err, data) {
+		if (err) {
+			console.error("Unable to scan the table. Error JSON:", JSON.stringify(err, null, 2));
+		} else {
+			res.json(data.Items);
+		}
 	});
 });
 
 
 router.get("/all/:table", function(req, res, next) {
-	sdb.select('select * from ' + req.params.table, function(error, selectResult, meta) {
-		res.json(selectResult);
+	var params = {
+		TableName: req.params.table
+	};
+	docClient.scan(params, function(err, data) {
+		if (err) {
+			console.error("Unable to scan the table. Error JSON:", JSON.stringify(err, null, 2));
+		} else {
+			res.json(data.Items);
+		}
 	});
 });
 
@@ -86,7 +137,13 @@ router.post('/register', function(req, res, next) {
 	delete req.body.password;
 	req.body.hash = hash;
 	req.body.salt = salt;
-	sdb.putItem('users', req.body.email, req.body, function(error) {
+
+	var params = {
+		TableName: "users",
+		Item: req.body
+	};
+
+	docClient.put(params, function(err, data) {
 
 		var today = new Date();
 		var exp = new Date(today);
@@ -96,17 +153,28 @@ router.post('/register', function(req, res, next) {
 			email: req.body.email,
 			exp: parseInt(exp.getTime()/1000),
 		}, 'SECRET')});
+
 	});
 });
 
 router.get('/accountexists/:email', function(req, res, next) {
-	sdb.getItem('users', req.params.email, function(error, getItemResult, meta) {
-		console.log(error);
-		if ( error )
-			return next(error);
-		if ( !getItemResult )
-			return res.json( {exists: "false"} );
-		return res.json( {exists: "true"} );
+	var params = {
+		TableName: "users",
+		Key: {
+			"email": req.params.email
+		}
+	};
+	docClient.get(params, function(err, data) {
+		console.log(data);
+		if (err) {
+			console.error("Unable to scan the table. Error JSON:", JSON.stringify(err, null, 2));
+		} else {
+			if ( data.Item ) {
+				res.json( {exists: "true" } );
+			} else {
+				res.json( {exists: "false" } );
+			}
+		}
 	});
 });
 
@@ -151,10 +219,6 @@ router.post('/donateitem', auth, function(req, res, next) {
 	}
 
 	item.itemid = guid();
-
-	sdb.putItem('items', item.id, item, function(error) {
-		res.json({Error: error});
-	});
 });
 
 

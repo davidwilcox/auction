@@ -154,7 +154,7 @@ app.factory('tickets', ['$http', '$q', function($http, $q) {
 		},
 
 		getAll: function() {
-			rtval = $http.get('/all/guests').then(function(data) {
+			rtval = $http.get('/allguests').then(function(data) {
 				console.log(data.data);
 				return data.data;
 			}, function(data) {
