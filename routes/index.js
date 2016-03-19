@@ -74,7 +74,7 @@ router.post('/createguest', function(req, res, next) {
 	docClient.put(params, function(err, data) {
 		if (err) {
 			console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
-			res.status(400).json({error: "Unable to add item. Error JSON:", err});
+			res.status(400).json({error: "Unable to add item. Error JSON:" + err});
 		} else {
 			console.log("Added item:", JSON.stringify(data, null, 2));
 			res.status(200).json(data);
