@@ -2,9 +2,8 @@ var express = require('express');
 var router = express.Router();
 
 
-var simpledb = require('simpledb');
-var sdb		 = new simpledb.SimpleDB(
-	{keyid:'AKIAIZELJIBWQ3ETHZ4A',secret:'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'});
+//var simpledb = require('simpledb');
+//var sdb		 = new simpledb.SimpleDB();
 var AWS = require("aws-sdk");
 AWS.config.update({
 	region: "us-west-2"
@@ -29,6 +28,7 @@ router.get('/', function(req, res, next) {
 	res.render('index', { title: 'Express' });
 })
 
+/*
 router.post('/createdomain/:domain', function(req, res, next) {
 	sdb.createDomain( req.params.domain, function( error ) {
 		res.json({Error:error});
@@ -40,6 +40,7 @@ router.post('/deletedomain/:domain', function(req, res, next) {
 		res.json({Error:err});
 	});
 });
+*/
 
 router.post('/createguest', function(req, res, next) {
 	guest = req.body;
