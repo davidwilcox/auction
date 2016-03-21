@@ -1,7 +1,6 @@
 var express = require('express');
 var router = express.Router();
 
-
 //var simpledb = require('simpledb');
 //var sdb		 = new simpledb.SimpleDB();
 var AWS = require("aws-sdk");

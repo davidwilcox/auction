@@ -25,6 +25,14 @@
 	  </div>
 	</div>
 	<div class="form-group">
+	  <label>Picture (nice to have if you want to do a party donation)</label>
+	  <input type="file"
+			 name="picture"
+			 class="form-control"
+			 fileread="user.picture"
+			 accept="image/*" ></input>
+	</div>
+	<div class="form-group">
 	  <label>Password</label>
 	  <input type="password"
 			 name="password"
@@ -35,6 +43,7 @@
 		<div ng-messages-include="/messages.html" ></div>
 	  </div>
 	</div>
+	<input type="text" name="me" ng-model="user.me" />
 	<div class="form-group">
 	  <label>Confirm Password</label>
 	  <input type="password" name="confirmPassword" ng-model="user.confirmPassword" required compare-to="user.password" class="form-control"  />
