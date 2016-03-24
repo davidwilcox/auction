@@ -120,6 +120,7 @@ app.factory('auth', ['$http', '$window', '$q', function($http, $window, $q) {
 
 		if ( token ) {
 			var payload = JSON.parse($window.atob(token.split('.')[1]));
+			console.log(payload);
 			return payload.exp > Date.now() / 1000;
 		} else {
 			return false;
@@ -127,9 +128,10 @@ app.factory('auth', ['$http', '$window', '$q', function($http, $window, $q) {
 	};
 	o.register = function(user) {
 		if ( user.confirmPassword == user.password ) {
-			delete user['confirmPassword'];
 			return $http.post('/register', user).success(function(data) {
 				o.saveToken(data.token);
+			}).error(function(data) {
+				delete user['confirmPassword'];
 			});
 		}
 		$q.reject("password and confirm password did not match.");
@@ -143,6 +145,14 @@ app.factory('auth', ['$http', '$window', '$q', function($http, $window, $q) {
 	o.logOut = function(user) {
 		$window.localStorage.removeItem('auction-token')
 	};
+	o.currentUser = function(){
+		if(o.isLoggedIn()){
+			var token = o.getToken();
+			var payload = JSON.parse($window.atob(token.split('.')[1]));
+			
+			return payload.email;
+		}
+	};
 	return o;
 }]);
 
@@ -155,12 +165,10 @@ app.factory('tickets', ['$http', '$q', function($http, $q) {
 
 		getAll: function() {
 			rtval = $http.get('/allguests').then(function(data) {
-				console.log(data.data);
 				return data.data;
 			}, function(data) {
 				console.log("ERROR");
 			});
-			console.log(rtval);
 			return rtval;
 		}
 	};
@@ -234,31 +242,43 @@ app.controller('RegisterCtrl', [
 	function($scope, $state, $http, auth) {
 		$scope.user = {};
 
+		$scope.fileNameChanged = function(ele) {
+			$scope.user.filename = ele.files[0].name;
+			console.log(ele.files[0].name);
+		};
+
 		$scope.register = function() {
-			console.log("ASD\n");
-			console.log($scope.user);
+			console.log($scope.user.picturefile);
 			picture = $scope.user.picture;
+			filename = $scope.user.filename;
 			delete $scope.user.picture;
-			auth.register($scope.user).error(function(error) {
-				$scope.error = error;
-			}).success(function(data) {
-				console.log(data);
-				console.log("here");
-				if ( picture ) {
-					console.log("there");
-					payload = {
-						"photo": picture
-					};
-					$http.post('/uploadphoto', payload).error(
-						function(error) {
-							$scope.error = error;
-						}).then(function() {
-							$state.go('home');
-						});
-				} else {
+			delete $scope.user.filename;
+
+			var register = function() {
+				auth.register($scope.user).error(function(error) {
+					$scope.error = error;
+				}).success(function(data) {
+					console.log(data);
+					console.log("here");
 					$state.go('home');
-				}
-			});
+				});
+			};
+
+			payload = {
+				"photo": picture,
+				"filename": filename
+			};
+			if ( picture ) {
+				$http.post('/uploadphoto', payload).error(
+					function(error) {
+						$scope.error = error;
+					}).then(function(data) {
+						$scope.user.photoid = data.photoid
+						register();
+					});
+			} else {
+				register();
+			}
 		};
 	}]);
 

@@ -126,6 +126,30 @@ router.get("/all/:table", function(req, res, next) {
 var jwtsign = require('jsonwebtoken');
 
 
+router.post('/uploadphoto', function(req, res, next) {
+	if ( !req.body.photo ) {
+		res.status(400).json({message : "Please fill in a photo"});
+	}
+	if ( !req.body.filename ) {
+		req.status(400).json({message: "Please fill in a filename"});
+	}
+
+	extension = req.body.filename.split('.').pop();
+	new_filename = guid() + '.' + extension;
+	var AWS2 = require("aws-sdk");
+	var s3bucket = new AWS2.S3({params: {Bucket: 'svuus-photos'}});
+	var buf = new Buffer(req.body.photo.split(',')[1], 'base64');
+	var params = {Key: new_filename, Body: buf};
+	s3bucket.upload(params, function(err, data) {
+		if ( err ) {
+			res.status(400).json({message: err});
+		} else {
+			res.json({photoid : params.Key});
+		}
+	});
+});
+
+
 router.post('/register', function(req, res, next) {
 	if ( !req.body.email || !req.body.password ) {
 		return res.status(400).json({message: 'Please fill out email and password.'});
