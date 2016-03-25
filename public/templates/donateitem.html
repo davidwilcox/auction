@@ -1,27 +1,179 @@
+<div class="page-header">
+  <h1>Donate Item</h1>
+      <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.8.3/jquery.min.js">
+    </script>
+    <script type="text/javascript" src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js">
+    </script>
+    <script type="text/javascript" src="http://tarruda.github.com/bootstrap-datetimepicker/assets/js/bootstrap-datetimepicker.min.js">
+    </script>
+    <script type="text/javascript" src="http://tarruda.github.com/bootstrap-datetimepicker/assets/js/bootstrap-datetimepicker.pt-BR.js">
+    </script>
+
+</div>
 <div class="container col-xs-12 col-sm-offset-1 col-sm-10">
-  <h1 class="text-center" style="padding-top: 10px; padding-bottom: 20px">Purchase Tickets</h1>
   <form ng-submit="donateitem()">
+	<p>
+	  Welcome to the South Valley Annual Goods and Services Auction Fundraiser! Our event his year is Saturday, November 14th 2015, precisely at 6:00 pm. We'll be taking donations through Sunday, November 8th at midnight. To donate an item to our auction, fill in all the areas below. PLEASE write it like you're trying to interest the reader in buying your item! Required areas are noted with a red asterisk.
+	</p>
+	<p>
+
+	  If you have more than one item, you'll need to fill this form for each item. Note that it should autofill your info on your second form.
+	</p>
+	<p>
+
+	  Please contact Marilyn Smith at <a href='mailto:smith3390@comcast.net'>smith3390@comcast.net</a> if you have any questions.
+	</p>
+	<p>
+	  Thank you for making this year's auction GREAT!
+	</p>
 	<div class="panel panel-default">
 	  <div class="panel-body">
 		<div class="row" style="padding-bottom:10px">
-		  <label>Item Name</label>
-		  <input type="text" ng-model="itemname"></input>
+		  <label>Donor Name</label>
+		  <div>
+			LAST NAME, FIRST NAME. If several people are donating together, list all names, but put the main contact first. Put that person's email and phone number in the next fields.
+		  </div>
+		  <input
+			 type="text"
+			 ng-model="donorname"
+			 class="form-control"
+			 required
+			 ></input>
 		</div>
 		<div class="row" style="padding-bottom:10px">
-		  <label>Fair Market Value</label>
-		  <input type="number" ng-model="fmv" min="0"></input>
+		  <label>Best Phone Number for reaching you</label>
+		  <div>
+			Please put in the dashes. Example 801-555-4891.
+		  </div>
+		  <input
+			 type="text"
+			 ng-model="donorphonenumber"
+			 class="form-control"
+			 required
+			 ></input>
+		</div>
+		<div class="row" style="padding-bottom:10px">
+		  <label>Email Address</label>
+		  <input
+			 type="text"
+			 ng-model="donoremail"
+			 class="form-control"
+			 required
+			 ></input>
+		</div>
+		<div class="row" style="padding-bottom:10px">
+		  <label>My item falls in the following category</label>
+		  <div>
+			<input
+			   type="radio"
+			   ng-model="itemcategory"
+			   value="event"
+			   >Event</input>
+		  </div>
+		  <div>
+			<input
+			   type="radio"
+			   ng-model="itemcategory"
+			   value="object"
+			   >Object</input>
+		  </div>
+		</div>
+		<div class="row" style="padding-bottom:10px">
+		  <label>I'm offering a...</label>
+		  <div>
+			Please keep this succint. 30 characters or less.
+		  </div>
+		  <input
+			 type="text"
+			 ng-model="itemname"
+			 class="form-control"
+			 maxlength="30"
+			 required
+			 ></input>
+		</div>
+		<div class="row" style="padding-bottom:10px">
+		  <label>Here's a little more information about it (use 2-4 sentences).</label>
+			<div>
+			  What is great about this item? What would make someone want to buy it? Write like you're trying to sell it!
+			</div>
+			<textarea
+			   ng-model="itemdescription"
+			   class="form-control"
+			   max-length="200"
+			   required
+			   ></textarea>
+		</div>
+		<div class="row" style="padding-bottom:10px">
+		  <label>What is this item worth?</label>
+		  <div>
+			Your best guess is fine.
+		  </div>
+		  <input
+			 type="number"
+			 ng-model="itemvalue"
+			 min="0"
+			 class="form-control"
+			 required
+			 ></input>
+		</div>
+		<div class="row" style="padding-bottom:10px">
+		  <label>I would hate to see my item go for less than this amount</label>
+		  <input
+			 type="number"
+			 ng-model="itemminvalue"
+			 min="0"
+			 class="form-control"
+			 required
+			 ></input>
 		</div>
 		<div class="row" style="padding-bottom:10px">
 		  <label>Quantity</label>
-		  <input type="text" ng-model="quantity"></input>
+		  <div>
+			Example: Three quilts being sold separately would have "3" in this field. A party with 12 spots would have "12". However, if you are selling a group of items together (a basket of jams, or a set of books, put "1").
+		  </div>
+		  <input
+			 type="number"
+			 ng-model="quantity"
+			 class="form-control"
+			 required
+			 ></input>
+		</div>
+		<div class="row" style="padding-bottom:10px" ng-show="itemcategory==event">
+		  <label>What is the date of the event you will host?</label>
+		  <div>
+			We highly recommend choosing and advertising a specific date.
+		  </div>
+		  <div class='col-sm-6'>
+            <div class="form-group">
+              <div class='input-group date' id='datetimepicker1'>
+                <input type='text' class="form-control" />
+                <span class="input-group-addon">
+                  <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+              </div>
+            </div>
+          </div>
+          <script type="text/javascript">
+            $(function () {
+            $('#datetimepicker1').datetimepicker();
+            });
+          </script>
 		</div>
 		<div class="row" style="padding-bottom:10px">
 		  <label>Description</label>
-		  <input type="text" ng-model="description"></input>
+		  <input
+			 type="text"
+			 ng-model="description"
+			 class="form-control"
+			 ></input>
 		</div>
 		<div class="row" style="padding-bottom:10px">
 		  <label>Restrictions</label>
-		  <input type="text" ng-model="restrictions"></input>
+		  <input
+			 type="text"
+			 ng-model="restrictions"
+			 class="form-control"
+			 ></input>
 		</div>
 	  </div>
 	</div>

@@ -67,6 +67,16 @@ app.config([
 					}
 				}]
 			})
+			.state('myauction', {
+				url: '/myauction',
+				templateUrl: '/templates/myauction.html',
+				controller: 'MyAuctionCtrl',
+				onEnter: [ '$state', 'auth', function($state, auth) {
+					if ( !auth.isLoggedIn() ) {
+						$state.go('home');
+					}
+				}]
+			})
 
 		$urlRouterProvider.otherwise('home');
 	}]);
@@ -120,7 +130,6 @@ app.factory('auth', ['$http', '$window', '$q', function($http, $window, $q) {
 
 		if ( token ) {
 			var payload = JSON.parse($window.atob(token.split('.')[1]));
-			console.log(payload);
 			return payload.exp > Date.now() / 1000;
 		} else {
 			return false;
@@ -226,7 +235,6 @@ app.controller('LoginCtrl', [
 		$scope.user = {};
 		$scope.logIn = function() {
 			auth.logIn($scope.user).error(function(error) {
-				console.log($scope.user);
 				$scope.error = error;
 			}).then(function() {
 				$state.go('home');
@@ -244,11 +252,9 @@ app.controller('RegisterCtrl', [
 
 		$scope.fileNameChanged = function(ele) {
 			$scope.user.filename = ele.files[0].name;
-			console.log(ele.files[0].name);
 		};
 
 		$scope.register = function() {
-			console.log($scope.user.picturefile);
 			picture = $scope.user.picture;
 			filename = $scope.user.filename;
 			delete $scope.user.picture;
@@ -258,8 +264,6 @@ app.controller('RegisterCtrl', [
 				auth.register($scope.user).error(function(error) {
 					$scope.error = error;
 				}).success(function(data) {
-					console.log(data);
-					console.log("here");
 					$state.go('home');
 				});
 			};
@@ -299,8 +303,24 @@ app.controller('ViewRegisteredPeopleCtrl', [
 			function(result) {
 				$scope.tickets = result;
 			});
-		console.log($scope.tickets);
 	}]);
+
+
+
+app.directive('datetimez', function() {
+	return {
+		restrict: 'A',
+		require : 'ngModel',
+		link: function(scope, element, attrs, ngModelCtrl) {
+			element.datetimepicker({
+			  dateFormat:'dd/MM/yyyy hh:mm:ss'
+		  }).on('changeDate', function(e) {
+			  ngModelCtrl.$setViewValue(e.date);
+			  scope.$apply();
+		  });
+		}
+	};
+});
 
 
 app.controller('BuyTicketsCtrl', [
@@ -379,3 +399,7 @@ app.controller('BuyTicketsCtrl', [
 			});
 		};
 	}]);
+
+
+app.controller( 'MyAuctionCtrl', [ function() {
+}]);

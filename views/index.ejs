@@ -4,15 +4,18 @@
     	<title><%= title %></title>
     	<link rel="stylesheet" href="/stylesheets/bootstrap.min.css"></link>
 		<link rel="stylesheet" href="/stylesheets/style.css"></link>
+		<link rel="stylesheet" href="/stylesheets/bootstrap-datetimepicker.min.css"></link>
+		<script src="/javascripts/jquery-2.2.2.min.js"></script>
     	<script src="/javascripts/angular.min.js"></script>
     	<script src="/javascripts/angular-ui-router.js"></script>
-		<script src="/javascripts/angular-messages.min.js"/></script>
-    	<script src="/controllers/angularApp.js"></script>
-	</head>
+		<script src="/javascripts/angular-messages.min.js"></script>
+		<script src="/javascripts/bootstrap-datepicker.min.js"></script>
+		<script src="/controllers/angularApp.js"></script>
+</head>
 	<body ng-app="auction">
 	  <nav class="navbar navbar-default pull-right" ng-controller="NavCtrl">
 		<ul class="nav navbar-nav" >
-		  <li ng-show="isLoggedIn()"><a ui-sref="myauction"></a></li>
+		  <li ng-show="isLoggedIn()"><a ui-sref="myauction">MyAuction</a></li>
 		  <li ng-show="isLoggedIn()"><a>{{ currentUser() }}</a></li>
 		  <li ng-show="isLoggedIn()"><a href="" ng-click="logOut()">Log Out</a></li>
 		  <li ng-hide="isLoggedIn()"><a ui-sref="login">Log In</a></li>
