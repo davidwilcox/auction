@@ -82,21 +82,6 @@ app.config([
 	}]);
 
 
-app.controller('DonateItemCtrl', [
-	'$scope',
-	function($scope) {
-		$scope.itemname = "";
-		$scope.fmv = 0;
-		$scope.quantity = 1;
-		$scope.description = "";
-		$scope.restrictions = "";
-
-		$scope.donateitem = function() {
-			
-		};
-	}]);
-
-
 app.controller('HomeCtrl', [
 	'$scope',
 	'$state',
@@ -113,7 +98,7 @@ app.controller("BuyticketsconfirmationCtrl", [
 app.controller("ViewDonatedItemsCtrl", [
 	'$scope',
 	function($scope) {
-		
+
 	}]);
 
 app.factory('auth', ['$http', '$window', '$q', function($http, $window, $q) {
@@ -139,6 +124,7 @@ app.factory('auth', ['$http', '$window', '$q', function($http, $window, $q) {
 		if ( user.confirmPassword == user.password ) {
 			return $http.post('/register', user).success(function(data) {
 				o.saveToken(data.token);
+				o.saveUser(data.user);
 			}).error(function(data) {
 				delete user['confirmPassword'];
 			});
@@ -149,21 +135,64 @@ app.factory('auth', ['$http', '$window', '$q', function($http, $window, $q) {
 	o.logIn = function(user) {
 		return $http.post('/login', user).success(function(data) {
 			o.saveToken(data.token);
+			o.saveUser(data.user);
 		});
 	};
 	o.logOut = function(user) {
-		$window.localStorage.removeItem('auction-token')
+		$window.localStorage.removeItem('auction-token');
 	};
-	o.currentUser = function(){
-		if(o.isLoggedIn()){
+	o.saveUser = function(user) {
+		$window.localStorage['auction-user'] = user;
+	};
+	o.currentUserEmail = function(){
+		if(o.isLoggedIn()) {
 			var token = o.getToken();
 			var payload = JSON.parse($window.atob(token.split('.')[1]));
-			
-			return payload.email;
+			return payload.user.email;
+		}
+	};
+	o.currentUser = function() {
+		if(o.isLoggedIn()) {
+			var token = o.getToken();
+			var payload = JSON.parse($window.atob(token.split('.')[1]));
+			return payload.user;
 		}
 	};
 	return o;
 }]);
+
+app.controller('DonateItemCtrl', [
+	'$scope',
+	'$state',
+	'$http',
+	'$window',
+	'auth',
+	function($scope, $state, $http, $window, auth) {
+		$scope.kidspolicy = 'kidsfree';
+		$scope.itemcategory = 'event';
+		$scope.itemname = '';
+		$scope.itemMaxLength = 30;
+		$scope.descriptionMaxLength = 200;
+		user = auth.currentUser();
+		if ( user ) {
+			$scope.donor = user;
+		} else if ( $window.localStorage['donor-info'] ) {
+			$scope.donor = $window.localStorage['donor-info'];
+		}
+
+		$scope.donateitem = function() {
+			// persist user info.
+			$window.localStorage['donor-info'] = $scope.donor;
+			$http.post('/submititem', $scope.item).success(function(data) {
+				console.log('going home');
+				$state.go('home');
+			}).error(function(error) {
+				console.log('error');
+				$scope.error = error;
+			});
+		};
+	}]);
+
 
 app.factory('tickets', ['$http', '$q', function($http, $q) {
 	
@@ -290,7 +319,7 @@ app.controller('RegisterCtrl', [
 app.controller('NavCtrl', [
 	'$scope', 'auth', function($scope, auth) {
 		$scope.isLoggedIn = auth.isLoggedIn;
-		$scope.currentUser = auth.currentUser;
+		$scope.currentUser = auth.currentUserEmail;
 		$scope.logOut = auth.logOut;
 	}]);
 
@@ -401,5 +430,9 @@ app.controller('BuyTicketsCtrl', [
 	}]);
 
 
-app.controller( 'MyAuctionCtrl', [ function() {
-}]);
+app.controller( 'MyAuctionCtrl',[
+	'$scope',
+	function($scope, $q, $state, tickets) {
+		$scope.kidspolicy = 'kidsfree';
+		
+	}]);

@@ -177,8 +177,11 @@ router.post('/register', function(req, res, next) {
 		var exp = new Date(today);
 		exp.setDate(today.getDate() + 60);
 
+		delete req.body.hash;
+		delete req.body.salt;
 		res.json({token: jwtsign.sign({
 			email: req.body.email,
+			user: req.body,
 			exp: parseInt(exp.getTime()/1000),
 		}, 'SECRET')});
 
@@ -226,8 +229,10 @@ router.post('/login', function(req, res, next) {
 			var exp = new Date(today);
 			exp.setDate(today.getDate() + 60);
 
+			delete user.salt;
+			delete user.hash;
 			res.json({token: jwtsign.sign({
-				email: user.email,
+				user: user,
 				exp: parseInt(exp.getTime()/1000),
 			}, 'SECRET')});
 		} else {
@@ -236,7 +241,7 @@ router.post('/login', function(req, res, next) {
 	})(req, res, next);
 });
 
-router.post('/donateitem', auth, function(req, res, next) {
+router.post('submititem', auth, function(req, res, next) {
 	item = req.body;
 	if ( !item.itemname || !item.quantity || !item.fmv ||
 		 !item.description || !item.restrictions ) {
