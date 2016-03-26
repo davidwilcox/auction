@@ -27,19 +27,6 @@ router.get('/', function(req, res, next) {
 	res.render('index', { title: 'Express' });
 })
 
-/*
-router.post('/createdomain/:domain', function(req, res, next) {
-	sdb.createDomain( req.params.domain, function( error ) {
-		res.json({Error:error});
-	});
-});
-
-router.post('/deletedomain/:domain', function(req, res, next) {
-	sdb.deleteDomain( req.params.domain, function(err, result, meta) {
-		res.json({Error:err});
-	});
-});
-*/
 
 router.post('/createguest', function(req, res, next) {
 	guest = req.body;
@@ -158,6 +145,7 @@ router.post('/register', function(req, res, next) {
 	salt = crypto.randomBytes(16).toString('hex');
 	hash = crypto.pbkdf2Sync(req.body.password, salt, 1000, 64).toString('hex');
 	delete req.body.password;
+	delete req.body.confirmPassword;
 	req.body.hash = hash;
 	req.body.salt = salt;
 
@@ -241,16 +229,41 @@ router.post('/login', function(req, res, next) {
 	})(req, res, next);
 });
 
-router.post('submititem', auth, function(req, res, next) {
-	item = req.body;
-	if ( !item.itemname || !item.quantity || !item.fmv ||
-		 !item.description || !item.restrictions ) {
-		return res.status(400).json({message: "Please fill out 'itemname', " +
-									 "'quantity', 'fmv', " +
-									 "'description', and 'restrictions'"});
-	}
+router.post('/submitdonor', auth, function(req, res, next) {
 
-	item.itemid = guid();
+	donor = req.body;
+	donor.id = guid();
+
+	var params = {
+		TableName: "donors",
+		Item: donor
+	};
+
+	docClient.put(params, function(err, data) {
+		if ( err ) {
+			res.status(401).json({error: err});
+		} else {
+			res.status(200).json({donorid: donor.id});
+		}
+	});
+});
+
+router.post('/submititem', auth, function(req, res, next) {
+	item = req.body;
+	item.id = guid();
+
+	var params = {
+		TableName: "items",
+		Item: item
+	};
+
+	docClient.put(params, function(err, data) {
+		if ( err ) {
+			res.status(401).json({error: err});
+		} else {
+			res.status(200).json({message: "item added"});
+		}
+	});
 });
 
 

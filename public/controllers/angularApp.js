@@ -1,4 +1,28 @@
-var app = angular.module('auction', ['ngMessages', 'ui.router'])
+var app = angular.module('auction', ['ngMessages', 'ui.router', 'pascalprecht.translate', 'ngSanitize'])
+
+
+
+app.config(['$translateProvider', function ($translateProvider) {
+	$translateProvider.translations('en', {
+		// item translations.
+		KIDSFREE: "Kids 14 and under are FREE, and they DON'T count as a spot (you'll have more attendees than buyers).",
+		KIDSFREECOUNT: "Kids 14 and under are FREE, and they DO count as a spot.",
+		EVERYBODYCOUNTS: "Everybody (including kids) counts as a spot and needs to pay full price.",
+		THREEPRICES: "There's an Adult Price, a Kid's Price, and a Maximum Family Price.",
+		OVER14: "Only people 14 and over please -- no younger kids.",
+		OVER21: "Only adults 21 and over.",
+		KIDSPARTY: "This is a kid's party! Kids count as a spot, but adults don't.",
+		ADULT_TICKET: "Adult",
+		HIGHSCHOOL_TICKET: "High School",
+		JUNIORHIGH_TICKET: "Junior High School",
+		CHILD_TICKET: "Child",
+		NONE_FOOD: "No food restrictions",
+		VEGAN_FOOD: "Vegan",
+		GLUTENFREE_FOOD: "Gluten-free"
+	});
+	$translateProvider.preferredLanguage('en');
+	$translateProvider.useSanitizeValueStrategy('sanitize');
+}]);
 
 app.config([
 	'$stateProvider',
@@ -9,13 +33,7 @@ app.config([
 			.state('buytickets', {
 				url: '/buytickets',
 				templateUrl: '/templates/buytickets.html',
-				controller: 'BuyTicketsCtrl'/*,
-				onEnter: [ '$state', 'auth', function($state, auth) {
-					if ( !auth.isLoggedIn() ) {
-						$window.sessionStorage['targetPage'] =
-						$state.go('login');
-					}
-				}]*/
+				controller: 'BuyTicketsCtrl'
 			})
 			.state('donateitem', {
 				url: '/donateitem',
@@ -30,12 +48,7 @@ app.config([
 			.state('viewregisteredpeople', {
 				url: '/viewregisteredpeople',
 				templateUrl: '/templates/viewregisteredpeople.html',
-				controller: 'ViewRegisteredPeopleCtrl'/*,
-				resolve: {
-					registeredPromise: ['tickets', function(tickets) {
-						return tickets.getAll();
-					}]
-				}*/
+				controller: 'ViewRegisteredPeopleCtrl'
 			})
 			.state('viewdonateditems', {
 				url: '/viewdonateditems',
@@ -97,8 +110,14 @@ app.controller("BuyticketsconfirmationCtrl", [
 
 app.controller("ViewDonatedItemsCtrl", [
 	'$scope',
-	function($scope) {
-
+	'$http',
+	function($scope, $http) {
+		$http.get("/all/items").success(function(data) {
+			console.log(data);
+			$scope.items = data;
+		}).error(function(error) {
+			$scope.error = error;
+		});
 	}]);
 
 app.factory('auth', ['$http', '$window', '$q', function($http, $window, $q) {
@@ -130,7 +149,6 @@ app.factory('auth', ['$http', '$window', '$q', function($http, $window, $q) {
 			});
 		}
 		$q.reject("password and confirm password did not match.");
-		
 	};
 	o.logIn = function(user) {
 		return $http.post('/login', user).success(function(data) {
@@ -168,9 +186,13 @@ app.controller('DonateItemCtrl', [
 	'$window',
 	'auth',
 	function($scope, $state, $http, $window, auth) {
-		$scope.kidspolicy = 'kidsfree';
-		$scope.itemcategory = 'event';
-		$scope.itemname = '';
+
+		$scope.policies = ["KIDSFREE","KIDSFREECOUNT","EVERYBODYCOUNTS","THREEPRICES","OVER14","OVER21","KIDSPARTY"];
+		$scope.item = {
+			category: "event",
+			name: '',
+			policy: "KIDSFREE"
+		};
 		$scope.itemMaxLength = 30;
 		$scope.descriptionMaxLength = 200;
 		user = auth.currentUser();
@@ -183,19 +205,22 @@ app.controller('DonateItemCtrl', [
 		$scope.donateitem = function() {
 			// persist user info.
 			$window.localStorage['donor-info'] = $scope.donor;
-			$http.post('/submititem', $scope.item).success(function(data) {
-				console.log('going home');
-				$state.go('home');
-			}).error(function(error) {
-				console.log('error');
-				$scope.error = error;
-			});
+			$scope.item.donor = $scope.donor;
+
+			$http.post('/submititem', $scope.item,{headers: {
+				Authorization: "Bearer " + auth.getToken() } }).success(function(data) {
+					console.log('going home');
+					$state.go('home');
+				}).error(function(error) {
+					console.log('error');
+					$scope.error = error;
+				});
 		};
 	}]);
 
 
 app.factory('tickets', ['$http', '$q', function($http, $q) {
-	
+
 	return {
 		purchase: function(ticket) {
 			return $http.post('/createguest', ticket);
@@ -358,6 +383,8 @@ app.controller('BuyTicketsCtrl', [
 	'$state',
 	'tickets',
 	function($scope, $q, $state, tickets) {
+		$scope.ticketTypes = ["ADULT_TICKET","HIGHSCHOOL_TICKET","JUNIORHIGH_TICKET","CHILD_TICKET"];
+		$scope.foodTypes = ["NONE_FOOD","VEGAN_FOOD","GLUTENFREE_FOOD"];
 		$scope.tickets = [];
 		$scope.numAdultTickets = 1;
 		$scope.numTeenTickets = 0;

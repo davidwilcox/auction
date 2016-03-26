@@ -16,7 +16,10 @@
 	<span>{{ error.message }}</span>
   </div>
 
-  <form ng-submit="donateitem()">
+  <form
+	 ng-submit="donateitem()"
+	 name="donateItemForm"
+	 >
 	<p>
 	  Welcome to the South Valley Annual Goods and Services Auction Fundraiser! Our event his year is Saturday, November 14th 2015, precisely at 6:00 pm. We'll be taking donations through Sunday, November 8th at midnight. To donate an item to our auction, fill in all the areas below. PLEASE write it like you're trying to interest the reader in buying your item! Required areas are noted with a red asterisk.
 	</p>
@@ -41,9 +44,13 @@
 		  <input
 			 type="text"
 			 ng-model="donor.name"
+			 name="donorname"
 			 class="form-control"
 			 required
 			 ></input>
+		  <div ng-messages="donateItemForm.donorname.$error">
+			<div ng-messages-include="/messages.html"></div>
+		  </div>
 		</div>
 		<div class="row" style="padding-bottom:10px">
 		  <label>Best Phone Number for reaching you</label>
@@ -53,9 +60,13 @@
 		  <input
 			 type="text"
 			 ng-model="donor.phonenumber"
+			 name="donorphonenumber"
 			 class="form-control"
 			 required
 			 ></input>
+		  <div ng-messages="donateItemForm.donorphonenumber.$error">
+			<div ng-messages-include="/messages.html"></div>
+		  </div>
 		</div>
 		<div class="row" style="padding-bottom:10px">
 		  <label>Email Address</label>
@@ -66,6 +77,9 @@
 			 class="form-control"
 			 required
 			 ></input>
+		  <div ng-messages="donateItemForm.email.$error">
+			<div ng-messages-include="/messages.html"></div>
+		  </div>
 		</div>
 		<div class="row" style="padding-bottom:10px">
 		  <label>My item falls in the following category</label>
@@ -85,33 +99,44 @@
 			   value="object"
 			   >Object</input>
 		  </div>
+		  <div ng-messages="donateItemForm.itemcategory.$error">
+			<div ng-messages-include="/messages.html"></div>
+		  </div>
 		</div>
 		<div class="row" style="padding-bottom:10px">
 		  <label>I'm offering a...</label>
 		  <div id="itemnamecharacters">
-			Please keep this succint. {{itemMaxLength - itemname.length}} remaining.
+			Please keep this succint. {{itemMaxLength - item.name.length}} remaining.
 		  </div>
 		  <input
 			 type="text"
 			 ng-model="item.name"
+			 name="itemname"
 			 class="form-control"
 			 ng-maxlength="{{itemMaxLength}}"
 			 maxlength="{{itemMaxLength}}"
 			 required
 			 ></input>
+		  <div ng-messages="donateItemForm.itemname.$error">
+			<div ng-messages-include="/messages.html"></div>
+		  </div>
 		</div>
 		<div class="row" style="padding-bottom:10px">
-		  <label>Here's a little more information about it. {{descriptionMaxLength - itemdescription.length}} characters remaining</label>
+		  <label>Here's a little more information about it. {{descriptionMaxLength - item.description.length}} characters remaining</label>
 			<div>
 			  What is great about this item? What would make someone want to buy it? Write like you're trying to sell it!
 			</div>
 			<textarea
 			   ng-model="item.description"
+			   name="itemdescription"
 			   class="form-control"
 			   ng-maxlength="{{descriptionMaxLength}}"
 			   maxlength="{{descriptionMaxLength}}"
 			   required
 			   ></textarea>
+			<div ng-messages="donateItemForm.itemdescription.$error">
+			  <div ng-messages-include="/messages.html"></div>
+			</div>
 		</div>
 		<div class="row" style="padding-bottom:10px">
 		  <label>What is this item worth?</label>
@@ -121,20 +146,29 @@
 		  <input
 			 type="number"
 			 ng-model="item.value"
+			 name="itemvalue"
 			 min="0"
 			 class="form-control"
 			 required
 			 ></input>
+		  <div ng-messages="donateItemForm.itemvalue.$error">
+			<div ng-messages-include="/messages.html"></div>
+		  </div>
+
 		</div>
 		<div class="row" style="padding-bottom:10px">
 		  <label>I would hate to see my item go for less than this amount</label>
 		  <input
 			 type="number"
 			 ng-model="item.minvalue"
+			 name="itemminvalue"
 			 min="0"
 			 class="form-control"
 			 required
 			 ></input>
+		  <div ng-messages="donateItemForm.itemminvalue.$error">
+			<div ng-messages-include="/messages.html"></div>
+		  </div>
 		</div>
 		<div class="row" style="padding-bottom:10px" ng-show="item.category == 'object'">
 		  <label>Quantity</label>
@@ -144,9 +178,13 @@
 		  <input
 			 type="number"
 			 ng-model="quantity"
+			 name="quantity"
 			 class="form-control"
 			 required
 			 ></input>
+		  <div ng-messages="donateItemForm.quantity.$error">
+			<div ng-messages-include="/messages.html"></div>
+		  </div>
 		</div>
 
 		<div class="row" style="padding-bottom:10px" ng-show="item.category == 'event'">
@@ -160,6 +198,9 @@
 			 class="form-control"
 			 required
 			 ></input>
+		  <div ng-messages="donateItemForm.quantity.$error">
+			<div ng-messages-include="/messages.html"></div>
+		  </div>
 		</div>
 
 		<div class="row" style="padding-bottom:10px" ng-show="item.category == 'event'">
@@ -172,61 +213,20 @@
 		<div class="row" style="padding-bottom:10px" ng-show="item.category == 'event'">
 
 		  <label>Choose one of these policies for kids.</label>
-		  <div>
+
+		  <div ng-repeat="policy in policies">
+			<div>
 			<input
 			   type="radio"
+			   name="itempolicy"
 			   ng-model="item.policy"
 			   name="policy"
-			   value="kidsfree"
-			   >  Kids 14 and under are FREE, and they DON'T count as a spot (you'll have more attendees than buyers).</input>
+			   value="{{policy}}"
+			   >  <span translate="{{policy}}"></span></input>
+			</div>
 		  </div>
-		  <div>
-			<input
-			   type="radio"
-			   ng-model="item.policy"
-			   name="policy"
-			   value="kidsfreecount"
-			   >  Kids 14 and under are FREE, and they DO count as a spot.</input>
-		  </div>
-		  <div>
-			<input
-			   type="radio"
-			   ng-model="item.policy"
-			   name="policy"
-			   value="everybodycounts"
-			   >  Everybody (including kids) counts as a spot and needs to pay full price.</input>
-		  </div>
-		  <div>
-			<input
-			   type="radio"
-			   ng-model="item.policy"
-			   name="policy"
-			   value="threeprices"
-			   >  There's an Adult Price, a Kid's Price, and a Maximum Family Price.</input>
-		  </div>
-		  <div>
-			<input
-			   type="radio"
-			   ng-model="item.policy"
-			   name="policy"
-			   value="14over"
-			   >  Only people 14 and over please -- no younger kids.</input>
-		  </div>
-		  <div>
-			<input
-			   type="radio"
-			   ng-model="item.policy"
-			   name="policy"
-			   value="21over"
-			   >  Only adults 21 and over.</input>
-		  </div>
-		  <div>
-			<input
-			   type="radio"
-			   ng-model="item.policy"
-			   name="policy"
-			   value="kidsparty"
-			   >  This is a kid's party! Kids count as a spot, but adults don't.</input>
+		  <div ng-messages="donateItemForm.itempolicy.$error">
+			<div ng-messages-include="/messages.html"></div>
 		  </div>
 		</div>
 		<div class="row" style="padding-bottom:10px">
@@ -253,6 +253,9 @@
 				 value="yes"
 				 required
 				 >  I agree</input>
+			  <div ng-messages="donateItemForm.disclaimer.$error">
+				<div ng-messages-include="/messages.html"></div>
+			  </div>
 			</div>
 		  </div>
 		</div>

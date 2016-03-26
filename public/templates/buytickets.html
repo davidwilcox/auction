@@ -19,23 +19,19 @@
 				  <div class="row" style="padding-bottom:10px">
 					  <label>Age Group</label>
 
-					  <label>
-					    <input type="radio" ng-model="ticket.agegroup" value="adult" ng-change="computeOrderDetails()">Adult</input>
+					  <div ng-repeat="type in tickettypes">
+						<label>
+					      <input type="radio" ng-model="ticket.agegroup" value="{{type}}" ng-change="computeOrderDetails()"><span translate="{{type}}"></span></input>
 			  			</label>
-					  <label>
-					    <input type="radio" ng-model="ticket.agegroup" value="teen" ng-change="computeOrderDetails()">Teenager</input>
-					  </label>
-					  <label>
-					    <input type="radio" ng-model="ticket.agegroup" value="child" ng-change="computeOrderDetails()">Child</input>
-					  </label>
+					  </div>
 				  </div>
 		  
 				  <div class="row">
 					  <label>Dietary Restrictions</label>
 					  <select ng-model="ticket.foodRes">
-					    <option value="none">None</option>
-					    <option value="vegan">Vegetarian/Vegan</option>
-					    <option value="glutenfree">Gluten-free</option>
+						<div ng-repeat="type in foodTypes">
+					      <option value="{{type}}"><span translate="{{type}}"></span></option>
+						</div>
 					  </select>
 				  </div>
 

@@ -1,7 +1,3 @@
-<!-- <div class="container col-md-12">
-	 <div class="col-xs-3" style="background-color:grey; height: 100vh; padding-left: 0px; padding-right: 0px">
-       <h4 class="text-center" style="padding-top: 50px">Ticket options</h4>
-	 </div> -->
 <div class="container col-xs-12 col-sm-offset-1 col-sm-10">
   <h1 class="text-center" style="padding-top: 10px; padding-bottom: 20px">View Registered People</h1>
   <div class="container col-xs-7">
@@ -19,43 +15,9 @@
 			</div>
 			<div class="row">
 			  <label>Dietary Restrictions</label>
-			  {{ticket.foodRes}}
+			  <span translate="{{ticket.foodRes}}"></span>
 			</div>
 		  </div>
-		<!--
-		<button style="float:right; background-color: white; border: 0px"><i class="glyphicon glyphicon-remove"></i></button>
-		<h4>1 {{ticket.age}} Ticket</h4>
-		<div style="padding-left:50px">
-		  <div class="row" style="padding-bottom:10px">
-			<label>Name</label>
-			<input type="text" ng-model="ticket.name"></input>
-		  </div>
-
-		  <div class="row" style="padding-bottom:10px">
-			<label>Age</label>
-
-			<label>
-			  <input type="radio" ng-model="ticket.age" value="Adult">Adult</input>
-	  		</label>
-			<label>
-			  <input type="radio" ng-model="ticket.age" value="Teenager">Teenager</input>
-			</label>
-			<label>
-			  <input type="radio" ng-model="ticket.age" value="Child">Child</input>
-			</label>
-		  </div>
-		  
-		  <div class="row">
-			<label>Dietary Restrictions</label>
-			<select ng-model="ticket.foodRes">
-			  <option value="none">None</option>
-			  <option value="vegetarian">Vegetarian</option>
-			  <option value="vegan">Vegan</option>
-			  <option value="gluten">Gluten-free</option>
-			</select>
-		  </div>
-		</div>
-		-->
 		</div>
 	  </div>
 	</div>

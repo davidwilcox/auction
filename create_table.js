@@ -7,12 +7,12 @@ AWS.config.update({
 var dynamodb = new AWS.DynamoDB();
 
 var params = {
-    TableName : "users",
+    TableName : process.argv[2],
     KeySchema: [
-        { AttributeName: "email", KeyType: "HASH"}
+        { AttributeName: "id", KeyType: "HASH"}
     ],
     AttributeDefinitions: [
-        { AttributeName: "email", AttributeType: "S" }
+        { AttributeName: "id", AttributeType: "S" }
     ],
     ProvisionedThroughput: {
         ReadCapacityUnits: 10,
