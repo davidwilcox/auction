@@ -8,7 +8,7 @@
 	      <div class="panel-body">
 		      <button ng-click="removeTicket($index)" style="float:right; background-color: white; border: 0px"><i class="glyphicon glyphicon-remove"></i></button>
 		  
-		  		<h4>1 {{ticket.agegroup}} Ticket</h4>
+		  	  <h4>1 <span translate="{{ticket.agegroup}}"></span> Ticket</h4>
 		  
 				  <div class="row" style="padding-bottom:10px">
 					  <label>Name</label>
@@ -19,20 +19,22 @@
 				  <div class="row" style="padding-bottom:10px">
 					  <label>Age Group</label>
 
-					  <div ng-repeat="type in tickettypes">
+					  <div ng-repeat="type in ticketTypes">
 						<label>
-					      <input type="radio" ng-model="ticket.agegroup" value="{{type}}" ng-change="computeOrderDetails()"><span translate="{{type}}"></span></input>
+					      <input type="radio" ng-model="ticket.agegroup" value="{{type}}" ng-change="computeOrderDetails()">  <span translate="{{type}}"></span></input>
 			  			</label>
 					  </div>
 				  </div>
 		  
 				  <div class="row">
-					  <label>Dietary Restrictions</label>
+					<label>Dietary Restrictions</label>
+					<div>
 					  <select ng-model="ticket.foodRes">
-						<div ng-repeat="type in foodTypes">
-					      <option value="{{type}}"><span translate="{{type}}"></span></option>
-						</div>
+						<option value="NONE_FOOD">No food restrictions</option>
+						<option value="VEGAN_FOOD">Vegan</option>
+						<option value="GLUTENFREE_FOOD">Gluten-free</span></option>
 					  </select>
+					</div>
 				  </div>
 
 				</div> <!--panel-body-->

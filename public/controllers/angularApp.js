@@ -386,7 +386,7 @@ app.controller('BuyTicketsCtrl', [
 	'auth',
 	function($scope, $q, $state, tickets, auth) {
 		$scope.ticketTypes = ["ADULT_TICKET","HIGHSCHOOL_TICKET","JUNIORHIGH_TICKET","CHILD_TICKET"];
-		$scope.foodTypes = ["NONE_FOOD","VEGAN_FOOD","GLUTENFREE_FOOD"];
+		console.log($scope.foodTypes);
 		$scope.tickets = [];
 		$scope.numAdultTickets = 1;
 		$scope.numTeenTickets = 0;
@@ -395,9 +395,10 @@ app.controller('BuyTicketsCtrl', [
 		var createTicket = function() {
 			var ticket = {
 				name: "",
-				agegroup: "adult",
-				foodRes: "none",
-				buyer: auth.currentUser()
+				agegroup: "ADULT_TICKET",
+				foodRes: "NONE_FOOD",
+				buyer: auth.currentUser(),
+				date: Date()
 			};
 			return ticket;
 		}

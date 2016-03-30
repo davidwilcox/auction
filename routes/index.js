@@ -57,7 +57,9 @@ router.post('/createguest', function(req, res, next) {
 			"id": guest.guestid,
 			"name": guest.name,
 			"foodRes": guest.foodRes,
-			"agegroup": guest.agegroup
+			"agegroup": guest.agegroup,
+			"buyer": guest.buyer,
+			"date": guest.date
 		}
 	};
 
