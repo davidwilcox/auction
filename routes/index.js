@@ -27,6 +27,10 @@ router.get('/', function(req, res, next) {
 	res.render('index', { title: 'Express' });
 })
 
+router.get("/admin", function(req, res, next) {
+	res.render("admin/index", { title: "meeee" } );
+});
+
 
 router.post('/createguest', function(req, res, next) {
 	guest = req.body;
@@ -158,6 +162,7 @@ router.post('/register', function(req, res, next) {
 	docClient.put(params, function(err, data) {
 
 		if ( err ) {
+			console.log(err);
 			return res.status(401).json({message: "username already used."});
 		}
 
@@ -227,25 +232,6 @@ router.post('/login', function(req, res, next) {
 			res.status(401).json(info);
 		}
 	})(req, res, next);
-});
-
-router.post('/submitdonor', auth, function(req, res, next) {
-
-	donor = req.body;
-	donor.id = guid();
-
-	var params = {
-		TableName: "donors",
-		Item: donor
-	};
-
-	docClient.put(params, function(err, data) {
-		if ( err ) {
-			res.status(401).json({error: err});
-		} else {
-			res.status(200).json({donorid: donor.id});
-		}
-	});
 });
 
 router.post('/submititem', auth, function(req, res, next) {

@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 var passport = require('passport');
 
 var routes = require('./routes/index');
+//var admin = require('./routes/admin/index');
 var users = require('./routes/users');
 
 require('./config/passport');
@@ -28,6 +29,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize());
 
 app.use('/', routes);
+//app.use('/admin', admin);
 app.use('/users', users);
 
 // catch 404 and forward to error handler

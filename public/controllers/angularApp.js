@@ -316,6 +316,7 @@ app.controller('RegisterCtrl', [
 
 			var register = function() {
 				auth.register($scope.user).error(function(error) {
+					console.log($scope.user);
 					$scope.error = error;
 				}).success(function(data) {
 					$state.go('home');
@@ -331,7 +332,7 @@ app.controller('RegisterCtrl', [
 					function(error) {
 						$scope.error = error;
 					}).then(function(data) {
-						$scope.user.photoid = data.photoid
+						$scope.user.photoid = data.data.photoid
 						register();
 					});
 			} else {
@@ -382,7 +383,8 @@ app.controller('BuyTicketsCtrl', [
 	'$q',
 	'$state',
 	'tickets',
-	function($scope, $q, $state, tickets) {
+	'auth',
+	function($scope, $q, $state, tickets, auth) {
 		$scope.ticketTypes = ["ADULT_TICKET","HIGHSCHOOL_TICKET","JUNIORHIGH_TICKET","CHILD_TICKET"];
 		$scope.foodTypes = ["NONE_FOOD","VEGAN_FOOD","GLUTENFREE_FOOD"];
 		$scope.tickets = [];
@@ -394,7 +396,8 @@ app.controller('BuyTicketsCtrl', [
 			var ticket = {
 				name: "",
 				agegroup: "adult",
-				foodRes: "none"
+				foodRes: "none",
+				buyer: auth.currentUser()
 			};
 			return ticket;
 		}
