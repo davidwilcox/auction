@@ -81,6 +81,14 @@
 			<div ng-messages-include="/messages.html"></div>
 		  </div>
 		</div>
+
+		<div class="row" style="padding-bottom:10x" >
+		  <label>Image if different from the one provided.</label>
+		  <div ng-show="donor.photoid">
+			<img src="http://svuus-photos.s3.amazonaws.com/{{donor.photoid}}" width="100"></img>
+		  </div>
+		</div>
+
 		<div class="row" style="padding-bottom:10px">
 		  <label>My item falls in the following category</label>
 		  <div>
