@@ -423,24 +423,29 @@ app.controller('BuyTicketsCtrl', [
 
 		$scope.computeOrderDetails = function() {
 			var adultTickets = 0;
-			var teenTickets = 0;
+			var highSchoolTickets = 0;
+			var juniorHighTickets = 0;
 			var childTickets = 0;
 			$scope.tickets.forEach(function(ticket) {
 				switch (ticket.agegroup) {
-					case "adult":
-						adultTickets++;
-						break;
-					case "teen":
-						teenTickets++;
-						break;
-					case "child":
-						childTickets++;
-						break;
+				case "ADULT_TICKET":
+					adultTickets++;
+					break;
+				case "HIGHSCHOOL_TICKET":
+					highSchoolTickets++;
+					break;
+				case "JUNIORHIGH_TICKET":
+					juniorHighTickets++;
+					break;
+				case "CHILD_TICKET":
+					childTickets++;
+					break;
 				}
 			});
 
 			$scope.numAdultTickets = adultTickets;
-			$scope.numTeenTickets = teenTickets;
+			$scope.numHighSchoolTickets = highSchoolTickets;
+			$scope.numJuniorHighTickets = juniorHighTickets;
 			$scope.numChildTickets = childTickets;
 		};
 

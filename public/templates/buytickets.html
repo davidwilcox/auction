@@ -58,11 +58,19 @@
         </div>
         
         <div>
-        	<span>{{numTeenTickets}}</span>
-        	<span>Teenager Tickets</span>
+        	<span>{{numHighSchoolTickets}}</span>
+        	<span>High School Tickets</span>
         	<span>x $10 =</span>
-        	<span>${{numTeenTickets*10}}</span>
+        	<span>${{numHighSchoolTickets*10}}</span>
         </div>
+
+		<div>
+          <span>{{numJuniorHighTickets}}</span>
+        	<span>Junior High Tickets</span>
+        	<span>x $10 =</span>
+        	<span>${{numJuniorHighTickets*10}}</span>
+        </div>
+
         
         <div>
         	<span>{{numChildTickets}}</span>
@@ -72,7 +80,7 @@
         </div>
 
         <div>
-        	Total: ${{numAdultTickets*15 + numTeenTickets*10 + numChildTickets*5}}
+        	Total: ${{numAdultTickets*15 + numHighSchoolTickets*10 + numJuniorHighTickets*10 + numChildTickets*5}}
         </div>
         
         <div>

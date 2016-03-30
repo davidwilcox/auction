@@ -43,11 +43,11 @@ router.post('/createguest', function(req, res, next) {
 	} else if ( !('agegroup' in guest) ) {
 		res.status(300).send({Message:"'agegroup' attribute not defined."});
 		return;
-	} else if ( guest.agegroup != 'adult' && guest.agegroup != 'teen' && guest.agegroup != 'child' ) {
-		res.status(300).send({Message:"'agegroup' should be set to 'adult', 'teen' or 'child'"});
+	} else if ( guest.agegroup != 'ADULT_TICKET' && guest.agegroup != 'HIGHSCHOOL_TICKET' && guest.agegroup != 'CHILD_TICKET' && guest.agegroup != "JUNIORHIGH_TICKET" ) {
+		res.status(300).send({Message:"'agegroup' should be set to 'ADULT_TICKET', 'HIGHSCHOOL_TICKET', 'HIGHSCHOOL_TICKET' or 'CHILD_TICKET'"});
 		return;
-	} else if ( guest.foodRes != 'none' && guest.foodRes != 'vegan' && guest.foodRes != 'glutenfree' ) {
-		res.status(300).send({Message:"'foodRes' should be set to 'vegan', 'meat' or 'glutenfree'"});
+	} else if ( guest.foodRes != 'NONE_FOOD' && guest.foodRes != 'VEGAN_FOOD' && guest.foodRes != 'GLUTENFREE_FOOD' ) {
+		res.status(300).send({Message:"'foodRes' should be set to 'VEGAN_FOOD', 'NONE_FOOD' or 'GLUTENFREE_FOOD'"});
 		return;
 	}
 	guest.guestid = guid();
