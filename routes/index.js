@@ -50,28 +50,77 @@ router.post('/createguest', function(req, res, next) {
 		res.status(300).send({Message:"'foodRes' should be set to 'VEGAN_FOOD', 'NONE_FOOD' or 'GLUTENFREE_FOOD'"});
 		return;
 	}
-	guest.guestid = guid();
-	var params = {
-		TableName: "tickets",
-		Item: {
-			"id": guest.guestid,
-			"name": guest.name,
-			"foodRes": guest.foodRes,
-			"agegroup": guest.agegroup,
-			"buyer": guest.buyer,
-			"date": guest.date
-		}
-	};
 
-	docClient.put(params, function(err, data) {
-		if (err) {
-			console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
-			res.status(400).json({error: "Unable to add item. Error JSON:" + err});
-		} else {
-			console.log("Added item:", JSON.stringify(data, null, 2));
-			res.status(200).json(data);
-		}
-	});
+	var cnt = 0;
+	console.log("here1");
+	var put_user = function() {
+		cnt++;
+		console.log("here2");
+		if ( cnt == 5 )
+			res.status(400).json("error","unstable bid number");
+		console.log("here5");
+		var params = {
+			TableName: "bidnumber",
+			Key: {
+				"id": "key"
+			}
+		};
+		console.log("here4");
+		docClient.get(params, function(err, data) {
+			if ( err ) {
+				console.log(err);
+			}
+			console.log("here3");
+			console.log(data.Item);
+			mybidnumber = data.Item.num;
+			params = {
+				TableName: "bidnumber",
+				Item: {
+					"id": "key",
+					"number": data.Item.num+1
+				},
+				ConditionExpression: "(num = :num)",
+				ExpressionAttributeValues: {
+					":num": data.Item.num
+				}
+			};
+			console.log(params);
+			console.log("here6");
+			docClient.put(params, function(err, data) {
+				console.log("here7");
+				if ( err ) {
+					console.log(err);
+					put_user();
+				} else {
+					guest.guestid = guid();
+					params = {
+						TableName: "tickets",
+						Item: {
+							"id": guest.guestid,
+							"name": guest.name,
+							"foodRes": guest.foodRes,
+							"agegroup": guest.agegroup,
+							"buyer": guest.buyer,
+							"date": guest.date,
+							"bidnumber": mybidnumber
+						}
+					};
+
+					docClient.put(params, function(err, data) {
+						if (err) {
+							console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
+							res.status(400).json({error: "Unable to add item. Error JSON:" + err});
+						} else {
+							console.log("Added item:", JSON.stringify(data, null, 2));
+							res.status(200).json(data);
+						}
+					});
+
+				}
+			});
+		});
+	};
+	put_user();
 });
 
 router.get('/guest/:guestid', function(req, res, next) {
