@@ -52,26 +52,20 @@ router.post('/createguest', function(req, res, next) {
 	}
 
 	var cnt = 0;
-	console.log("here1");
 	var put_user = function() {
 		cnt++;
-		console.log("here2");
 		if ( cnt == 5 )
 			res.status(400).json("error","unstable bid number");
-		console.log("here5");
 		var params = {
 			TableName: "bidnumber",
 			Key: {
 				"id": "key"
 			}
 		};
-		console.log("here4");
 		docClient.get(params, function(err, data) {
 			if ( err ) {
 				console.log(err);
 			}
-			console.log("here3");
-			console.log(data.Item);
 			mybidnumber = data.Item.num;
 			params = {
 				TableName: "bidnumber",
@@ -84,10 +78,7 @@ router.post('/createguest', function(req, res, next) {
 					":num": data.Item.num
 				}
 			};
-			console.log(params);
-			console.log("here6");
 			docClient.put(params, function(err, data) {
-				console.log("here7");
 				if ( err ) {
 					console.log(err);
 					put_user();
