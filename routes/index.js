@@ -158,6 +158,7 @@ router.get("/all/:table", function(req, res, next) {
 });
 
 
+
 var jwtsign = require('jsonwebtoken');
 
 
@@ -295,6 +296,33 @@ router.post('/submititem', auth, function(req, res, next) {
 		}
 	});
 });
+
+
+router.post('/items', function(req, res, next) {
+	var keys = [];
+	console.log(req.body);
+	req.items.forEach(function(item) {
+		keys.append({"id":{"S": item}});
+	});
+	var params = {
+		"RequestItems": {
+			"items": {
+				"Keys": keys
+			}
+		}
+	};
+
+	docClient.batchGetItem(params, function(err, data) {
+		console.log(err);
+		console.log(data);
+		if ( err ) {
+			res.status(401).json({error: err});
+		} else {
+			res.status(200).json({message: data});
+		}
+	});
+});
+
 
 router.post('/addbuyer', auth, function(req, res, next) {
 	guestid = req.body.guestid;

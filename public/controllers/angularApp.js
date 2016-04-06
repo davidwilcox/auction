@@ -390,10 +390,23 @@ app.controller('NavCtrl', [
 app.controller('ViewRegisteredPeopleCtrl', [
 	'$scope',
 	'tickets',
-	function($scope, tickets) {
+	'$http',
+	function($scope, tickets, $http) {
 		tickets.getAll().then(
 			function(result) {
 				$scope.tickets = result;
+			});
+		$http.get("/all/items").error(
+			function(error) {
+				console.log(error);
+				$scope.error = error;
+			}).success(function(data) {
+				console.log(data);
+				$scope.items = {};
+				data.forEach(function(item) {
+					console.log(item);
+					$scope.items[item.id] = item;
+				});
 			});
 	}]);
 
