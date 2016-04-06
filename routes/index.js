@@ -66,16 +66,19 @@ router.post('/createguest', function(req, res, next) {
 			if ( err ) {
 				console.log(err);
 			}
-			mybidnumber = data.Item.num;
+			mybidnumber = data.Item.number;
 			params = {
 				TableName: "bidnumber",
 				Item: {
 					"id": "key",
-					"number": data.Item.num+1
+					"number": data.Item.number+1
 				},
-				ConditionExpression: "(num = :num)",
+				ConditionExpression: "(#numname = :num)",
 				ExpressionAttributeValues: {
-					":num": data.Item.num
+					":num": data.Item.number
+				},
+				ExpressionAttributeNames: {
+					"#numname": "number"
 				}
 			};
 			docClient.put(params, function(err, data) {
@@ -83,17 +86,16 @@ router.post('/createguest', function(req, res, next) {
 					console.log(err);
 					put_user();
 				} else {
-					guest.guestid = guid();
 					params = {
 						TableName: "tickets",
 						Item: {
-							"id": guest.guestid,
 							"name": guest.name,
 							"foodRes": guest.foodRes,
 							"agegroup": guest.agegroup,
 							"buyer": guest.buyer,
 							"date": guest.date,
-							"bidnumber": mybidnumber
+							"bidnumber": mybidnumber,
+							"boughtitems": []
 						}
 					};
 
@@ -118,7 +120,7 @@ router.get('/guest/:guestid', function(req, res, next) {
 	var params = {
 		TableName: "tickets",
 		Key: {
-			"id": req.params.guestid
+			"bidnumber": req.params.guestid
 		}
 	};
 
@@ -287,6 +289,37 @@ router.post('/submititem', auth, function(req, res, next) {
 
 	docClient.put(params, function(err, data) {
 		if ( err ) {
+			res.status(401).json({error: err});
+		} else {
+			res.status(200).json({message: "item added"});
+		}
+	});
+});
+
+router.post('/addbuyer', auth, function(req, res, next) {
+	guestid = req.body.guestid;
+	itemid = req.body.itemid;
+
+	var params = {
+		TableName: "tickets",
+		Key: {
+			bidnumber: guestid
+		},
+		UpdateExpression: "SET #b = list_append(#b, :v_itemid)",
+		Item: {},
+		ExpressionAttributeNames:{
+			"#b": "boughtitems"
+		},
+		ExpressionAttributeValues: {
+			":v_itemid": [itemid]
+		},
+		ReturnValues: "UPDATED_NEW"
+	};
+	console.log(params);
+
+	docClient.update(params, function(err, data) {
+		if ( err ) {
+			console.log(err);
 			res.status(401).json({error: err});
 		} else {
 			res.status(200).json({message: "item added"});

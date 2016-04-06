@@ -29,6 +29,14 @@
 			  <label>Bid Number</label>
 			  {{ticket.bidnumber}}
 			</div>
+			<div ng-repeat="item in ticket.boughtitems">
+			  <label>Bought Items</label>
+			  <div class="panel panel-default">
+				<div class="row">
+				  {{item}}
+				</div>
+			  </div>
+			</div>
 		  </div>
 		</div>
 	  </div>

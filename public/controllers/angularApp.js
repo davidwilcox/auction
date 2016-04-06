@@ -90,6 +90,17 @@ app.config([
 					}
 				}]
 			})
+			.state('insertbids', {
+				url: '/insertbids',
+				templateUrl: '/templates/insertbids.html',
+				controller: 'InsertBidsCtrl',
+				onEnter: [ '$state', 'auth', function($state, auth) {
+					if ( !auth.isLoggedIn() ) {
+						$state.go('home');
+					}
+				}]
+			})
+
 
 		$urlRouterProvider.otherwise('home');
 	}]);
@@ -113,12 +124,38 @@ app.controller("ViewDonatedItemsCtrl", [
 	'$http',
 	function($scope, $http) {
 		$http.get("/all/items").success(function(data) {
-			console.log(data);
 			$scope.items = data;
 		}).error(function(error) {
 			$scope.error = error;
 		});
 	}]);
+
+
+
+app.controller('InsertBidsCtrl', [
+	'$scope',
+	'$http',
+	'auth',
+	function($scope, $http, auth) {
+		$http.get("/all/items").success(function(data) {
+			$scope.items = data;
+		}).error(function(error) {
+			$scope.error = error;
+		});
+		$scope.addbidder = function(item) {
+			content = {
+				guestid: item.bidder,
+				itemid: item.id
+			};
+			$http.post("/addbuyer",content, {headers: {
+				Authorization: "Bearer " + auth.getToken() } }).success(function(data) {
+				$scope.message = data;
+			}).error(function(error) {
+				$scope.error = error;
+			});
+		};
+	}]);
+
 
 app.factory('auth', ['$http', '$window', '$q', function($http, $window, $q) {
 	var o = {
