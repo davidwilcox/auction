@@ -100,6 +100,26 @@ app.config([
 					}
 				}]
 			})
+			.state('mytickets', {
+				url: '/mytickets',
+				templateUrl: '/templates/mytickets.html',
+				controller: 'MyTicketsCtrl',
+				onEnter: [ '$state', 'auth', function($state, auth) {
+					if ( !auth.isLoggedIn() ) {
+						$state.go('home');
+					}
+				}]
+			})
+			.state('myinvoice', {
+				url: '/myinvoice',
+				templateUrl: '/templates/myinvoice.html',
+				controller: 'MyInvoiceCtrl',
+				onEnter: [ '$state', 'auth', function($state, auth) {
+					if ( !auth.isLoggedIn() ) {
+						$state.go('home');
+					}
+				}]
+			})
 
 
 		$urlRouterProvider.otherwise('home');
@@ -118,6 +138,62 @@ app.controller("BuyticketsconfirmationCtrl", [
 	function($scope) {
 		
 	}]);
+
+app.controller("MyTicketsCtrl", [
+	'$scope',
+	'$http',
+	'auth',
+	function($scope, $http, auth) {
+		$http.get("/findtickets/" + auth.currentUser().email).success(function(data) {
+			$scope.tickets = data;
+			$http.get("/all/items").error(
+				function(error) {
+					console.log(error);
+					$scope.error = error;
+				}).success(function(data) {
+					$scope.items = {};
+					data.forEach(function(item) {
+						console.log(item);
+						$scope.items[item.id] = item;
+					});
+				});
+
+		}).error(function(error) {
+			console.log(error);
+		});
+	}]);
+
+app.controller("MyInvoiceCtrl", [
+	'$scope',
+	'$http',
+	'auth',
+	function($scope, $http, auth) {
+		$scope.totalInvoice = 0;
+		$http.get("/findtickets/" + auth.currentUser().email).success(function(data) {
+			$scope.tickets = data;
+			$http.get("/all/items").error(
+				function(error) {
+					console.log(error);
+					$scope.error = error;
+				}).success(function(data) {
+					$scope.totalInvoice = 0;
+					$scope.items = {};
+					data.forEach(function(item) {
+						console.log(item);
+						$scope.items[item.id] = item;
+					});
+					$scope.tickets.forEach(function(ticket) {
+						ticket.boughtitems.forEach(function(item) {
+							$scope.totalInvoice += $scope.items[item].price;
+						});
+					});
+				});
+
+		}).error(function(error) {
+			console.log(error);
+		});
+	}]);
+
 
 app.controller("ViewDonatedItemsCtrl", [
 	'$scope',
@@ -142,6 +218,18 @@ app.controller('InsertBidsCtrl', [
 		}).error(function(error) {
 			$scope.error = error;
 		});
+		$scope.updateprice = function(item) {
+			content = {
+				itemid: item.id,
+				price: item.price
+			};
+			$http.post("/updateprice", content, {headers: {
+				Authorization: "Bearer " + auth.getToken() } }).success(function(data) {
+					$scope.message = data;
+				}).error(function(error) {
+					$scope.error = error;
+				});
+		};
 		$scope.addbidder = function(item) {
 			content = {
 				guestid: item.bidder,
@@ -246,7 +334,6 @@ app.controller('DonateItemCtrl', [
 
 			$http.post('/submititem', $scope.item,{headers: {
 				Authorization: "Bearer " + auth.getToken() } }).success(function(data) {
-					console.log('going home');
 					$state.go('home');
 				}).error(function(error) {
 					console.log('error');
@@ -395,13 +482,13 @@ app.controller('ViewRegisteredPeopleCtrl', [
 		tickets.getAll().then(
 			function(result) {
 				$scope.tickets = result;
+				console.log(result);
 			});
 		$http.get("/all/items").error(
 			function(error) {
 				console.log(error);
 				$scope.error = error;
 			}).success(function(data) {
-				console.log(data);
 				$scope.items = {};
 				data.forEach(function(item) {
 					console.log(item);
@@ -439,7 +526,8 @@ app.controller('BuyTicketsCtrl', [
 		console.log($scope.foodTypes);
 		$scope.tickets = [];
 		$scope.numAdultTickets = 1;
-		$scope.numTeenTickets = 0;
+		$scope.numHighSchoolTickets = 0;
+		$scope.numJuniorHighTickets = 0;
 		$scope.numChildTickets = 0;
 
 		var createTicket = function() {
@@ -502,6 +590,7 @@ app.controller('BuyTicketsCtrl', [
 		$scope.purchase = function() {
 			var promises = [];
 			$scope.tickets.forEach(function(ticket) {
+				ticket.login = auth.currentUser().email;
 				promises.push(tickets.purchase(ticket));
 			});
 			$q.all(promises).then(function(data) {

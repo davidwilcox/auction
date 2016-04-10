@@ -67,7 +67,7 @@ router.post('/createguest', function(req, res, next) {
 				console.log(err);
 			}
 			mybidnumber = data.Item.number;
-			params = {
+			var params = {
 				TableName: "bidnumber",
 				Item: {
 					"id": "key",
@@ -86,7 +86,7 @@ router.post('/createguest', function(req, res, next) {
 					console.log(err);
 					put_user();
 				} else {
-					params = {
+					var params = {
 						TableName: "tickets",
 						Item: {
 							"name": guest.name,
@@ -94,10 +94,13 @@ router.post('/createguest', function(req, res, next) {
 							"agegroup": guest.agegroup,
 							"buyer": guest.buyer,
 							"date": guest.date,
+							"login": guest.login,
 							"bidnumber": mybidnumber,
 							"boughtitems": []
 						}
 					};
+
+					console.log(params);
 
 					docClient.put(params, function(err, data) {
 						if (err) {
@@ -115,6 +118,27 @@ router.post('/createguest', function(req, res, next) {
 	};
 	put_user();
 });
+
+router.get("/findtickets/:email", function(req, res, next) {
+	var params = {
+		TableName: "tickets",
+		IndexName: "useremail",
+		KeyConditionExpression: "login = :email",
+		ExpressionAttributeValues: {
+			":email": req.params.email
+		}
+	};
+	docClient.query(params, function(err, data) {
+		if (err)  {
+			console.error(err);
+			res.status(401).json({error: err});
+		} else {
+			console.log(data);
+			res.json(data.Items);
+		}
+	});
+});
+
 
 router.get('/guest/:guestid', function(req, res, next) {
 	var params = {
@@ -209,20 +233,20 @@ router.post('/register', function(req, res, next) {
 		if ( err ) {
 			console.log(err);
 			return res.status(401).json({message: "username already used."});
+		} else {
+
+			var today = new Date();
+			var exp = new Date(today);
+			exp.setDate(today.getDate() + 1);
+
+			delete req.body.hash;
+			delete req.body.salt;
+			res.json({token: jwtsign.sign({
+				email: req.body.email,
+				user: req.body,
+				exp: parseInt(exp.getTime()/1000),
+			}, 'SECRET')});
 		}
-
-		var today = new Date();
-		var exp = new Date(today);
-		exp.setDate(today.getDate() + 60);
-
-		delete req.body.hash;
-		delete req.body.salt;
-		res.json({token: jwtsign.sign({
-			email: req.body.email,
-			user: req.body,
-			exp: parseInt(exp.getTime()/1000),
-		}, 'SECRET')});
-
 	});
 });
 
@@ -282,6 +306,7 @@ router.post('/login', function(req, res, next) {
 router.post('/submititem', auth, function(req, res, next) {
 	item = req.body;
 	item.id = guid();
+	item.price = item.minvalue;
 
 	var params = {
 		TableName: "items",

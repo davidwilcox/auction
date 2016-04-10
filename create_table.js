@@ -28,7 +28,7 @@ dynamodb.createTable(params, function(err, data) {
     }
 	var docClient = new AWS.DynamoDB.DocumentClient();
 
-	params = {
+	var params = {
 		TableName: "bidnumber",
 		Item: {
 			"id": "key",
@@ -74,11 +74,29 @@ var params = {
 	AttributeDefinitions: [{
 		AttributeName: "bidnumber",
 		AttributeType: "N"
-    }],
+    },{
+		AttributeName: "login",
+		AttributeType: "S"
+	}],
     KeySchema: [{
 		AttributeName: "bidnumber",
         KeyType: "HASH"
     }],
+	GlobalSecondaryIndexes: [
+        {
+            IndexName: "useremail",
+            KeySchema: [
+                {AttributeName: "login", KeyType: "HASH"}
+            ],
+            Projection: {
+                "ProjectionType": "ALL"
+            },
+            ProvisionedThroughput: {
+                "ReadCapacityUnits": 10,"WriteCapacityUnits": 10
+            }
+        }
+    ],
+
     ProvisionedThroughput: {
         ReadCapacityUnits: 10,
         WriteCapacityUnits: 10

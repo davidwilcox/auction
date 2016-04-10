@@ -68,6 +68,22 @@
 			</div>
 			<div>
 			  <button
+				 ng-click="updateprice(item)">
+				Update Price
+			  </button>
+			</div>
+			<div>
+			  <label>Price</label>
+			  <input
+				 type="number"
+				 ng-model="item.price"
+				 class="form-control"
+				 placeholder="Price"
+				 >
+			  </input>
+			</div>
+			<div>
+			  <button
 				 ng-click="addbidder(item)" >
 				Add Bidder
 			  </button>
