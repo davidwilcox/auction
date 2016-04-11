@@ -590,7 +590,10 @@ app.controller('BuyTicketsCtrl', [
 		$scope.purchase = function() {
 			var promises = [];
 			$scope.tickets.forEach(function(ticket) {
-				ticket.login = auth.currentUser().email;
+				if ( auth.isLoggedIn() )
+					ticket.login = auth.currentUser().email;
+				else
+					ticket.login = "a@a.a";
 				promises.push(tickets.purchase(ticket));
 			});
 			$q.all(promises).then(function(data) {
