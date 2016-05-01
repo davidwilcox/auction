@@ -120,6 +120,16 @@ app.config([
 					}
 				}]
 			})
+			.state('mydonateditems', {
+				url: '/mydonateditems',
+				templateUrl: '/templates/mydonateditems.html',
+				controller: 'MyDonatedItemsCtrl',
+				onEnter: [ '$state', 'auth', function($state, auth) {
+					if ( !auth.isLoggedIn() ) {
+						$state.go('home');
+					}
+				}]
+			})
 
 
 		$urlRouterProvider.otherwise('home');
@@ -200,6 +210,7 @@ app.controller("ViewDonatedItemsCtrl", [
 	'$http',
 	function($scope, $http) {
 		$http.get("/all/items").success(function(data) {
+			console.log(data);
 			$scope.items = data;
 		}).error(function(error) {
 			$scope.error = error;
@@ -611,6 +622,25 @@ app.controller('BuyTicketsCtrl', [
 app.controller( 'MyAuctionCtrl',[
 	'$scope',
 	function($scope, $q, $state, tickets) {
-		$scope.kidspolicy = 'kidsfree';
-		
+	}]);
+
+
+app.controller( 'MyDonatedItemsCtrl',[
+	'$scope',
+	'tickets',
+	'$http',
+	'auth',
+	function($scope, tickets, $http, auth) {
+		$http.get('/all/items').error(
+			function(error) {
+				console.log(error);
+				$scope.error = error;
+			}).success(function(data) {
+				$scope.items = {};
+				data.forEach(function(item) {
+					if ( item.donor.email == auth.currentUserEmail() ) {
+						$scope.items[item.id] = item;
+					}
+				});
+			});
 	}]);
