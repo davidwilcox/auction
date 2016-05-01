@@ -15,10 +15,12 @@ var params = {
         { AttributeName: "id", AttributeType: "S" }
     ],
     ProvisionedThroughput: {
-        ReadCapacityUnits: 10,
-        WriteCapacityUnits: 10
+        ReadCapacityUnits: 1,
+        WriteCapacityUnits: 1
     }
 };
+
+result = dynamodb.createTable(params);
 
 dynamodb.createTable(params, function(err, data) {
     if (err) {
@@ -56,8 +58,8 @@ var params = {
         { AttributeName: "email", AttributeType: "S" }
     ],
     ProvisionedThroughput: {
-        ReadCapacityUnits: 10,
-        WriteCapacityUnits: 10
+        ReadCapacityUnits: 1,
+        WriteCapacityUnits: 1
     }
 };
 
@@ -92,14 +94,14 @@ var params = {
                 "ProjectionType": "ALL"
             },
             ProvisionedThroughput: {
-                "ReadCapacityUnits": 10,"WriteCapacityUnits": 10
+                "ReadCapacityUnits": 1,"WriteCapacityUnits": 1
             }
         }
     ],
 
     ProvisionedThroughput: {
-        ReadCapacityUnits: 10,
-        WriteCapacityUnits: 10
+        ReadCapacityUnits: 1,
+        WriteCapacityUnits: 1
     }
 };
 
@@ -120,8 +122,8 @@ var params = {
         { AttributeName: "id", AttributeType: "S" }
     ],
     ProvisionedThroughput: {
-        ReadCapacityUnits: 10,
-        WriteCapacityUnits: 10
+        ReadCapacityUnits: 1,
+        WriteCapacityUnits: 1
     }
 };
 
