@@ -22,7 +22,7 @@
 		  </div>
 		  <div class="row">
 			<label>Donor Phone Number</label>
-			{{item.donor.hone}}
+			{{item.donor.phone}}
 		  </div>
 		  <div class="row">
 			<label>Item Category</label>
@@ -51,6 +51,20 @@
 		  <div class="row" ng-show="item.referee">
 			<label>Donor Referee</label>
 			{{item.referee}}
+		  </div>
+		  <div ng-repeat="buyer in buyers">
+			<div class="panel panel-default">
+			  <div class="panel-body">
+				<div class="row">
+				  <label>Buyer Name</label>
+				  {{buyer.name}}
+				</div>
+				<div class="row">
+				  <label>Buyer Email</label>
+				  {{buyer.email}}
+				</div>
+			  </div>
+			</div>
 		  </div>
 		</div>
 	  </div>

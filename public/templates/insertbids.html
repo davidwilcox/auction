@@ -25,7 +25,7 @@
 		  </div>
 		  <div class="row">
 			<label>Donor Phone Number</label>
-			{{item.donor.hone}}
+			{{item.donor.phone}}
 		  </div>
 		  <div class="row">
 			<label>Item Category</label>
@@ -68,8 +68,8 @@
 			</div>
 			<div>
 			  <button
-				 ng-click="updateprice(item)">
-				Update Price
+				 ng-click="addbidder(item)" >
+				Add Bidder
 			  </button>
 			</div>
 			<div>
@@ -78,14 +78,14 @@
 				 type="number"
 				 ng-model="item.price"
 				 class="form-control"
-				 placeholder="Price"
+				 placeholder="Sell Price"
 				 >
 			  </input>
 			</div>
 			<div>
 			  <button
-				 ng-click="addbidder(item)" >
-				Add Bidder
+				 ng-click="updatesellprice(item)">
+				Update Sell Price
 			  </button>
 			</div>
 		  </form>

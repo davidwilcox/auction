@@ -229,12 +229,12 @@ app.controller('InsertBidsCtrl', [
 		}).error(function(error) {
 			$scope.error = error;
 		});
-		$scope.updateprice = function(item) {
+		$scope.updatesellprice = function(item) {
 			content = {
 				itemid: item.id,
 				price: item.price
 			};
-			$http.post("/updateprice", content, {headers: {
+			$http.post("/updatesellprice", content, {headers: {
 				Authorization: "Bearer " + auth.getToken() } }).success(function(data) {
 					$scope.message = data;
 				}).error(function(error) {
