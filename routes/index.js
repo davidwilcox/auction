@@ -33,7 +33,7 @@ router.get("/admin", function(req, res, next) {
 
 
 router.post('/createguest', function(req, res, next) {
-	guest = req.body;
+	var guest = req.body;
 	if ( !('name' in guest) ) {
 		res.status(300).send({Message:"'name' attribute not defined."});
 		return;
