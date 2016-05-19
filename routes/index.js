@@ -307,6 +307,7 @@ router.post('/submititem', auth, function(req, res, next) {
 	item = req.body;
 	item.id = guid();
 	item.price = item.minvalue;
+	item.buyers = [];
 
 	var params = {
 		TableName: "items",
@@ -375,7 +376,32 @@ router.post('/addbuyer', auth, function(req, res, next) {
 			console.log(err);
 			res.status(401).json({error: err});
 		} else {
-			res.status(200).json({message: "item added"});
+			var item_params = {
+				TableName: "items",
+				Key: {
+					id: itemid
+				},
+				UpdateExpression: "SET #b = list_append(#b, :v_buyerid)",
+				Item: {},
+				ExpressionAttributeNames: {
+					"#b": "buyers"
+				},
+				ExpressionAttributeValues: {
+					":v_buyerid": [guestid]
+				},
+				ReturnValues: "UPDATED_NEW"
+			};
+
+			console.log(item_params);
+
+			docClient.update(item_params, function(err, data) {
+				if ( err ) {
+					console.log(err);
+					res.status(401).json({error: err});
+				} else {
+					res.status(200).json({message: "item added"});
+				}
+			});
 		}
 	});
 });

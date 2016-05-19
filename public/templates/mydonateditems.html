@@ -52,16 +52,20 @@
 			<label>Donor Referee</label>
 			{{item.referee}}
 		  </div>
-		  <div ng-repeat="buyer in buyers">
+		  <div ng-repeat="buyer in item.buyers">
 			<div class="panel panel-default">
 			  <div class="panel-body">
 				<div class="row">
 				  <label>Buyer Name</label>
-				  {{buyer.name}}
+				  {{tickets[buyer].name}}
 				</div>
 				<div class="row">
 				  <label>Buyer Email</label>
-				  {{buyer.email}}
+				  {{tickets[buyer].login}}
+				</div>
+				<div class="row">
+				  <label>Buyer Phone</label>
+				  {{tickets[buyer].buyer.phonenumber}}
 				</div>
 			  </div>
 			</div>

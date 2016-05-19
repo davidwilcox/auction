@@ -627,11 +627,35 @@ app.controller( 'MyAuctionCtrl',[
 
 app.controller( 'MyDonatedItemsCtrl',[
 	'$scope',
+	'$q',
 	'tickets',
 	'$http',
 	'auth',
-	function($scope, tickets, $http, auth) {
-		$http.get('/all/items').error(
+	function($scope, $q, tickets, $http, auth) {
+		var promises = [];
+		promises.push($http.get('/all/items'));
+		promises.push($http.get('/all/tickets'));
+		$q.all(promises).then(function(data) {
+			$scope.items = {};
+			data_items = data[0].data;
+			data_items.forEach(function(item) {
+				if ( item.donor.email == auth.currentUserEmail() ) {
+					$scope.items[item.id] = item;
+				}
+			});
+
+			tickets_items = data[1].data;
+			$scope.tickets = {};
+			tickets_items.forEach(function(ticket) {
+				$scope.tickets[ticket.bidnumber] = ticket;
+			});
+			console.log($scope.items);
+			console.log($scope.tickets);
+		}, function(err) {
+			console.log("err");
+		});
+		/*
+		.error(
 			function(error) {
 				console.log(error);
 				$scope.error = error;
@@ -642,5 +666,7 @@ app.controller( 'MyDonatedItemsCtrl',[
 						$scope.items[item.id] = item;
 					}
 				});
+				console.log($scope.items);
 			});
+		*/
 	}]);
