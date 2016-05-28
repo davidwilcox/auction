@@ -12,6 +12,8 @@
 </div>
 <div class="container col-xs-12 col-sm-offset-1 col-sm-10">
 
+  {{imageurl}}
+
   <div ng-show="error" class="alert alert-danger row">
 	<span>{{ error.message }}</span>
   </div>
@@ -87,6 +89,17 @@
 		  <div ng-show="donor.photoid">
 			<img src="http://svuus-photos.s3.amazonaws.com/{{donor.photoid}}" width="100"></img>
 		  </div>
+		  <div class="form-group">
+			<label>Picture (nice to have if you want to do a party donation)</label>
+			<input type="file"
+				   name="picture"
+				   class="form-control"
+				   fileread="donor.picture"
+				   accept="image/*"
+				   onchange="angular.element(this).scope().fileNameChanged(this)"
+				   ></input>
+		  </div>
+
 		</div>
 
 		<div class="row" style="padding-bottom:10px">

@@ -110,6 +110,16 @@ app.config([
 					}
 				}]
 			})
+			.state('silent_bid_sheets', {
+				url: '/silent_bid_sheets',
+				templateUrl: '/templates/silent_bid_sheets.html',
+				controller: 'SilentBidSheetsCtrl',
+				onEnter: [ '$state', 'auth', function($state, auth) {
+					if ( !auth.isLoggedIn() ) {
+						$state.go('home');
+					}
+				}]
+			})
 			.state('myinvoice', {
 				url: '/myinvoice',
 				templateUrl: '/templates/myinvoice.html',
@@ -329,6 +339,7 @@ app.controller('DonateItemCtrl', [
 			name: '',
 			policy: "KIDSFREE"
 		};
+		$scope.imageurl = auth.currentUser().photoid;
 		$scope.itemMaxLength = 30;
 		$scope.descriptionMaxLength = 200;
 		user = auth.currentUser();
@@ -337,6 +348,10 @@ app.controller('DonateItemCtrl', [
 		} else if ( $window.localStorage['donor-info'] ) {
 			$scope.donor = $window.localStorage['donor-info'];
 		}
+
+		$scope.fileNameChanged = function(ele) {
+			$scope.donor.picture = ele.files[0].name;
+		};
 
 		$scope.donateitem = function() {
 			// persist user info.
@@ -621,7 +636,33 @@ app.controller('BuyTicketsCtrl', [
 
 app.controller( 'MyAuctionCtrl',[
 	'$scope',
-	function($scope, $q, $state, tickets) {
+	function($scope) {
+	}]);
+
+app.controller( 'SilentBidSheetsCtrl',[
+	'$scope',
+	'$http',
+	function($scope, $http) {
+		$scope.myarr = [['a','b'],['c','d'],['e','f']];
+		$http.get("/all/items").error(
+			function(error) {
+				console.log(error);
+				$scope.error = error;
+			}).success(function(data) {
+				$scope.items = [];
+				obj = [];
+				console.log(data);
+				data.forEach(function(item) {
+					obj.push(item);
+					if ( obj.length == 2 ) {
+						$scope.items.push(obj);
+						obj = [];
+					}
+				});
+				if (obj.length == 1)
+					$scope.items.push(obj)
+				console.log($scope.items.length);
+			})
 	}]);
 
 
