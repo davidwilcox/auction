@@ -349,22 +349,54 @@ app.controller('DonateItemCtrl', [
 			$scope.donor = $window.localStorage['donor-info'];
 		}
 
+
 		$scope.fileNameChanged = function(ele) {
-			$scope.donor.picture = ele.files[0].name;
+			$scope.donor.filename = ele.files[0].name;
 		};
 
 		$scope.donateitem = function() {
-			// persist user info.
-			$window.localStorage['donor-info'] = $scope.donor;
-			$scope.item.donor = $scope.donor;
 
-			$http.post('/submititem', $scope.item,{headers: {
-				Authorization: "Bearer " + auth.getToken() } }).success(function(data) {
-					$state.go('home');
-				}).error(function(error) {
-					console.log('error');
-					$scope.error = error;
-				});
+			picture = $scope.donor.picture;
+			filename = $scope.donor.filename;
+			delete $scope.donor.picture;
+			delete $scope.donor.filename;
+
+
+
+			submit_item = function() {
+				// persist user info.
+				console.log("submit");
+				$window.localStorage['donor-info'] = $scope.donor;
+				$scope.item.donor = $scope.donor;
+
+				$http.post('/submititem', $scope.item,{headers: {
+					Authorization: "Bearer " + auth.getToken() } }).success(function(data) {
+						$state.go('home');
+					}).error(function(error) {
+						console.log('error');
+						$scope.error = error;
+					});
+			};
+			payload = {
+				"photo": picture,
+				"filename": filename
+			};
+
+			$scope.donor.photoid = $scope.imageurl;
+
+			if ( picture ) {
+				console.log("first");
+				$http.post('/uploadphoto', payload).error(
+					function(error) {
+						$scope.error = error;
+					}).then(function(data) {
+						$scope.donor.photoid = data.data.photoid
+						submit_item();
+					});
+			} else {
+				console.log("second");
+				submit_item();
+			}
 		};
 	}]);
 
@@ -454,7 +486,7 @@ app.controller('RegisterCtrl', [
 	function($scope, $state, $http, auth) {
 		$scope.user = {};
 
-		$scope.fileNameChanged = function(ele) {
+		$scope.fileNameCha39nged = function(ele) {
 			$scope.user.filename = ele.files[0].name;
 		};
 

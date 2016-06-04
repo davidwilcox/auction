@@ -6,17 +6,19 @@
   </style>
 </div>
 <div ng-repeat='var in items'>
-  <div style='height: 8.815in; width: 29.7cm;'>
-	<div style='width: 14.85cm; float:left; border-style: solid; word-wrap: normal;'>
+  <div style='height: 8.815in; width: 30.7cm;'>
+	<div style='width: 14.85cm; float:left; word-wrap: normal;'>
 	  <h2>{{var[0].name}}</h2>
-	  <hr>
+	  <div>
+		<label>Description</label>{{var[0].description}}
+	  </div>
 	  {{item.description}}
 	  asdf asdf asdf asdf asd fasdf asdf asdf asdf
 	  
 	  {{var[0]}}
 	</div>
-	<div style='float:left; border-style: solid; word-wrap: normal;'>
-	  <h2>fdsa</h2>
+	<div style='margin-left:1cm; float:left; word-wrap: normal; width:14.85cm; '>
+	  <h2>{{var[1].name}}</h2>
 	  asdf asdf asdf asdf asd fasdf asdf asdf asdf
 	  {{var[1]}}
 	</div>
