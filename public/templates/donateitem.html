@@ -4,9 +4,7 @@
     </script>
     <script type="text/javascript" src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js">
     </script>
-    <script type="text/javascript" src="http://tarruda.github.com/bootstrap-datetimepicker/assets/js/bootstrap-datetimepicker.min.js">
-    </script>
-    <script type="text/javascript" src="http://tarruda.github.com/bootstrap-datetimepicker/assets/js/bootstrap-datetimepicker.pt-BR.js">
+    <script type="text/javascript" src="">
     </script>
 
 </div>
@@ -228,6 +226,25 @@
 		  <label>What is the date of the event you will host?</label>
 		  <div>
 			We highly recommend choosing and advertising a specific date.
+			<div class="container">
+			  <div class="row">
+				<div class='col-sm-6'>
+				  <div class="form-group">
+					<div class='input-group date' id='datetimepicker1'>
+                      <input type='text' class="form-control" />
+                      <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                      </span>
+					</div>
+				  </div>
+				</div>
+				<script type="text/javascript">
+				  $(function () {
+                  $('#datetimepicker1').datetimepicker();
+				  });
+				</script>
+			  </div>
+			</div>
 		  </div>
 		</div>
 
