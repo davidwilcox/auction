@@ -132,7 +132,7 @@ app.config([
 			})
 			.state('mydonateditems', {
 				url: '/mydonateditems',
-				templateUrl: '/templates/mydonateditems.html',
+				templateUrl: '/templates/viewdonateditems.html',
 				controller: 'MyDonatedItemsCtrl',
 				onEnter: [ '$state', 'auth', function($state, auth) {
 					if ( !auth.isLoggedIn() ) {
@@ -213,20 +213,6 @@ app.controller("MyInvoiceCtrl", [
 			console.log(error);
 		});
 	}]);
-
-
-app.controller("ViewDonatedItemsCtrl", [
-	'$scope',
-	'$http',
-	function($scope, $http) {
-		$http.get("/all/items").success(function(data) {
-			console.log(data);
-			$scope.items = data;
-		}).error(function(error) {
-			$scope.error = error;
-		});
-	}]);
-
 
 
 app.controller('InsertBidsCtrl', [
@@ -698,6 +684,36 @@ app.controller( 'SilentBidSheetsCtrl',[
 	}]);
 
 
+
+app.controller( 'ViewDonatedItemsCtrl',[
+	'$scope',
+	'$q',
+	'tickets',
+	'$http',
+	'auth',
+	function($scope, $q, tickets, $http, auth) {
+		var promises = [];
+		promises.push($http.get('/all/items'));
+		promises.push($http.get('/all/tickets'));
+		$q.all(promises).then(function(data) {
+			$scope.items = {};
+			data_items = data[0].data;
+			data_items.forEach(function(item) {
+			    $scope.items[item.id] = item;
+			});
+                    tickets_items = data[1].data;
+		    $scope.tickets = {};
+			tickets_items.forEach(function(ticket) {
+				$scope.tickets[ticket.bidnumber] = ticket;
+			});
+			console.log($scope.items);
+			console.log($scope.tickets);
+		}, function(err) {
+			console.log("err");
+		});
+	}]);
+
+
 app.controller( 'MyDonatedItemsCtrl',[
 	'$scope',
 	'$q',
@@ -727,19 +743,4 @@ app.controller( 'MyDonatedItemsCtrl',[
 		}, function(err) {
 			console.log("err");
 		});
-		/*
-		.error(
-			function(error) {
-				console.log(error);
-				$scope.error = error;
-			}).success(function(data) {
-				$scope.items = {};
-				data.forEach(function(item) {
-					if ( item.donor.email == auth.currentUserEmail() ) {
-						$scope.items[item.id] = item;
-					}
-				});
-				console.log($scope.items);
-			});
-		*/
 	}]);
