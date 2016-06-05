@@ -236,6 +236,30 @@ app.controller('ViewTicketCtrl', [
 	});
     }]);
 
+app.controller('ViewRegisteredPeopleCtrl', [
+    '$scope',
+    'tickets',
+    '$http',
+    function($scope, tickets, $http) {
+	tickets.getAll().then(
+	    function(result) {
+		$scope.tickets = result;
+		console.log(result);
+	    });
+	$http.get("/all/items").error(
+	    function(error) {
+		console.log(error);
+		$scope.error = error;
+	    }).success(function(data) {
+		$scope.items = {};
+		data.forEach(function(item) {
+		    console.log(item);
+		    $scope.items[item.id] = item;
+		});
+	    });
+    }]);
+
+
 app.controller('ViewItemCtrl', [
     '$scope',
     '$state',
@@ -580,30 +604,6 @@ app.controller('NavCtrl', [
 	$scope.currentUser = auth.currentUserEmail;
 	$scope.logOut = auth.logOut;
     }]);
-
-app.controller('ViewRegisteredPeopleCtrl', [
-    '$scope',
-    'tickets',
-    '$http',
-    function($scope, tickets, $http) {
-	tickets.getAll().then(
-	    function(result) {
-		$scope.tickets = result;
-		console.log(result);
-	    });
-	$http.get("/all/items").error(
-	    function(error) {
-		console.log(error);
-		$scope.error = error;
-	    }).success(function(data) {
-		$scope.items = {};
-		data.forEach(function(item) {
-		    console.log(item);
-		    $scope.items[item.id] = item;
-		});
-	    });
-    }]);
-
 
 
 app.directive('datetimez', function() {
