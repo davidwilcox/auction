@@ -46,7 +46,7 @@
 	  <div class="panel-body">
 	    <div class="row">
 	      <label>Buyer Name</label>
-	      {{tickets[buyer].name}}
+	      <a ui-sref="viewticket( {bidnumber: buyer} )">{{tickets[buyer].name}}</a>
 	    </div>
 	    <div class="row">
 	      <label>Buyer Email</label>
