@@ -169,7 +169,7 @@ app.controller('ViewItemCtrl', [
     '$state',
     'post',
     function($scope, $state, post) {
-        console.log(post);
+        console.log(post.data);
     }]);
 
 
@@ -455,26 +455,6 @@ var compareTo = function() {
 
 app.directive("compareTo", compareTo);
 
-
-
-app.directive("fileread", [function () {
-	return {
-		scope: {
-			fileread: "="
-		},
-		link: function (scope, element, attributes) {
-			element.bind("change", function (changeEvent) {
-				var reader = new FileReader();
-				reader.onload = function (loadEvent) {
-					scope.$apply(function () {
-						scope.fileread = loadEvent.target.result;
-					});
-				}
-				reader.readAsDataURL(changeEvent.target.files[0]);
-			});
-		}
-	}
-}]);
 
 app.controller('LoginCtrl', [
 	'$scope',

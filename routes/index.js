@@ -330,12 +330,9 @@ router.post('/items', function(req, res, next) {
     var keys = [];
     req.body.forEach(function(item) {
         console.log(item);
-	keys.push({"id":{"S": item}});
+	keys.push({"id":item});
         console.log("weird");
     });
-    s = '';
-    s.append('f');
-    console.log("foobar");
     var params = {
 	"RequestItems": {
 	    "items": {
@@ -344,13 +341,13 @@ router.post('/items', function(req, res, next) {
 	}
     };
 
-    docClient.batchGetItem(params, function(err, data) {
+    docClient.batchGet(params, function(err, data) {
 	console.log(err);
-	console.log(data);
+	console.log(data.Responses.items);
 	if ( err ) {
 	    res.status(401).json({error: err});
 	} else {
-	    res.status(200).json({message: data});
+	    res.status(200).json(data.Responses.items);
 	}
     });
 });

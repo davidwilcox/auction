@@ -50,7 +50,10 @@ if (app.get('env') === 'development') {
       message: err.message,
       error: err
     });
-      console.trace(err);
+      if ( err.status == 500 ) {
+          console.log(err.message);
+          console.log(err.stack);
+      }
   });
 } else {
 
@@ -62,7 +65,10 @@ if (app.get('env') === 'development') {
             message: err.message,
             error: {}
         });
-        console.trace(err);
+        if ( err.status == 500 ) {
+            console.log(err.message);
+            console.log(err.stack);
+        }
     });
 }
 
