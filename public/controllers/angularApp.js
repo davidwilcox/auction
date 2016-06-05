@@ -24,6 +24,15 @@ app.config(['$translateProvider', function ($translateProvider) {
 	$translateProvider.useSanitizeValueStrategy('sanitize');
 }]);
 
+app.factory('items', ['$http', function($http){
+    var o = {
+        get: function(itemid)  {
+            return $http.post('/items', [itemid]);
+        }
+    };
+    return o;
+}]);
+
 app.config([
 	'$stateProvider',
 	'$urlRouterProvider',
@@ -139,7 +148,17 @@ app.config([
 						$state.go('home');
 					}
 				}]
-			})
+			}).state('viewitem',
+                                 {url: 'viewitem/{itemid}',
+                                 templateUrl: '/viewitem.html',
+                                 controller: 'ViewItemCtrl',
+                                 resolve: {
+                                     post: ['$stateParams', 'items',
+                                            function($stateParams, items) {
+                                                return items.get($stateParams.id);
+                                            }]
+                                 }
+                        });
 
 
 		$urlRouterProvider.otherwise('home');

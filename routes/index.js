@@ -324,9 +324,9 @@ router.post('/submititem', auth, function(req, res, next) {
 });
 
 
+
 router.post('/items', function(req, res, next) {
 	var keys = [];
-	console.log(req.body);
 	req.items.forEach(function(item) {
 		keys.append({"id":{"S": item}});
 	});
