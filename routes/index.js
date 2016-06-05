@@ -329,84 +329,88 @@ router.post('/items', function(req, res, next) {
     console.log(req.body);
     var keys = [];
     req.body.forEach(function(item) {
-	keys.append({"id":{"S": item}});
+        console.log(item);
+	keys.push({"id":{"S": item}});
+        console.log("weird");
     });
-    console.log(
-	var params = {
-	    "RequestItems": {
-		"items": {
-		    "Keys": keys
-		}
+    s = '';
+    s.append('f');
+    console.log("foobar");
+    var params = {
+	"RequestItems": {
+	    "items": {
+		"Keys": keys
 	    }
-	};
+	}
+    };
 
-	docClient.batchGetItem(params, function(err, data) {
+    docClient.batchGetItem(params, function(err, data) {
+	console.log(err);
+	console.log(data);
+	if ( err ) {
+	    res.status(401).json({error: err});
+	} else {
+	    res.status(200).json({message: data});
+	}
+    });
+});
+
+
+router.post('/addbuyer', auth, function(req, res, next) {
+    guestid = req.body.guestid;
+    itemid = req.body.itemid;
+
+    var params = {
+	TableName: "tickets",
+	Key: {
+	    bidnumber: guestid
+	},
+	UpdateExpression: "SET #b = list_append(#b, :v_itemid)",
+	Item: {},
+	ExpressionAttributeNames:{
+	    "#b": "boughtitems"
+	},
+	ExpressionAttributeValues: {
+	    ":v_itemid": [itemid]
+	},
+	ReturnValues: "UPDATED_NEW"
+    };
+    console.log(params);
+
+    docClient.update(params, function(err, data) {
+	if ( err ) {
 	    console.log(err);
-	    console.log(data);
-	    if ( err ) {
-		res.status(401).json({error: err});
-	    } else {
-		res.status(200).json({message: data});
-	    }
-	});
+	    res.status(401).json({error: err});
+	} else {
+	    var item_params = {
+		TableName: "items",
+		Key: {
+		    id: itemid
+		},
+		UpdateExpression: "SET #b = list_append(#b, :v_buyerid)",
+		Item: {},
+		ExpressionAttributeNames: {
+		    "#b": "buyers"
+		},
+		ExpressionAttributeValues: {
+		    ":v_buyerid": [guestid]
+		},
+		ReturnValues: "UPDATED_NEW"
+	    };
+
+	    console.log(item_params);
+
+	    docClient.update(item_params, function(err, data) {
+		if ( err ) {
+		    console.log(err);
+		    res.status(401).json({error: err});
+		} else {
+		    res.status(200).json({message: "item added"});
+		}
+	    });
+	}
     });
+});
 
 
-            router.post('/addbuyer', auth, function(req, res, next) {
-	        guestid = req.body.guestid;
-	        itemid = req.body.itemid;
-
-	        var params = {
-		    TableName: "tickets",
-		    Key: {
-			bidnumber: guestid
-		    },
-		    UpdateExpression: "SET #b = list_append(#b, :v_itemid)",
-		    Item: {},
-		    ExpressionAttributeNames:{
-			"#b": "boughtitems"
-		    },
-		    ExpressionAttributeValues: {
-			":v_itemid": [itemid]
-		    },
-		    ReturnValues: "UPDATED_NEW"
-	        };
-	        console.log(params);
-
-	        docClient.update(params, function(err, data) {
-		    if ( err ) {
-			console.log(err);
-			res.status(401).json({error: err});
-		    } else {
-			var item_params = {
-			    TableName: "items",
-			    Key: {
-				id: itemid
-			    },
-			    UpdateExpression: "SET #b = list_append(#b, :v_buyerid)",
-			    Item: {},
-			    ExpressionAttributeNames: {
-				"#b": "buyers"
-			    },
-			    ExpressionAttributeValues: {
-				":v_buyerid": [guestid]
-			    },
-			    ReturnValues: "UPDATED_NEW"
-			};
-
-			console.log(item_params);
-
-			docClient.update(item_params, function(err, data) {
-			    if ( err ) {
-				console.log(err);
-				res.status(401).json({error: err});
-			    } else {
-				res.status(200).json({message: "item added"});
-			    }
-			});
-		    }
-	        });
-            });
-
-
-            module.exports = router;
+module.exports = router;
