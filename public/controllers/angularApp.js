@@ -156,7 +156,10 @@ app.config([
                                      post: ['$stateParams', 'items',
                                             function($stateParams, items) {
                                                 return items.get($stateParams.itemid);
-                                            }]
+                                            }],
+                                     item_tickets: ['$http', function($http) {
+                                         return $http.get('/all/tickets');
+                                     }]
                                  }
                         });
 
@@ -168,8 +171,13 @@ app.controller('ViewItemCtrl', [
     '$scope',
     '$state',
     'post',
-    function($scope, $state, post) {
-        console.log(post.data);
+    'item_tickets',
+    function($scope, $state, post, ticket_items) {
+        $scope.item = post.data[0];
+	$scope.tickets = {};
+	ticket_items.data.forEach(function(ticket) {
+	    $scope.tickets[ticket.bidnumber] = ticket;
+	});
     }]);
 
 
