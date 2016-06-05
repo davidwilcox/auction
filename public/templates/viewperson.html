@@ -1,0 +1,40 @@
+<div class="panel panel-default">
+  <div>
+    <div class="panel-body">
+      <div class="row">
+	<label>Name</label>
+	{{ticket.name}}
+      </div>
+      <div class="row">
+	<label>Age</label>
+	<span translate="{{ticket.agegroup}}"></span>
+      </div>
+      <div class="row">
+	<label>Dietary Restrictions</label>
+	<span translate="{{ticket.foodRes}}"></span>
+      </div>
+      <div class="row">
+	<label>Buyer</label>
+	{{ticket.buyer.name}}
+      </div>iew
+      <div class="row">
+	<label>Date Created</label>
+	{{ticket.date}}
+      </div>
+      <div class="row">
+	<label>Bid Number</label>
+	{{ticket.bidnumber}}
+      </div>
+      <div class="panel panel-default">
+	<label>Bought Items</label>
+	<div class="panel-body">
+	  <div ng-repeat="item in ticket.boughtitems">
+	    <div class="row">
+	      <a ui-sref="viewitem({ itemid: item })">{{items[item].name}}</a>
+	    </div>
+	  </div>
+	</div>
+      </div>
+    </div>
+  </div>
+</div>

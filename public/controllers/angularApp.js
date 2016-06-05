@@ -1,7 +1,6 @@
 var app = angular.module('auction', ['ngMessages', 'ui.router', 'pascalprecht.translate', 'ngSanitize'])
 
 
-
 app.config(['$translateProvider', function ($translateProvider) {
     $translateProvider.translations('en', {
 	// item translations.
@@ -32,6 +31,33 @@ app.factory('items', ['$http', function($http){
     };
     return o;
 }]);
+
+
+
+app.factory('tickets', ['$http', '$q', function($http, $q) {
+
+    return {
+	purchase: function(ticket) {
+	    return $http.post('/createguest', ticket);
+	},
+
+	getAll: function() {
+	    rtval = $http.get('/allguests').then(function(data) {
+		return data.data;
+	    }, function(data) {
+		console.log("ERROR");
+	    });
+	    return rtval;
+	},
+
+        get: function(bidnumber) {
+            rtval = $http.post('/tickets', [bidnumber]);
+            return rtval;
+        }
+    };
+}]);
+
+
 
 app.config([
     '$stateProvider',
@@ -148,6 +174,19 @@ app.config([
 			$state.go('home');
 		    }
 		}]
+            }).state('viewticket', {
+                url: '/viewticket/{bidnumber}',
+                templateUrl: '/templates/viewticket.html',
+                controller: 'ViewTicketCtrl',
+                resolve: {
+                    ticket: ['$stateParams', 'tickets',
+                             function($stateParams, items) {
+                               return items.get($stateParams.bidnumber);
+                           }],
+                    items: ['$http', function($http) {
+                        return $http.get('/all/items');
+                    }]
+                }
 	    }).state('viewitem', {
                 url: '/viewitem/{itemid}',
                 templateUrl: '/templates/viewitem.html',
@@ -165,6 +204,36 @@ app.config([
 
 
 	$urlRouterProvider.otherwise('home');
+    }]);
+
+app.controller('ViewPersonCtrl', [
+               function() {
+               }]);
+
+app.directive('viewperson', function() {
+    return {
+        templateUrl: 'templates/viewperson.html',
+        controller: 'ViewPersonCtrl',
+        bindings: {
+            person: '='
+        }
+    }
+});
+
+
+
+app.controller('ViewTicketCtrl', [
+    '$scope',
+    '$state',
+    'ticket',
+    'items',
+    function($scope, $state, ticket, items) {
+        $scope.ticket = ticket.data[0];
+        console.log(ticket);
+	$scope.items = {};
+	items.data.forEach(function(item) {
+	    $scope.items[item.id] = item;
+	});
     }]);
 
 app.controller('ViewItemCtrl', [
@@ -422,26 +491,6 @@ app.controller('DonateItemCtrl', [
     }]);
 
 
-app.factory('tickets', ['$http', '$q', function($http, $q) {
-
-    return {
-	purchase: function(ticket) {
-	    return $http.post('/createguest', ticket);
-	},
-
-	getAll: function() {
-	    rtval = $http.get('/allguests').then(function(data) {
-		return data.data;
-	    }, function(data) {
-		console.log("ERROR");
-	    });
-	    return rtval;
-	}
-    };
-}]);
-
-
-
 var compareTo = function() {
     return {
 	require: "ngModel",
@@ -531,7 +580,6 @@ app.controller('NavCtrl', [
 	$scope.currentUser = auth.currentUserEmail;
 	$scope.logOut = auth.logOut;
     }]);
-
 
 app.controller('ViewRegisteredPeopleCtrl', [
     '$scope',

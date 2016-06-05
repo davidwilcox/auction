@@ -324,14 +324,38 @@ router.post('/submititem', auth, function(req, res, next) {
 });
 
 
+router.post('/tickets', function(req, res, next) {
+    var keys = [];
+    console.log(req.body);
+    req.body.forEach(function(bidnumber) {
+        keys.push({"bidnumber":Number(bidnumber)});
+    });
+    var params = {
+        RequestItems: {
+            tickets: {
+                Keys: keys
+            }
+        }
+    };
+    console.log(params);
+    console.log(keys);
+
+    docClient.batchGet(params, function(err, data) {
+        console.log(err);
+        if ( err ) {
+	    res.status(401).json({error: err});
+	} else {
+            console.log(data.Responses);
+	    res.status(200).json(data.Responses.tickets);
+	}
+    });
+});
+
 
 router.post('/items', function(req, res, next) {
-    console.log(req.body);
     var keys = [];
     req.body.forEach(function(item) {
-        console.log(item);
 	keys.push({"id":item});
-        console.log("weird");
     });
     var params = {
 	"RequestItems": {
@@ -342,8 +366,6 @@ router.post('/items', function(req, res, next) {
     };
 
     docClient.batchGet(params, function(err, data) {
-	console.log(err);
-	console.log(data.Responses.items);
 	if ( err ) {
 	    res.status(401).json({error: err});
 	} else {
