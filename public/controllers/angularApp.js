@@ -148,14 +148,14 @@ app.config([
 						$state.go('home');
 					}
 				}]
-			}).state('viewitem',
-                                 {url: 'viewitem/{itemid}',
-                                 templateUrl: '/viewitem.html',
+			}).state('viewitem', {
+                                 url: '/viewitem/{itemid}',
+                                 templateUrl: '/templates/viewitem.html',
                                  controller: 'ViewItemCtrl',
                                  resolve: {
                                      post: ['$stateParams', 'items',
                                             function($stateParams, items) {
-                                                return items.get($stateParams.id);
+                                                return items.get($stateParams.itemid);
                                             }]
                                  }
                         });
@@ -163,6 +163,14 @@ app.config([
 
 		$urlRouterProvider.otherwise('home');
 	}]);
+
+app.controller('ViewItemCtrl', [
+    '$scope',
+    '$state',
+    'post',
+    function($scope, $state, post) {
+        console.log(post);
+    }]);
 
 
 app.controller('HomeCtrl', [
