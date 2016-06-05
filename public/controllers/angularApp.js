@@ -207,17 +207,18 @@ app.config([
     }]);
 
 app.controller('ViewPersonCtrl', [
-               function() {
-               }]);
+    function() {
+    }]);
 
 app.directive('viewperson', function() {
     return {
-        templateUrl: 'templates/viewperson.html',
+        templateUrl: '/templates/viewperson.html',
         controller: 'ViewPersonCtrl',
         bindings: {
-            person: '='
+            person: '=',
+            items: '='
         }
-    }
+    };
 });
 
 
@@ -257,20 +258,6 @@ app.controller('ViewRegisteredPeopleCtrl', [
 		    $scope.items[item.id] = item;
 		});
 	    });
-    }]);
-
-
-app.controller('ViewItemCtrl', [
-    '$scope',
-    '$state',
-    'post',
-    'item_tickets',
-    function($scope, $state, post, ticket_items) {
-        $scope.item = post.data[0];
-	$scope.tickets = {};
-	ticket_items.data.forEach(function(ticket) {
-	    $scope.tickets[ticket.bidnumber] = ticket;
-	});
     }]);
 
 
@@ -746,6 +733,32 @@ app.controller( 'SilentBidSheetsCtrl',[
 	    })
     }]);
 
+app.controller('ViewItemGenericCtrl', [function() {}]);
+
+
+app.directive('viewitem', function() {
+    return {
+        templateUrl: '/templates/viewitemgeneric.html',
+        controller: 'ViewItemGenericCtrl',
+        bindings: {
+            item: '=',
+            tickets: '='
+        }
+    };
+});
+
+app.controller('ViewItemCtrl', [
+    '$scope',
+    '$state',
+    'post',
+    'item_tickets',
+    function($scope, $state, post, ticket_items) {
+        $scope.item = post.data[0];
+	$scope.tickets = {};
+	ticket_items.data.forEach(function(ticket) {
+	    $scope.tickets[ticket.bidnumber] = ticket;
+	});
+    }]);
 
 
 app.controller( 'ViewDonatedItemsCtrl',[

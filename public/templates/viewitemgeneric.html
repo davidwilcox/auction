@@ -1,0 +1,64 @@
+<div class="panel panel-default">
+  <div>
+    <div class="panel-body">
+      <div class="row">
+	<label>Donor Name</label>
+	{{item.donor.name}}
+      </div>
+      <div class="row">
+	<label>Donor Email</label>
+	{{item.donor.email}}
+      </div>
+      <div class="row">
+	<label>Donor Phone Number</label>
+	{{item.donor.phone}}
+      </div>
+      <div class="row">
+	<label>Item Category</label>
+	{{item.category}}
+      </div>
+      <div class="row">
+	<label>Item Description</label>
+	{{item.description}}
+      </div>
+      <div class="row">
+	<label>Item Name</label>
+	{{item.name}}
+      </div>
+      <div class="row">
+	<label>Item Starting Bid</label>
+	{{item.minvalue}}
+      </div>
+      <div class="row">
+	<label>Item Value</label>
+	{{item.value}}
+      </div>
+      <div class="row" ng-show="item.policy">
+	<label>Event Policy</label>
+	<span translate="{{item.policy}}"></span>
+      </div>
+      <div class="row" ng-show="item.referee">
+	<label>Donor Referee</label>
+	{{item.referee}}
+      </div>
+      <div ng-repeat="buyer in item.buyers">
+	<div class="panel panel-default">
+	  <div class="panel-body">
+	    <div class="row">
+	      <label>Buyer Name</label>
+	      {{tickets[buyer].name}}
+	    </div>
+	    <div class="row">
+	      <label>Buyer Email</label>
+	      {{tickets[buyer].login}}
+	    </div>
+	    <div class="row">
+	      <label>Buyer Phone</label>
+	      {{tickets[buyer].buyer.phonenumber}}
+	    </div>
+	  </div>
+	</div>
+      </div>
+    </div>
+  </div>
+</div>

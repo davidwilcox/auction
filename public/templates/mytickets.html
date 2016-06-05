@@ -3,44 +3,6 @@
 </div>
 <div class="container col-xs-12 col-sm-offset-1 col-sm-10">
   <div ng-repeat="ticket in tickets">
-	<div class="panel panel-default">
-	  <div>
-		<div class="panel-body">
-		  <div class="row">
-			<label>Name</label>
-			{{ticket.name}}
-		  </div>
-		  <div class="row">
-			<label>Age</label>
-			<span translate="{{ticket.agegroup}}"></span>
-		  </div>
-		  <div class="row">
-			<label>Dietary Restrictions</label>
-			<span translate="{{ticket.foodRes}}"></span>
-		  </div>
-		  <div class="row">
-			<label>Buyer</label>
-			{{ticket.buyer.name}}
-		  </div>
-		  <div class="row">
-			<label>Date Created</label>
-			{{ticket.date}}
-		  </div>
-		  <div class="row">
-			<label>Bid Number</label>
-			{{ticket.bidnumber}}
-		  </div>
-		  <div class="panel panel-default">
-			<label>Bought Items</label>
-			<div class="panel-body">
-			  <div ng-repeat="item in ticket.boughtitems">
-				<div class="row">
-				  {{items[item].name}}
-				</div>
-			  </div>
-			</div>
-		</div>
-	  </div>
-	</div>
+    <viewperson person="{{ticket}}"></viewperson>
   </div>
 </div>
