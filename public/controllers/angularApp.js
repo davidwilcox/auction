@@ -23,10 +23,21 @@ app.config(['$translateProvider', function ($translateProvider) {
     $translateProvider.useSanitizeValueStrategy('sanitize');
 }]);
 
-app.factory('items', ['$http', function($http){
+app.factory('items', ['$http', function($http) {
     var o = {
         get: function(itemid)  {
             return $http.post('/items', [itemid]);
+        }
+    };
+    return o;
+}]);
+
+
+app.factory('charges', ['$http', 'auth', function($http, auth) {
+    var o = {
+        charge: function(params)  {
+            return $http.post('/chargecustomer', params, {headers: {
+		Authorization: "Bearer " + auth.getToken() } });
         }
     };
     return o;
@@ -614,8 +625,9 @@ app.controller('BuyTicketsCtrl', [
     '$q',
     '$state',
     'tickets',
+    'charges',
     'auth',
-    function($scope, $q, $state, tickets, auth) {
+    function($scope, $q, $state, tickets, charges, auth) {
 	$scope.ticketTypes = ["ADULT_TICKET","HIGHSCHOOL_TICKET","JUNIORHIGH_TICKET","CHILD_TICKET"];
 	console.log($scope.foodTypes);
 	$scope.tickets = [];
@@ -688,27 +700,33 @@ app.controller('BuyTicketsCtrl', [
 	    $scope.numChildTickets = childTickets;
 	};
 
-	$scope.purchase = function() {
-	    var promises = [];
-	    $scope.tickets.forEach(function(ticket) {
-		if ( auth.isLoggedIn() )
-		    ticket.login = auth.currentUser().email;
-		else
-		    ticket.login = "a@a.a";
-		promises.push(tickets.purchase(ticket));
-	    });
-	    $q.all(promises).then(function(data) {
-		// route to confirmation page.
-		$state.go('buyticketsconfirmation');
-	    }, function(data) {
-		// route to error page.
-		console.log("ERROR");
-		console.log(data);
-	    });
-	};
-
         $scope.doCheckout = function(token) {
-            alert("Got Stripe token: " + token.id);
+            var promises = [];
+            charges.charge({
+                purchaser: auth.currentUser().email,
+                stripe_token: token.id,
+                amount: $scope.calculateTotal()*100
+            }).then(function(data) {
+	        $scope.tickets.forEach(function(ticket) {
+                    ticket.customer_id = data.customer_id;
+		    if ( auth.isLoggedIn() )
+		        ticket.login = auth.currentUser().email;
+		    else
+		        ticket.login = "a@a.a";
+		    promises.push(tickets.purchase(ticket));
+	        });
+	        $q.all(promises).then(function(data) {
+		    // route to confirmation page.
+		    $state.go('buyticketsconfirmation');
+	        }, function(data) {
+		    // route to error page.
+		    console.log("ERROR");
+		    console.log(data);
+	        });
+            }, function(err) {
+                
+            });
+
         };
 
     }]);
@@ -773,7 +791,7 @@ app.controller('ViewItemCtrl', [
     }]);
 
 
-app.controller( 'ViewDonatedItemsCtrl',[
+app.controller( 'ViewDonatedItemsCtrl', [
     '$scope',
     '$q',
     'tickets',

@@ -7,8 +7,11 @@ var AWS = require("aws-sdk");
 AWS.config.update({
     region: "us-west-2"
 });
+
+var stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 var dynamodb = new AWS.DynamoDB();
 var docClient = new AWS.DynamoDB.DocumentClient();
+var Q = require('q');
 
 
 function guid() {
@@ -66,7 +69,7 @@ router.post('/createguest', function(req, res, next) {
             if ( err ) {
 		console.log(err);
 	    }
-	    mybidnumber = data.Item.number;
+	    var mybidnumber = data.Item.number;
 	    var params = {
 		TableName: "bidnumber",
 		Item: {
@@ -194,8 +197,8 @@ router.post('/uploadphoto', function(req, res, next) {
 	req.status(400).json({message: "Please fill in a filename"});
     }
 
-    extension = req.body.filename.split('.').pop();
-    new_filename = guid() + '.' + extension;
+    var extension = req.body.filename.split('.').pop();
+    var new_filename = guid() + '.' + extension;
     var AWS2 = require("aws-sdk");
     var s3bucket = new AWS2.S3({params: {Bucket: 'svuus-photos'}});
     var buf = new Buffer(req.body.photo.split(',')[1], 'base64');
@@ -215,8 +218,8 @@ router.post('/register', function(req, res, next) {
 	return res.status(400).json({message: 'Please fill out email and password.'});
     }
 
-    salt = crypto.randomBytes(16).toString('hex');
-    hash = crypto.pbkdf2Sync(req.body.password, salt, 1000, 64).toString('hex');
+    var salt = crypto.randomBytes(16).toString('hex');
+    var hash = crypto.pbkdf2Sync(req.body.password, salt, 1000, 64).toString('hex');
     delete req.body.password;
     delete req.body.confirmPassword;
     req.body.hash = hash;
@@ -304,7 +307,7 @@ router.post('/login', function(req, res, next) {
 });
 
 router.post('/submititem', auth, function(req, res, next) {
-    item = req.body;
+    var item = req.body;
     item.id = guid();
     item.price = item.minvalue;
     item.buyers = [];
@@ -326,7 +329,6 @@ router.post('/submititem', auth, function(req, res, next) {
 
 router.post('/tickets', function(req, res, next) {
     var keys = [];
-    console.log(req.body);
     req.body.forEach(function(bidnumber) {
         keys.push({"bidnumber":Number(bidnumber)});
     });
@@ -337,8 +339,6 @@ router.post('/tickets', function(req, res, next) {
             }
         }
     };
-    console.log(params);
-    console.log(keys);
 
     docClient.batchGet(params, function(err, data) {
         console.log(err);
@@ -374,10 +374,38 @@ router.post('/items', function(req, res, next) {
     });
 });
 
+router.post('/chargecustomer', auth, function(req, res, next) {
+    var purchaser = req.body.purchaser;
+    var stripe_token = req.body.stripe_token;
+    var amount = req.body.amount;
+
+    stripe.customers.create({
+        description: purchaser,
+        source: stripe_token
+    }, function(cust_err, customer) {
+        stripe.charges.create({
+            amount: amount,
+            currency: "usd",
+            customer: customer.id,
+            description: "purchase auction tickets for " + purchaser
+        }, function(charge_err, charge) {
+            if ( charge_err ) {
+                res.status(401).json({err: charge_err});
+            }
+            else if ( cust_err ) {
+                res.status(401).json({err: cust_err});
+            } else {
+                res.status(200).json({charge_id: charge.id,
+                                      customer_id: customer.id});
+            }
+        } );
+    });
+});
+
 
 router.post('/addbuyer', auth, function(req, res, next) {
-    guestid = req.body.guestid;
-    itemid = req.body.itemid;
+    var guestid = req.body.guestid;
+    var itemid = req.body.itemid;
 
     var params = {
 	TableName: "tickets",
@@ -394,7 +422,6 @@ router.post('/addbuyer', auth, function(req, res, next) {
 	},
 	ReturnValues: "UPDATED_NEW"
     };
-    console.log(params);
 
     docClient.update(params, function(err, data) {
 	if ( err ) {
