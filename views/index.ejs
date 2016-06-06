@@ -1,27 +1,31 @@
 <!DOCTYPE html>
 <html>
-	<head>
-    	<title><%= title %></title>
-    	<link rel="stylesheet" href="/stylesheets/bootstrap.min.css"></link>
-		<link rel="stylesheet" href="/stylesheets/style.css"></link>
-		<link rel="stylesheet" href="/stylesheets/bootstrap-datetimepicker.min.css"></link>
-    	<script src="/javascripts/angular.min.js"></script>
-    	<script src="/javascripts/angular-ui-router.js"></script>
-		<script src="/javascripts/angular-messages.min.js"></script>
-		<script src="/javascripts/angular-translate.min.js"></script>
-		<script src="/javascripts/angular-sanitize.min.js"></script>
-		<script src="/controllers/angularApp.js"></script>
-</head>
-	<body ng-app="auction">
-	  <nav class="navbar navbar-default pull-right" ng-controller="NavCtrl">
-		<ul class="nav navbar-nav" >
-		  <li ng-show="isLoggedIn()"><a ui-sref="myauction">MyAuction</a></li>
-		  <li ng-show="isLoggedIn()"><a>{{ currentUser() }}</a></li>
-		  <li ng-show="isLoggedIn()"><a href="" ng-click="logOut()">Log Out</a></li>
-		  <li ng-hide="isLoggedIn()"><a ui-sref="login">Log In</a></li>
-		  <li ng-hide="isLoggedIn()"><a ui-sref="register">Register</a></li>
-		</ul>
-	  </nav>
-	  <ui-view></ui-view>
-	</body>
+  <head>
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/stylesheets/bootstrap.min.css"></link>
+    <link rel="stylesheet" href="/stylesheets/style.css"></link>
+    <link rel="stylesheet" href="/stylesheets/bootstrap-datetimepicker.min.css"></link>
+    <link rel="stylesheet" href="/stylesheets/stripe.css"></link>
+    <script src="/javascripts/angular.min.js"></script>
+    <script src="/javascripts/angular-ui-router.js"></script>
+    <script src="/javascripts/angular-messages.min.js"></script>
+    <script src="/javascripts/angular-translate.min.js"></script>
+    <script src="/javascripts/angular-sanitize.min.js"></script>
+    <script src="/javascripts/angular-stripe-checkout.min.js"></script>
+    <script src="/controllers/angularApp.js"></script>
+    <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
+    <script src="https://checkout.stripe.com/checkout.js"></script>
+  </head>
+  <body ng-app="auction">
+    <nav class="navbar navbar-default pull-right" ng-controller="NavCtrl">
+      <ul class="nav navbar-nav" >
+	<li ng-show="isLoggedIn()"><a ui-sref="myauction">MyAuction</a></li>
+	<li ng-show="isLoggedIn()"><a>{{ currentUser() }}</a></li>
+	<li ng-show="isLoggedIn()"><a href="" ng-click="logOut()">Log Out</a></li>
+	<li ng-hide="isLoggedIn()"><a ui-sref="login">Log In</a></li>
+	<li ng-hide="isLoggedIn()"><a ui-sref="register">Register</a></li>
+      </ul>
+    </nav>
+    <ui-view></ui-view>
+  </body>
 </html>

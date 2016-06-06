@@ -1,4 +1,4 @@
-var app = angular.module('auction', ['ngMessages', 'ui.router', 'pascalprecht.translate', 'ngSanitize'])
+var app = angular.module('auction', ['ngMessages', 'ui.router', 'pascalprecht.translate', 'ngSanitize', 'stripe.checkout'])
 
 
 app.config(['$translateProvider', function ($translateProvider) {
@@ -653,6 +653,13 @@ app.controller('BuyTicketsCtrl', [
 	    $scope.computeOrderDetails();
 	};
 
+        $scope.calculateTotal = function() {
+            return $scope.numAdultTickets*15
+                +$scope.numHighSchoolTickets*10
+                +$scope.numJuniorHighTickets*10
+                +$scope.numChildTickets*5;
+        };
+
 	$scope.computeOrderDetails = function() {
 	    var adultTickets = 0;
 	    var highSchoolTickets = 0;
@@ -699,6 +706,11 @@ app.controller('BuyTicketsCtrl', [
 		console.log(data);
 	    });
 	};
+
+        $scope.doCheckout = function(token) {
+            alert("Got Stripe token: " + token.id);
+        };
+
     }]);
 
 
