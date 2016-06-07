@@ -629,7 +629,6 @@ app.controller('BuyTicketsCtrl', [
     'auth',
     function($scope, $q, $state, tickets, charges, auth) {
 	$scope.ticketTypes = ["ADULT_TICKET","HIGHSCHOOL_TICKET","JUNIORHIGH_TICKET","CHILD_TICKET"];
-	console.log($scope.foodTypes);
 	$scope.tickets = [];
 	$scope.numAdultTickets = 1;
 	$scope.numHighSchoolTickets = 0;
@@ -707,8 +706,8 @@ app.controller('BuyTicketsCtrl', [
                 stripe_token: token.id,
                 amount: $scope.calculateTotal()*100
             }).then(function(data) {
-	        $scope.tickets.forEach(function(ticket) {
-                    ticket.customer_id = data.customer_id;
+                $scope.tickets.forEach(function(ticket) {
+                    ticket.customer_id = data.data.customer_id;
 		    if ( auth.isLoggedIn() )
 		        ticket.login = auth.currentUser().email;
 		    else
