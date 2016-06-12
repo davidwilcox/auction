@@ -274,7 +274,9 @@ app.controller('ViewRegisteredPeopleCtrl', [
 app.controller('HomeCtrl', [
     '$scope',
     '$state',
-    function($scope, $state) {
+    'auth',
+    function($scope, $state, auth) {
+	$scope.isLoggedIn = auth.isLoggedIn;
     }]);
 
 
