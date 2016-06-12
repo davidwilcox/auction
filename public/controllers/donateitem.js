@@ -44,7 +44,6 @@ app.controller('DonateItemCtrl', [
 
 	    submit_item = function() {
 		// persist user info.
-		console.log("submit");
 		$window.localStorage['donor-info'] = $scope.donor;
 		$scope.item.donor = $scope.donor;
 
@@ -60,8 +59,7 @@ app.controller('DonateItemCtrl', [
 	    $scope.donor.photoid = $scope.imageurl;
 
 	    if ( picture ) {
-                console.log("Here");
-	        payload = {
+                payload = {
 		    "photo": picture,
 		    "filename": filename
 	        };
@@ -70,12 +68,9 @@ app.controller('DonateItemCtrl', [
 			$scope.error = error;
 		    }).then(function(data) {
 			$scope.donor.photoid = data.data.photoid
-                        console.log("out");
-                        console.log(data.data.photoid);
 			submit_item();
 		    });
 	    } else {
-		console.log("second");
 		submit_item();
 	    }
 	};
