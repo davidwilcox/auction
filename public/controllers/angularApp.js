@@ -617,7 +617,6 @@ app.controller( 'SilentBidSheetsCtrl',[
     '$scope',
     '$http',
     function($scope, $http) {
-	$scope.myarr = [['a','b'],['c','d'],['e','f']];
 	$http.get("/all/items").error(
 	    function(error) {
 		console.log(error);
