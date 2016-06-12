@@ -233,7 +233,6 @@ app.directive('viewperson', function() {
 });
 
 
-
 app.controller('ViewTicketCtrl', [
     '$scope',
     '$state',
@@ -437,82 +436,6 @@ app.factory('auth', ['$http', '$window', '$q', function($http, $window, $q) {
     return o;
 }]);
 
-app.controller('DonateItemCtrl', [
-    '$scope',
-    '$state',
-    '$http',
-    '$window',
-    'auth',
-    function($scope, $state, $http, $window, auth) {
-
-	$scope.policies = ["KIDSFREE","KIDSFREECOUNT","EVERYBODYCOUNTS","THREEPRICES","OVER14","OVER21","KIDSPARTY"];
-	$scope.item = {
-	    category: "event",
-	    name: '',
-	    policy: "KIDSFREE"
-	};
-	$scope.imageurl = auth.currentUser().photoid;
-	$scope.itemMaxLength = 30;
-	$scope.descriptionMaxLength = 200;
-	user = auth.currentUser();
-	if ( user ) {
-	    $scope.donor = user;
-	} else if ( $window.localStorage['donor-info'] ) {
-	    $scope.donor = $window.localStorage['donor-info'];
-	}
-
-
-	$scope.fileNameChanged = function(ele) {
-	    $scope.donor.filename = ele.files[0].name;
-	};
-
-	$scope.donateitem = function() {
-
-	    picture = $scope.donor.picture;
-	    filename = $scope.donor.filename;
-	    delete $scope.donor.picture;
-	    delete $scope.donor.filename;
-
-
-
-	    submit_item = function() {
-		// persist user info.
-		console.log("submit");
-		$window.localStorage['donor-info'] = $scope.donor;
-		$scope.item.donor = $scope.donor;
-
-		$http.post('/submititem', $scope.item,{headers: {
-		    Authorization: "Bearer " + auth.getToken() } }).success(function(data) {
-			$state.go('home');
-		    }).error(function(error) {
-			console.log('error');
-			$scope.error = error;
-		    });
-	    };
-	    payload = {
-		"photo": picture,
-		"filename": filename
-	    };
-
-	    $scope.donor.photoid = $scope.imageurl;
-
-	    if ( picture ) {
-		console.log("first");
-		$http.post('/uploadphoto', payload).error(
-		    function(error) {
-			$scope.error = error;
-		    }).then(function(data) {
-			$scope.donor.photoid = data.data.photoid
-			submit_item();
-		    });
-	    } else {
-		console.log("second");
-		submit_item();
-	    }
-	};
-    }]);
-
-
 var compareTo = function() {
     return {
 	require: "ngModel",
@@ -549,52 +472,6 @@ app.controller('LoginCtrl', [
 	    });
 	};
     }]);
-
-app.controller('RegisterCtrl', [
-    '$scope',
-    '$state',
-    '$http',
-    'auth',
-    function($scope, $state, $http, auth) {
-	$scope.user = {};
-
-	$scope.fileNameCha39nged = function(ele) {
-	    $scope.user.filename = ele.files[0].name;
-	};
-
-	$scope.register = function() {
-	    picture = $scope.user.picture;
-	    filename = $scope.user.filename;
-	    delete $scope.user.picture;
-	    delete $scope.user.filename;
-
-	    var register = function() {
-		auth.register($scope.user).error(function(error) {
-		    console.log($scope.user);
-		    $scope.error = error;
-		}).success(function(data) {
-		    $state.go('home');
-		});
-	    };
-
-	    payload = {
-		"photo": picture,
-		"filename": filename
-	    };
-	    if ( picture ) {
-		$http.post('/uploadphoto', payload).error(
-		    function(error) {
-			$scope.error = error;
-		    }).then(function(data) {
-			$scope.user.photoid = data.data.photoid
-			register();
-		    });
-	    } else {
-		register();
-	    }
-	};
-    }]);
-
 
 app.controller('NavCtrl', [
     '$scope', 'auth', function($scope, auth) {
