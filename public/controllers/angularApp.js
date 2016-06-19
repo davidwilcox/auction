@@ -1,4 +1,4 @@
-var app = angular.module('auction', ['ngMessages', 'ui.router', 'pascalprecht.translate', 'ngSanitize', 'stripe.checkout'])
+var app = angular.module('auction', ['ngMessages', 'ui.router', 'pascalprecht.translate', 'ngSanitize', 'stripe.checkout', 'ngMaterial'])
 
 
 app.config(['$translateProvider', function ($translateProvider) {
@@ -508,6 +508,7 @@ app.controller('BuyTicketsCtrl', [
     'auth',
     function($scope, $q, $state, tickets, charges, auth) {
 	$scope.ticketTypes = ["ADULT_TICKET","HIGHSCHOOL_TICKET","JUNIORHIGH_TICKET","CHILD_TICKET"];
+	console.log($scope.ticketTypes);
 	$scope.tickets = [];
 	$scope.numAdultTickets = 1;
 	$scope.numHighSchoolTickets = 0;

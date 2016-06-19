@@ -1,100 +1,105 @@
-<div class="container col-xs-12">
-  <h1 class="text-center" style="padding-top: 10px; padding-bottom: 20px">Purchase Tickets</h1>
-  
-  <div class="container col-xs-7">
-    
-    <div ng-repeat="ticket in tickets track by $index">
-      <div class="panel panel-default">
-	<div class="panel-body">
-	  <button ng-click="removeTicket($index)" style="float:right; background-color: white; border: 0px"><i class="glyphicon glyphicon-remove"></i></button>
-	  
-	  <h4>1 <span translate="{{ticket.agegroup}}"></span> Ticket</h4>
-	  
-	  <div class="row" style="padding-bottom:10px">
-	    <label>Name</label>
-	    <input type="text" ng-model="ticket.name" class="form-control"></input>
-	  </div>
-	  
-	  
-	  <div class="row" style="padding-bottom:10px">
-	    <label>Age Group</label>
+<div>
+  <h1 class="text-center" >Purchase Tickets</h1>
 
-	    <div ng-repeat="type in ticketTypes">
-	      <label>
-		<input type="radio" ng-model="ticket.agegroup" value="{{type}}" ng-change="computeOrderDetails()">  <span translate="{{type}}"></span></input>
-	      </label>
-	    </div>
-	  </div>
-	  
-	  <div class="row">
-	    <label>Dietary Restrictions</label>
-	    <div>
-	      <select ng-model="ticket.foodRes">
-		<option value="NONE_FOOD">No food restrictions</option>
-		<option value="VEGAN_FOOD">Vegan</option>
-		<option value="GLUTENFREE_FOOD">Gluten-free</option>
-              </select>
-            </div>
+  <div layout="column">
+    <div layout-align="left">
+      <md-button ng-click="addTicket()">Add additional ticket to order</md-button>
+    </div>
+    <div layout="row" >
+
+      <div flex="66">
+	<div layout="column">
+	  <div ng-repeat="ticket in tickets track by $index">
+	    <md-card flex>
+	      <div layout="row" flex>
+		<md-card-title>
+		  <md-card-title-text><h4>1 <span translate="{{ticket.agegroup}}"></span> Ticket</h4></md-card-title-text></md-card-title>
+		<md-card-actions layout="row" layout-align="end">
+		  <md-button aria-label="Remove Ticket" ng-click="removeTicket($index)" class="md-icon-button"><i class="glyphicon glyphicon-remove"></i></md-button>
+		</md-card-actions>
+	      </div>
+	      
+	      <md-input-container> 
+		<label>Name</label>
+		<input ng-model="ticket.name" >
+	      </md-input-container>
+
+
+	      <label>Age Group</label>
+	      <md-radio-group ng-model="ticket.agegroup" ng-change="computeOrderDetails()">
+		<div >
+		  
+		  <div ng-repeat="type in ticketTypes">
+		    <md-radio-button value="{{type}}" >  <span translate="{{type}}"></span></md-radio-button>
+		  </div>
+		</div>
+	      </md-radio-group>
+
+	      <md-input-container>
+		<label>Dietary Restrictions</label>
+		<md-select ng-model="ticket.foodRes">
+		  <md-option value="NONE_FOOD">No food restrictions</md-option>
+		  <md-option value="VEGAN_FOOD">Vegan</md-option>
+		  <md-option value="GLUTENFREE_FOOD">Gluten-free</md-option>
+		</md-select>
+	      </md-input-container>
+
+	    </md-card> <!--panel-body-->
+	  </div> <!--ticket repeater-->
+	</div>
+      </div>
+
+      <div flex="33">
+	<md-card>
+          <div>Order Details</div>
+          
+          <div>
+            <span>{{numAdultTickets}}</span>
+            <span>Adult Tickets</span>
+            <span>x $15 =</span>
+            <span>${{numAdultTickets*15}}</span>
+          </div>
+          
+          <div>
+            <span>{{numHighSchoolTickets}}</span>
+            <span>High School Tickets</span>
+            <span>x $10 =</span>
+            <span>${{numHighSchoolTickets*10}}</span>
           </div>
 
-        </div> <!--panel-body-->
-      </div> <!--panel-default-->
-    </div> <!--ticket repeater-->
+          <div>
+            <span>{{numJuniorHighTickets}}</span>
+            <span>Junior High Tickets</span>
+            <span>x $10 =</span>
+            <span>${{numJuniorHighTickets*10}}</span>
+          </div>
 
-    <button ng-click="addTicket()">Add additional ticket to order</button>
+          
+          <div>
+            <span>{{numChildTickets}}</span>
+            <span>Child Tickets</span>
+            <span>x $5 =</span>
+            <span>${{numChildTickets*5}}</span>
+          </div>
 
-  </div> <!--ticket purchase container-->
-
-  <div class="container col-xs-5">
-    <div class="panel panel-default">
-      <div class="panel-body">
-        <div>Order Details</div>
-        
-        <div>
-          <span>{{numAdultTickets}}</span>
-          <span>Adult Tickets</span>
-          <span>x $15 =</span>
-          <span>${{numAdultTickets*15}}</span>
-        </div>
-        
-        <div>
-          <span>{{numHighSchoolTickets}}</span>
-          <span>High School Tickets</span>
-          <span>x $10 =</span>
-          <span>${{numHighSchoolTickets*10}}</span>
-        </div>
-
-        <div>
-          <span>{{numJuniorHighTickets}}</span>
-          <span>Junior High Tickets</span>
-          <span>x $10 =</span>
-          <span>${{numJuniorHighTickets*10}}</span>
-        </div>
-
-        
-        <div>
-          <span>{{numChildTickets}}</span>
-          <span>Child Tickets</span>
-          <span>x $5 =</span>
-          <span>${{numChildTickets*5}}</span>
-        </div>
-
-        <div>
-          Total: ${{calculateTotal()}}
-        </div>
-        
-        <div>
-          <button stripe-checkout="doCheckout"
-                  data-key="pk_test_TplRtT5yloUqkARvZ1QR4dzt"
-                  data-name="Simple Example"
-                  data-description="Widget"
-                  data-amount="${{calculateTotal()*100}}"
-                  >
-            PurchaseTickets
-          </button>
-        </div>
+          <div>
+            Total: ${{calculateTotal()}}
+          </div>
+          
+          <div>
+            <md-button stripe-checkout="doCheckout"
+		       data-key="pk_test_TplRtT5yloUqkARvZ1QR4dzt"
+		       data-name="Simple Example"
+		       data-description="Widget"
+		       data-amount="${{calculateTotal()*100}}"
+		       >
+	      Purchase Tickets
+            </md-button>
+          </div>
+	</md-card>
       </div>
     </div>
+    <md-button ng-click="addTicket()">Add additional ticket to order</md-button>
   </div>
 
 
