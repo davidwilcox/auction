@@ -1,9 +1,11 @@
 <div>
-  <h1 class="text-center" >Purchase Tickets</h1>
+  <md-toolbar class="md-warn">
+    <h1 class="text-center">Purchase Tickets</h1>
+  </md-toolbar>
 
   <div layout="column">
     <div layout-align="left">
-      <md-button ng-click="addTicket()">Add additional ticket to order</md-button>
+      <md-button ng-click="addTicket()" class="md-primary md-raised">Add additional ticket to order</md-button>
     </div>
     <div layout="row" >
 
@@ -19,7 +21,7 @@
 		</md-card-actions>
 	      </div>
 	      
-	      <md-input-container> 
+	      <md-input-container>
 		<label>Name</label>
 		<input ng-model="ticket.name" >
 	      </md-input-container>
@@ -92,6 +94,7 @@
 		       data-name="Simple Example"
 		       data-description="Widget"
 		       data-amount="${{calculateTotal()*100}}"
+                       class="md-primary md-raised"
 		       >
 	      Purchase Tickets
             </md-button>
@@ -99,7 +102,9 @@
 	</md-card>
       </div>
     </div>
-    <md-button ng-click="addTicket()">Add additional ticket to order</md-button>
+    <div layout-align="left">
+      <md-button ng-click="addTicket()" class="md-primary md-raised">Add additional ticket to order</md-button>
+    </div>
   </div>
 
 
