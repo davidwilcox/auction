@@ -1,45 +1,43 @@
-
-<div class="page-header">
+<div layout-padding>
   <h1>Login</h1>
-</div>
-
-<div class="col-xs-6">
 
   <div ng-show="error" class="alert alert-danger row">
-	<span>{{ error.message }}</span>
+    <span>{{ error.message }}</span>
   </div>
 
   <form ng-submit="logIn()"
-		name="loginForm"
-		>
+	name="loginForm"
+	>
 
-	<div class="form-group">
-	  <label>Email</label>
-      <input type="email"
-			 name="loginemail"
-			 class="form-control"
-			 placeholder="Email"
-			 ng-model="user.email"
-			 required
-			 ></input>
-	  <div ng-messages="loginForm.loginemail.$error">
-		<div ng-messages-include="/messages.html"></div>
-	  </div>
-	</div>
-	<div class="form-group">
-	  <label>Password</label>
-      <input type="password"
-			 class="form-control"
-			 placeholder="Password"
-			 ng-model="user.password"
-			 name="password"
-			 required
-			 ></input>
-	  <div ng-messages="loginForm.password.$error">
-		<div ng-messages-include="/messages.html"></div>
-	  </div>
-	</div>
-	<button type="submit" class="btn btn-primary">Log In</button>
+    <div>
+      <md-input-container>
+        <label>Email</label>
+        <input type="email"
+	       name="loginemail"
+	       class="form-control"
+	       ng-model="user.email"
+	       required
+	       ></input>
+        <div ng-messages="loginForm.loginemail.$error">
+	  <div ng-messages-include="/messages.html"></div>
+        </div>
+      </md-input-container>
+    </div>
+    <div>
+      <md-input-container>
+        <label>Password</label>
+        <input type="password"
+	       class="form-control"
+	       ng-model="user.password"
+	       name="password"
+	       required
+	       ></input>
+        <div ng-messages="loginForm.password.$error">
+	  <div ng-messages-include="/messages.html"></div>
+        </div>
+      </md-input-container>
+    </div>
+    <md-button type="submit" class="md-primary md-raised">Log In</button>
   </form>
 
 </div>
