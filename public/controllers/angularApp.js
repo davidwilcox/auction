@@ -166,6 +166,16 @@ app.config([
 		    }
 		}]
 	    })
+	    .state('add_admin', {
+		    url: '/add_admin',
+			templateUrl: '/templates/add_admin.html',
+			controller: 'AddAdminCtrl',
+			onEnter: [ '$state', 'auth', function($state, auth) {
+			    if ( !auth.isLoggedIn() || !auth.isAdmin() ) {
+				$state.go('home');
+			    }
+			}]
+		})
 	    .state('myinvoice', {
 		url: '/myinvoice',
 		templateUrl: '/templates/myinvoice.html',
@@ -221,6 +231,31 @@ app.controller('ViewPersonCtrl', [
     function() {
     }]);
 
+app.controller(
+    'AddAdminCtrl', 
+    ['$http', '$scope', 'auth', '$mdDialog', function($http, $scope, auth, $mdDialog) {
+	    $scope.addAdmin = function(email) {
+		$http.post('/addadmin', {email: email}, {headers: {
+			    Authorization: "Bearer " + auth.getToken() } }).then(function(res) {
+				    $mdDialog.show(
+						   $mdDialog.alert()
+						   .parent(angular.element(document.querySelector('#popupContainer')))
+						   .clickOutsideToClose(true)
+						   .title('Admin user added.')
+						   .ok('Got it!'));
+				}, function(err) {
+				    $mdDialog.show(
+						   $mdDialog.alert()
+						   .parent(angular.element(document.querySelector('#popupContainer')))
+						   .clickOutsideToClose(true)
+						   .title('Error encountered')
+						   .textContent(err)
+						   .ok('Got it!'));
+				});
+	    };
+	    
+	}]);
+
 app.directive('viewperson', function() {
     return {
         templateUrl: '/templates/viewperson.html',
@@ -240,8 +275,7 @@ app.controller('ViewTicketCtrl', [
     'items',
     function($scope, $state, ticket, items) {
         $scope.ticket = ticket.data[0];
-        console.log(ticket);
-	$scope.items = {};
+        $scope.items = {};
 	items.data.forEach(function(item) {
 	    $scope.items[item.id] = item;
 	});
@@ -277,6 +311,7 @@ app.controller('HomeCtrl', [
     'auth',
     function($scope, $state, auth) {
 	$scope.isLoggedIn = auth.isLoggedIn;
+	this.isLoggedIn = auth.isLoggedIn;
     }]);
 
 
@@ -398,6 +433,13 @@ app.factory('auth', ['$http', '$window', '$q', function($http, $window, $q) {
 	    return false;
 	}
     };
+    o.isAdmin = function() {
+	if ( o.isLoggedIn() ) {
+	    var user = o.currentUser();
+	    if ( user.admin )
+		return true;
+	}
+    };
     o.register = function(user) {
 	if ( user.confirmPassword == user.password ) {
 	    return $http.post('/register', user).success(function(data) {
@@ -473,13 +515,6 @@ app.controller('LoginCtrl', [
 		$state.go('home');
 	    });
 	};
-    }]);
-
-app.controller('NavCtrl', [
-    '$scope', 'auth', function($scope, auth) {
-	$scope.isLoggedIn = auth.isLoggedIn;
-	$scope.currentUser = auth.currentUserEmail;
-	$scope.logOut = auth.logOut;
     }]);
 
 

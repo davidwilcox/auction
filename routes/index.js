@@ -272,11 +272,41 @@ router.get('/accountexists/:email', function(req, res, next) {
 	}
     });
 });
-
 var jwt = require('express-jwt');
 var auth = jwt({secret: "SECRET", userProperty: "payload"});
 var crypto = require('crypto');
 var passport = require('passport');
+
+
+
+router.post('/addadmin', function(req, res, next) {
+
+	var params = {
+	    TableName: "users",
+	    Key: {
+		email: req.body.email
+	    },
+	    UpdateExpression: "SET #b = :v_isadmin",
+	    Item: {},
+	    ExpressionAttributeNames:{
+		"#b": "admin"
+	    },
+	    ExpressionAttributeValues: {
+		":v_isadmin": true
+	    },
+	    ReturnValues: "UPDATED_NEW"
+	};
+
+	docClient.update(params, function(err, data) {
+		if ( err ) {
+		    console.log(err);
+		    res.json( {err: err, success: false } );
+		} else {
+		    res.json( {success: true} );
+		}
+	    });
+    });
+
 
 router.post('/login', function(req, res, next) {
     if ( !req.body.email || !req.body.password ) {

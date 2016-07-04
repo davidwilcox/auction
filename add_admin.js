@@ -8,15 +8,6 @@ var dynamodb = new AWS.DynamoDB();
 
 var docClient = new AWS.DynamoDB.DocumentClient();
 
-params = {
-	TableName: "bidnumber",
-	Item: {
-		"id": "key",
-		"number": 0
-	}
-};
-
-
 var params = {
     TableName: "users",
     Key: {

@@ -39,37 +39,39 @@
   <body ng-app="auction" layout="column">
     <md-toolbar class="md-primary" ng-controller="NavCtrl as ctrl">
       <span class="md-toolbar-tools">
-        <a ui-sref="buytickets" ng-show="isLoggedIn()">
-	  <md-button class="md-primary md-raised">Buy Tickets</md-button>
+        <a ui-sref-active="active" ui-sref="buytickets" ng-show="ctrl.isLoggedIn()">
+	  <md-button class="md-primary md-raised" ui-sref-active="md-warn">
+	    Buy Tickets
+	  </md-button>
         </a>
-        <a ui-sref="donateitem" ng-show="isLoggedIn()">
+        <a ui-sref-active="active" ui-sref="donateitem" ng-show="ctrl.isLoggedIn()">
 	  <md-button class="md-primary md-raised">Donate Item</md-button>
         </a>
-        <a ui-sref="viewregisteredpeople" ng-show="isAdmin()">
+        <a ui-sref-active="active" ui-sref="viewregisteredpeople" ng-show="ctrl.isAdmin()">
 	  <md-button class="md-primary md-raised">View Registered People</md-button>
         </a>
-        <a ui-sref="viewdonateditems" ng-show="isAdmin()">
+        <a ui-sref-active="active" ui-sref="viewdonateditems" ng-show="ctrl.isAdmin()">
 	  <md-button class="md-primary md-raised">View Donated Items</md-button>
         </a>
-        <a ui-sref="insertbids" ng-show="isAdmin()">
+        <a  ui-sref-active="active" ui-sref="insertbids" ng-show="ctrl.isAdmin()">
 	  <md-button class="md-primary md-raised">Insert Bids</md-button>
         </a>
-        <a ui-sref="addadmin" ng-show="isAdmin()">
+        <a ui-sref-active="active" ui-sref="add_admin" ng-show="ctrl.isAdmin()">
 	  <md-button class="md-primary md-raised">Add Admin</md-button>
         </a>
-        <a ui-sref="myauction" ng-show="isLoggedIn()" md-mode="right">
+        <a ui-sref-active="active" ui-sref="myauction" ng-show="ctrl.isLoggedIn()" md-mode="right">
 	  <md-button class="md-primary md-raised">MyAuction</md-button>
         </a>
-        <a ng-click="logOut()" ng-show="isLoggedIn()">
+        <a ui-sref-active="active" ng-click="ctrl.logOut()" ng-show="ctrl.isLoggedIn()">
           <md-button class="md-primary md-raised">Log Out</md-button>
         </a>
-        <a ui-sref="login" ng-hide="isLoggedIn()">
+        <a ui-sref-active="active" ui-sref="login" ng-hide="ctrl.isLoggedIn()">
 	  <md-button class="md-primary md-raised">Log In</md-button>
         </a>
-        <a ui-sref="register" ng-hide="isLoggedIn()" md-mode="right">
+        <a ui-sref-active="active" ui-sref="register" ng-hide="ctrl.isLoggedIn()" md-mode="right">
 	  <md-button class="md-primary md-raised">Register</md-button>
         </a>
-        <span ng-show="isLoggedIn()">
+        <span ng-show="ctrl.isLoggedIn()">
           {{ currentUser() }}
         </span>
       </span>

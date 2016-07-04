@@ -33,7 +33,6 @@ app.controller('RegisterCtrl', [
 
 	$scope.register = function() {
 	    picture = $scope.imageSrc;
-	    filename = $scope.file.name;
 
 	    var register = function() {
 		auth.register($scope.user).error(function(error) {
@@ -44,11 +43,12 @@ app.controller('RegisterCtrl', [
 		});
 	    };
 
-	    payload = {
-		"photo": picture,
-		"filename": filename
-	    };
 	    if ( picture ) {
+		payload = {
+		    "photo": picture,
+		    "filename": filename
+		};
+		filename = $scope.file.name;
 		$http.post('/uploadphoto', payload).error(
 		    function(error) {
 			$scope.error = error;

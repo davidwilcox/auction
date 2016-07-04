@@ -15,7 +15,6 @@
         <label>Email</label>
         <input type="email"
 	       name="email"
-	       class="form-control"
 	       ng-model="user.email"
                size="60"
                required>
@@ -29,7 +28,6 @@
         <label>LAST NAME, FIRST NAME</label>
         <input type="text"
 	       name="name"
-	       class="form-control"
 	       ng-model="user.name"
                size="60">
       </md-input-container>
@@ -39,7 +37,6 @@
         <label>Phone Number</label>
         <input type="text"
 	       name="phonenumber"
-	       class="form-control"
 	       ng-model="user.phonenumber">
       </md-input-container>
     </div>
@@ -60,7 +57,6 @@
         <label>Password</label>
         <input type="password"
 	       name="password"
-	       class="form-control"
 	       ng-model="user.password" required>
         <div ng-messages="registrationForm.password.$error">
 	  <div ng-messages-include="/messages.html" ></div>
@@ -76,6 +72,6 @@
         </div>
       </md-input-container>
     </div>
-    <button type="submit" class="btn btn-primary">Register</button>
+    <md-button type="submit" class="md-primary md-raised">Register</md-button>
   </form>
 </div>
