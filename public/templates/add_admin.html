@@ -1,0 +1,25 @@
+<div layout-padding>
+  <form>
+    <div>
+      What is the email address of the person you'd like to add?
+    </div>
+    <div>
+      <md-input-container>
+	<label>Email Address</label>
+	<input
+	   type="text"
+	   ng-model="newadmin"
+	   name="newadmin"
+	   size="65"
+	   required
+	   >
+      </md-input-container>
+    </div>
+    <div>
+      <md-button
+	 class="md-primary md-raised"
+	 ng-click="addAdmin(newadmin)"
+	 >Add Admin
+      </md-button>
+    </div>
+</div>
