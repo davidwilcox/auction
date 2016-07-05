@@ -1,96 +1,90 @@
-<!-- <div class="container col-md-12">
-	 <div class="col-xs-3" style="background-color:grey; height: 100vh; padding-left: 0px; padding-right: 0px">
-       <h4 class="text-center" style="padding-top: 50px">Ticket options</h4>
-	 </div> -->
-<div class="container col-xs-12 col-sm-offset-1 col-sm-10">
-  <h1 class="text-center" style="padding-top: 10px; padding-bottom: 20px">All Donated Items</h1>
-  <div ng-show="error" class="alert alert-danger row">
-	<span>{{ error.message }}</span>
+<div>
+  <div ng-show="error" >
+    <span>{{ error.message }}</span>
   </div>
-  <div ng-show="message" class="alert row">
-	<span>{{ message.message }}</span>
+  <div ng-show="message" >
+    <span>{{ message.message }}</span>
   </div>
 
   <div ng-repeat="item in items">
-	<div class="panel panel-default">
-	  <div>
-		<div class="panel-body">
-		  <div class="row">
-			<label>Donor Name</label>
-			{{item.donor.name}}
-		  </div>
-		  <div class="row">
-			<label>Donor Email</label>
-			{{item.donor.email}}
-		  </div>
-		  <div class="row">
-			<label>Donor Phone Number</label>
-			{{item.donor.phone}}
-		  </div>
-		  <div class="row">
-			<label>Item Category</label>
-			{{item.category}}
-		  </div>
-		  <div class="row">
-			<label>Item Description</label>
-			{{item.description}}
-		  </div>
-		  <div class="row">
-			<label>Item Name</label>
-			{{item.name}}
-		  </div>
-		  <div class="row">
-			<label>Item Starting Bid</label>
-			{{item.minvalue}}
-		  </div>
-		  <div class="row">
-			<label>Item Value</label>
-			{{item.value}}
-		  </div>
-		  <div class="row" ng-show="item.policy">
-			<label>Event Policy</label>
-			<span translate="{{item.policy}}"></span>
-		  </div>
-		  <div class="row" ng-show="item.referee">
-			<label>Donor Referee</label>
-			{{item.referee}}
-		  </div>
-		  <form ng-submit="addbidder">
-			<div>
-			  <label> Bidder</label>
-			  <input
-				 type="number"
-				 ng-model="item.bidder"
-				 class="form-control"
-				 placeholder="Bidder Number"
-				 >
-			  </input>
-			</div>
-			<div>
-			  <button
-				 ng-click="addbidder(item)" >
-				Add Bidder
-			  </button>
-			</div>
-			<div>
-			  <label>Price</label>
-			  <input
-				 type="number"
-				 ng-model="item.price"
-				 class="form-control"
-				 placeholder="Sell Price"
-				 >
-			  </input>
-			</div>
-			<div>
-			  <button
-				 ng-click="updatesellprice(item)">
-				Update Sell Price
-			  </button>
-			</div>
-		  </form>
-		</div>
-	  </div>
-	</div>
+    <md-card layout-padding>
+      <md-card-title>
+        <md-card-title-text>
+          <span class="md-headline">
+	    {{item.donor.name}}
+          </span>
+          <span class="md-subhead">
+	    {{item.donor.email}}
+          </span>
+        </md-card-title-text>
+      </md-card-title>
+      <div layout="row">
+        <label>Donor Phone Number</label>
+        {{item.donor.phone}}
+      </div>
+      <div layout="row">
+        <label>Item Category</label>
+        {{item.category}}
+      </div>
+      <div layout="row">
+        <label>Item Description</label>
+        {{item.description}}
+      </div>
+      <div layout="row">
+        <label>Item Name</label>
+        {{item.name}}
+      </div>
+      <div layout="row">
+        <label>Item Starting Bid</label>
+        {{item.minvalue}}
+      </div>
+      <div layout="row">
+        <label>Item Value</label>
+        {{item.value}}
+      </div>
+      <div layout="row" ng-show="item.policy">
+        <label>Event Policy</label>
+        <span translate="{{item.policy}}"></span>
+      </div>
+      <div layout="row" ng-show="item.referee">
+        <label>Donor Referee</label>
+        {{item.referee}}
+      </div>
+      <form ng-submit="addbidder">
+        <div>
+          <md-input-container>
+          <label>Bidder #</label>
+          <input
+	     type="number"
+	     ng-model="item.bidder"
+	     >
+        </div>
+        <div>
+          <md-button
+	     ng-click="addbidder(item)"
+             class="md-primary md-raised"
+             >
+	    Add Bidder
+          </md-button>
+        </div>
+        <div>
+          <md-input-container>
+            <label>Price</label>
+            <input
+	       type="number"
+	       ng-model="item.price"
+	       >
+          </md-input-container>
+        </div>
+        <div>
+          <md-button
+	     ng-click="updatesellprice(item)"
+             class="md-primary md-raised"
+             >
+	    Update Sell Price
+          </md-button>
+        </div>
+      </form>
+    </md-card>
   </div>
 </div>

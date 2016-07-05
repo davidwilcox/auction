@@ -1,4 +1,4 @@
-<md-card>
+<md-card layout-padding>
   <md-card-title>
     <md-card-title-text>
       <span class="md-headline">
@@ -6,21 +6,25 @@
       </span>
       <span class="md-subhead">Bid Number {{ticket.bidnumber}}</span>
     </md-card-title-text>
-    <div layout="row">
-      <label>Dietary Restrictions</label>
-      <span translate="{{ticket.foodRes}}"></span>
-    </div>
-    <div layout="row">
-      <label>Date Created</label>
-      {{ticket.date}}
-    </div>
-      <label>Bought Items</label>
-      <md-card>
-      <div ng-repeat="item in ticket.boughtitems">
-	<div layout="row">
-	  <a ui-sref="viewitem({ itemid: item })">{{items[item].name}}</a>
-	</div>
+  </md-card-title>
+  <div layout="row">
+    <label>Dietary Restrictions</label>
+    <span translate="{{ticket.foodRes}}"></span>
+  </div>
+  <div layout="row">
+    <label>Date Created</label>
+    {{ticket.date}}
+  </div>
+  <md-card layout-padding>
+    <md-card-title>
+      <md-card-title-text>
+        <span class="md-subhead">Bought Items</span>
+      </md-card-title-text>
+    </md-card-title>
+    <div ng-repeat="item in ticket.boughtitems">
+      <div layout="row">
+	<a ui-sref="viewitem({ itemid: item })">{{items[item].name}}</a>
       </div>
     </div>
-  </div>
+  </md-card>
 </md-card>

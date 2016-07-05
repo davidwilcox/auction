@@ -1,4 +1,4 @@
-<md-card>
+<md-card layout-padding>
   <md-card-title>
     <md-card-title-text>
       <span class="md-headline">
@@ -11,7 +11,7 @@
     <md-card-title-media>
       <img ng-src="http://svuus-photos.s3.amazonaws.com/{{item.donor.photoid}}" >
     </md-card-title-media>
-  </md-card-title>      
+  </md-card-title>
   <div layout="row">
     <label>Donor Phone Number</label>
     {{item.donor.phone}}
@@ -45,7 +45,7 @@
     {{item.referee}}
   </div>
   <div ng-repeat="buyer in item.buyers">
-    <md-card>
+    <md-card layout-padding>
       <md-card-title>
 	<md-card-title-text>
 	  <span class="md-headline">
