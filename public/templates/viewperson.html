@@ -1,40 +1,26 @@
-<div class="panel panel-default">
-  <div>
-    <div class="panel-body">
-      <div class="row">
-	<label>Name</label>
+<md-card>
+  <md-card-title>
+    <md-card-title-text>
+      <span class="md-headline">
 	{{ticket.name}}
-      </div>
-      <div class="row">
-	<label>Age</label>
-	<span translate="{{ticket.agegroup}}"></span>
-      </div>
-      <div class="row">
-	<label>Dietary Restrictions</label>
-	<span translate="{{ticket.foodRes}}"></span>
-      </div>
-      <div class="row">
-	<label>Buyer</label>
-	{{ticket.buyer.name}}
-      </div>
-      <div class="row">
-	<label>Date Created</label>
-	{{ticket.date}}
-      </div>
-      <div class="row">
-	<label>Bid Number</label>
-	{{ticket.bidnumber}}
-      </div>
-      <div class="panel panel-default">
-	<label>Bought Items</label>
-	<div class="panel-body">
-	  <div ng-repeat="item in ticket.boughtitems">
-	    <div class="row">
-	      <a ui-sref="viewitem({ itemid: item })">{{items[item].name}}</a>
-	    </div>
-	  </div>
+      </span>
+      <span class="md-subhead">Bid Number {{ticket.bidnumber}}</span>
+    </md-card-title-text>
+    <div layout="row">
+      <label>Dietary Restrictions</label>
+      <span translate="{{ticket.foodRes}}"></span>
+    </div>
+    <div layout="row">
+      <label>Date Created</label>
+      {{ticket.date}}
+    </div>
+      <label>Bought Items</label>
+      <md-card>
+      <div ng-repeat="item in ticket.boughtitems">
+	<div layout="row">
+	  <a ui-sref="viewitem({ itemid: item })">{{items[item].name}}</a>
 	</div>
       </div>
     </div>
   </div>
-</div>
+</md-card>

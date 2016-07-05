@@ -1,69 +1,65 @@
-<div class="panel panel-default">
-  <div>
-    <div class="panel-body">
-      <div class="col-sm-8">
-        <div class="row">
-	  <label>Donor Name</label>
-	  {{item.donor.name}}
-        </div>
-        <div class="row">
-	  <label>Donor Email</label>
-	  {{item.donor.email}}
-        </div>
-        <div class="row">
-	  <label>Donor Phone Number</label>
-	  {{item.donor.phone}}
-        </div>
-        <div class="row">
-	  <label>Item Category</label>
-	  {{item.category}}
-        </div>
-        <div class="row">
-	  <label>Item Description</label>
-	  {{item.description}}
-        </div>
-        <div class="row">
-	  <label>Item Name</label>
-	  {{item.name}}
-        </div>
-        <div class="row">
-	  <label>Item Starting Bid</label>
-	  {{item.minvalue}}
-        </div>
-        <div class="row">
-	  <label>Item Value</label>
-	  {{item.value}}
-        </div>
-        <div class="row" ng-show="item.policy">
-	  <label>Event Policy</label>
-	  <span translate="{{item.policy}}"></span>
-        </div>
-        <div class="row" ng-show="item.referee">
-	  <label>Donor Referee</label>
-	  {{item.referee}}
-        </div>
-        <div ng-repeat="buyer in item.buyers">
-	  <div class="panel panel-default">
-	    <div class="panel-body">
-	      <div class="row">
-	        <label>Buyer Name</label>
-	        <a ui-sref="viewticket( {bidnumber: buyer} )">{{tickets[buyer].name}}</a>
-	      </div>
-	      <div class="row">
-	        <label>Buyer Email</label>
-	        {{tickets[buyer].login}}
-	      </div>
-	      <div class="row">
-	        <label>Buyer Phone</label>
-	        {{tickets[buyer].buyer.phonenumber}}
-	      </div>
-	    </div>
-	  </div>
-        </div>
-      </div>
-      <div class="col-sm-4">
-        <img ng-src="http://svuus-photos.s3.amazonaws.com/{{item.donor.photoid}}" style="max-width:100%;max-height:100%" ></img>
-      </div>
-    </div>
+<md-card>
+  <md-card-title>
+    <md-card-title-text>
+      <span class="md-headline">
+	{{item.donor.name}}
+      </span>
+      <span class="md-subhead">
+	{{item.donor.email}}
+      </span>
+    </md-card-title-text>
+    <md-card-title-media>
+      <img ng-src="http://svuus-photos.s3.amazonaws.com/{{item.donor.photoid}}" >
+    </md-card-title-media>
+  </md-card-title>      
+  <div layout="row">
+    <label>Donor Phone Number</label>
+    {{item.donor.phone}}
   </div>
-</div>
+  <div layout="row">
+    <label>Item Category</label>
+    {{item.category}}
+  </div>
+  <div layout="row">
+    <label>Item Description</label>
+    {{item.description}}
+  </div>
+  <div layout="row">
+    <label>Item Name</label>
+    {{item.name}}
+  </div>
+  <div layout="row">
+    <label>Item Starting Bid</label>
+    {{item.minvalue}}
+  </div>
+  <div layout="row">
+    <label>Item Value</label>
+    {{item.value}}
+  </div>
+  <div layout="row" ng-show="item.policy">
+    <label>Event Policy</label>
+    <span translate="{{item.policy}}"></span>
+  </div>
+  <div layout="row" ng-show="item.referee">
+    <label>Donor Referee</label>
+    {{item.referee}}
+  </div>
+  <div ng-repeat="buyer in item.buyers">
+    <md-card>
+      <md-card-title>
+	<md-card-title-text>
+	  <span class="md-headline">
+	    <a ui-sref="viewticket( {bidnumber: buyer} )">{{tickets[buyer].name}}</a>
+	  </span>
+	  <span class="md-subhead">
+	    {{tickets[buyer].login}}
+	  </span>
+	</md-card-title-text>
+      </md-card-title>
+      <div layout="row">
+	<label>Buyer Phone</label>
+	{{tickets[buyer].buyer.phonenumber}}
+      </div>
+    </md-card>
+  </div>
+</md-card>
