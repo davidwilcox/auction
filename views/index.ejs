@@ -45,21 +45,12 @@
         <a ui-sref-active="active" ui-sref="donateitem" ng-show="ctrl.isLoggedIn()">
 	  <md-button class="md-primary md-raised">Donate Item</md-button>
         </a>
-        <a ui-sref-active="active" ui-sref="viewregisteredpeople" ng-show="ctrl.isAdmin()">
-	  <md-button class="md-primary md-raised">View Registered People</md-button>
-        </a>
-        <a ui-sref-active="active" ui-sref="viewdonateditems" ng-show="ctrl.isAdmin()">
-	  <md-button class="md-primary md-raised">View Donated Items</md-button>
-        </a>
-        <a  ui-sref-active="active" ui-sref="insertbids" ng-show="ctrl.isAdmin()">
-	  <md-button class="md-primary md-raised">Insert Bids</md-button>
-        </a>
-        <a ui-sref-active="active" ui-sref="add_admin" ng-show="ctrl.isAdmin()">
-	  <md-button class="md-primary md-raised">Add Admin</md-button>
-        </a>
         <a ui-sref-active="active" ui-sref="myauction" ng-show="ctrl.isLoggedIn()" md-mode="right">
 	  <md-button class="md-primary md-raised">MyAuction</md-button>
         </a>
+	<a ui-sref-active="active" ui-sref="admin" ng-show="ctrl.isAdmin()">
+	  <md-button class="md-primary md-raised">Admin Home</md-button>
+	</a>
         <a ui-sref-active="active" ng-click="ctrl.logOut()" ng-show="ctrl.isLoggedIn()">
           <md-button class="md-primary md-raised">Log Out</md-button>
         </a>

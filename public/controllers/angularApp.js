@@ -91,12 +91,12 @@ app.config([
 		templateUrl: '/templates/home.html',
 		controller: 'HomeCtrl'
 	    })
-	    .state('viewregisteredpeople', {
+	    .state('admin.viewregisteredpeople', {
 		url: '/viewregisteredpeople',
 		templateUrl: '/templates/viewregisteredpeople.html',
 		controller: 'ViewRegisteredPeopleCtrl'
 	    })
-	    .state('viewdonateditems', {
+	    .state('admin.viewdonateditems', {
 		url: '/viewdonateditems',
 		templateUrl: '/templates/viewdonateditems.html',
 		controller: 'ViewDonatedItemsCtrl'
@@ -136,7 +136,7 @@ app.config([
 		    }
 		}]
 	    })
-	    .state('insertbids', {
+	    .state('admin.insertbids', {
 		url: '/insertbids',
 		templateUrl: '/templates/insertbids.html',
 		controller: 'InsertBidsCtrl',
@@ -146,7 +146,7 @@ app.config([
 		    }
 		}]
 	    })
-	    .state('mytickets', {
+	    .state('myauction.mytickets', {
 		url: '/mytickets',
 		templateUrl: '/templates/mytickets.html',
 		controller: 'MyTicketsCtrl',
@@ -166,7 +166,12 @@ app.config([
 		    }
 		}]
 	    })
-	    .state('add_admin', {
+	    .state('admin', {
+		    url: '/admin',
+			templateUrl: '/templates/admin_home.html',
+			controller: 'AdminHomeCtrl'
+		})
+	    .state('admin.add_admin', {
 		    url: '/add_admin',
 			templateUrl: '/templates/add_admin.html',
 			controller: 'AddAdminCtrl',
@@ -176,7 +181,7 @@ app.config([
 			    }
 			}]
 		})
-	    .state('myinvoice', {
+	    .state('myauction.myinvoice', {
 		url: '/myinvoice',
 		templateUrl: '/templates/myinvoice.html',
 		controller: 'MyInvoiceCtrl',
@@ -186,7 +191,7 @@ app.config([
 		    }
 		}]
 	    })
-	    .state('mydonateditems', {
+	    .state('myauction.mydonateditems', {
 		url: '/mydonateditems',
 		templateUrl: '/templates/viewdonateditems.html',
 		controller: 'MyDonatedItemsCtrl',
@@ -230,6 +235,12 @@ app.config([
 app.controller('ViewPersonCtrl', [
     function() {
     }]);
+
+
+app.controller('AdminHomeCtrl', ['auth', '$scope',
+				 function(auth, $scope) {
+		       $scope.isAdmin = auth.isAdmin;
+		   }]);
 
 app.controller(
     'AddAdminCtrl', 

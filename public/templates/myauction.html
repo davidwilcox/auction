@@ -1,17 +1,12 @@
 <div>
-  <div>
-    <a ui-sref="mytickets">
-      <md-button class="md-raised md-primary">My Tickets</md-button>
-    </a>
-  </div>
-  <div>
-    <a ui-sref="mydonateditems">
-      <md-button class="md-raised md-primary">My Donated Items</md-button>
-    </a>
-  </div>
-  <div>
-    <a ui-sref="myinvoice">
-      <md-button class="md-raised md-primary">My Invoice</md-button>
-    </a>
-  </div>
+  <a ui-sref=".mytickets" ui-sref-active="active">
+    <md-button class="md-raised md-primary">My Tickets</md-button>
+  </a>
+  <a ui-sref=".mydonateditems"  ui-sref-active="active">
+    <md-button class="md-raised md-primary">My Donated Items</md-button>
+  </a>
+  <a ui-sref=".myinvoice" ui-sref-active="active">
+    <md-button class="md-raised md-primary">My Invoice</md-button>
+  </a>
+  <ui-view>
 </div>
