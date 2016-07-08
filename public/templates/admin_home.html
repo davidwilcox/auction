@@ -1,0 +1,15 @@
+<div>
+  <a ui-sref-active="active" ui-sref=".viewregisteredpeople" ng-show="isAdmin()">
+    <md-button class="md-primary md-raised">View Registered People</md-button>
+  </a>
+  <a ui-sref-active="active" ui-sref=".viewdonateditems" ng-show="isAdmin()">
+    <md-button class="md-primary md-raised">View Donated Items</md-button>
+  </a>
+  <a  ui-sref-active="active" ui-sref=".insertbids" ng-show="isAdmin()">
+    <md-button class="md-primary md-raised">Insert Bids</md-button>
+  </a>
+  <a ui-sref-active="active" ui-sref=".add_admin" ng-show="isAdmin()">
+    <md-button class="md-primary md-raised">Add Admin</md-button>
+  </a>
+  <ui-view></ui-view>
+</div>
