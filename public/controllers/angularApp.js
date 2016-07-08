@@ -171,16 +171,6 @@ app.config([
 			templateUrl: '/templates/admin_home.html',
 			controller: 'AdminHomeCtrl'
 		})
-	    .state('admin.add_admin', {
-		    url: '/add_admin',
-			templateUrl: '/templates/add_admin.html',
-			controller: 'AddAdminCtrl',
-			onEnter: [ '$state', 'auth', function($state, auth) {
-			    if ( !auth.isLoggedIn() || !auth.isAdmin() ) {
-				$state.go('home');
-			    }
-			}]
-		})
 	    .state('myauction.myinvoice', {
 		url: '/myinvoice',
 		templateUrl: '/templates/myinvoice.html',
@@ -191,6 +181,16 @@ app.config([
 		    }
 		}]
 	    })
+	    .state('admin.add_admin', {
+		url: '/add_admin',
+		templateUrl: '/templates/add_admin.html',
+		controller: 'AddAdminCtrl',
+		onEnter: [ '$state', 'auth', function($state, auth) {
+		    if ( !auth.isAdmin() ) {
+			$state.go('home');
+		    }
+		}]
+            })
 	    .state('myauction.mydonateditems', {
 		url: '/mydonateditems',
 		templateUrl: '/templates/viewdonateditems.html',
@@ -243,7 +243,7 @@ app.controller('AdminHomeCtrl', ['auth', '$scope',
 		   }]);
 
 app.controller(
-    'AddAdminCtrl', 
+    'AddAdminCtrl',
     ['$http', '$scope', 'auth', '$mdDialog', function($http, $scope, auth, $mdDialog) {
 	    $scope.addAdmin = function(email) {
 		$http.post('/addadmin', {email: email}, {headers: {
