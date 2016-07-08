@@ -228,7 +228,7 @@ router.post('/register', function(req, res, next) {
     var params = {
 	TableName: "users",
 	Item: req.body,
-	ConditionExpression: "attribute_not_exists(email)"
+	ConditionExpression: "(attribute_not_exists(email))"
     };
 
     docClient.put(params, function(err, data) {

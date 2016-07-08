@@ -44,11 +44,11 @@ app.controller('RegisterCtrl', [
 	    };
 
 	    if ( picture ) {
+		filename = $scope.file.name;
 		payload = {
 		    "photo": picture,
 		    "filename": filename
 		};
-		filename = $scope.file.name;
 		$http.post('/uploadphoto', payload).error(
 		    function(error) {
 			$scope.error = error;
