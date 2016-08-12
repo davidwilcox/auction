@@ -208,14 +208,13 @@
         <br>
 	We highly recommend choosing and advertising a specific date.
         <br>
-        <md-input-container>
-          <md-datepicker
-             ng-model="eventdate"
-             md-placeholder="Event Date"
-             required
-             >
-          </md-datepicker>
-	</md-input-container>
+        <md-datepicker
+           ng-model="eventdate"
+           md-placeholder="Event Date"
+           aria-label="Date Picker"
+           required
+           >
+        </md-datepicker>
       </div>
 
       <div ng-show="item.category == 'event'">
@@ -226,6 +225,7 @@
 	        name="itempolicy"
 	        name="policy"
 	        value="{{policy}}"
+                aria-label="Decision"
 	        >  <span translate="{{policy}}"></span>
              </md-radio-button>
 	   </div>

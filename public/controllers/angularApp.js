@@ -271,7 +271,7 @@ app.directive('viewperson', function() {
     return {
         templateUrl: '/templates/viewperson.html',
         controller: 'ViewPersonCtrl',
-        bindings: {
+        scope: {
             person: '=',
             items: '='
         }
