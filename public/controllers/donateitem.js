@@ -22,13 +22,11 @@ app.controller('DonateItemCtrl', [
 
 	$scope.policies = ["KIDSFREE","KIDSFREECOUNT","EVERYBODYCOUNTS","THREEPRICES","OVER14","OVER21","KIDSPARTY"];
 	$scope.item = {
-	    category: "event",
-	    name: '',
-	    policy: "KIDSFREE"
+	    name: ''
 	};
 	$scope.imageurl = auth.currentUser().photoid;
-        $scope.itemMaxLength = 30;
-	$scope.descriptionMaxLength = 200;
+        $scope.itemMaxLength = 50;
+	$scope.descriptionMaxLength = 500;
 	user = auth.currentUser();
 	if ( user ) {
 	    $scope.donor = user;

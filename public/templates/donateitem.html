@@ -8,29 +8,31 @@
      ng-submit="donateitem()"
      name="donateItemForm"
      >
-    <p>
-      Welcome to the South Valley Annual Goods and Services Auction Fundraiser! Our event his year is Saturday, November 14th 2015, precisely at 6:00 pm. We'll be taking donations through Sunday, November 8th at midnight. To donate an item to our auction, fill in all the areas below. PLEASE write it like you're trying to interest the reader in buying your item! Required areas are noted with a red asterisk.
-    </p>
-    <p>
+    <md-card layout-padding>
+      <p>
+        Welcome to the South Valley Annual Goods and Services Auction Fundraiser! Our event his year is Saturday, November 14th 2015, precisely at 6:00 pm. We'll be taking donations through Sunday, November 8th at midnight. To donate an item to our auction, fill in all the areas below. PLEASE write it like you're trying to interest the reader in buying your item! Required areas are noted with a red asterisk.
+      </p>
+      <p>
 
-      If you have more than one item, you'll need to fill this form for each item. Note that it should autofill your info on your second form.
-    </p>
-    <p>
+        If you have more than one item, you'll need to fill this form for each item. Note that it should autofill your info on your second form.
+      </p>
+      <p>
 
-      Please contact Marilyn Smith at <a href='mailto:smith3390@comcast.net'>smith3390@comcast.net</a> if you have any questions.
-    </p>
-    <p>
-      Thank you for making this year's auction GREAT!
-    </p>
-    <md-card flex>
-      <b>LAST NAME, FIRST NAME.</b> If several people are donating together, list all names, but put the main contact first. Put that person's email and phone number in the next fields.
+        Please contact Marilyn Smith at <a href='mailto:smith3390@comcast.net'>smith3390@comcast.net</a> if you have any questions.
+      </p>
+      <p>
+        <b>Thank you for making this year's auction GREAT!</b>
+      </p>
+    </md-card>
+    <br>
+    <md-card layout-padding>
+      Full name. If several people are donating together, list all names, but put the main contact first. Put that person's email and phone number in the next fields.
       <md-input-container>
 	<label>Donor Name</label>
 	<input
 	   type="text"
 	   ng-model="donor.name"
 	   name="donorname"
-	   class="form-control"
 	   required
 	   ></input>
 	<div ng-messages="donateItemForm.donorname.$error">
@@ -46,7 +48,6 @@
 	   type="text"
 	   ng-model="donor.phonenumber"
 	   name="donorphonenumber"
-	   class="form-control"
 	   required
 	   ></input>
 	<div ng-messages="donateItemForm.donorphonenumber.$error">
@@ -59,7 +60,6 @@
 	   type="text"
 	   name="email"
 	   ng-model="donor.email"
-	   class="form-control"
 	   required
 	   ></input>
 	<div ng-messages="donateItemForm.email.$error">
@@ -67,7 +67,7 @@
 	</div>
       </md-input-container>
 
-      <b>Picture (nice to have if you want to do a party donation)</b>
+      <b>Picture of yourself.</b>
       <input class="ng-hide" id="input-file-id" type="file" ng-file-select="onFileSelect($files)" accept="image/*" />
       <label for="input-file-id" class="md-button md-raised md-primary">Choose PICTURE</label>
       <div>
@@ -82,25 +82,14 @@
         </div>
 
       </div>
+    </md-card>
 
-      
-      <b>My item falls in the following category</b>
-      <md-input-container>
-        <md-radio-group
-           ng-model="item.category"
-	   name="itemcategory"
-           >
-          <md-radio-button value="event">Event</md-radio-button>
-          <md-radio-button value="object">Object</md-radio-button>
-        </md-radio-group>
-	<div ng-messages="donateItemForm.itemcategory.$error">
-	  <div ng-messages-include="/messages.html"></div>
-	</div>
-      </md-input-container>
-      <b>I'm offering a...</b>
+    <br>
+    <md-card layout-padding>
+      <h3><b>I'm offering a...</b></h3>
       <br>
       <div id="itemnamecharacters">
-        Please keep this succint. {{itemMaxLength - item.name.length}} remaining.
+        Please keep this succint. <font size="2">{{itemMaxLength - item.name.length}} remaining.</font>
       </div>
       <md-input-container>
         <label>Item Name</label>
@@ -108,7 +97,6 @@
 	   type="text"
 	   ng-model="item.name"
 	   name="itemname"
-	   class="form-control"
 	   ng-maxlength="{{itemMaxLength}}"
 	   maxlength="{{itemMaxLength}}"
 	   required
@@ -117,15 +105,14 @@
 	  <div ng-messages-include="/messages.html"></div>
 	</div>
       </md-input-container>
-      Here's a little more information about it. {{descriptionMaxLength - item.description.length}} characters remaining.
-      <br>
+      Here's a little more information about it.
       What is great about this item? What would make someone want to buy it? Write like you're trying to sell it!
+      <font size="2">{{descriptionMaxLength - item.description.length}} characters remaining.</font>
       <md-input-container>
 	<label>Description</label>
 	<textarea
 	   ng-model="item.description"
 	   name="itemdescription"
-	   class="form-control"
 	   ng-maxlength="{{descriptionMaxLength}}"
 	   maxlength="{{descriptionMaxLength}}"
 	   required
@@ -135,37 +122,56 @@
 	</div>
       </md-input-container>
       What is this item worth?
-      <br>
       Your best guess is fine.
-      <md-input-container>
-	<label>Fair Market Value</label>
-	<input
-	   type="number"
-	   ng-model="item.value"
-	   name="itemvalue"
-	   min="0"
-	   class="form-control"
-	   required
-	   ></input>
-	<div ng-messages="donateItemForm.itemvalue.$error">
-	  <div ng-messages-include="/messages.html"></div>
-	</div>
-      </md-input-container>
+      <div layout="row" layout-align="start center">
+        $
+        <md-input-container>
+	  <label>Fair Market Value (USD)</label>
+	  <input
+	     type="number"
+	     ng-model="item.value"
+	     name="itemvalue"
+	     min="0"
+	     required
+	     ></input>
+	  <div ng-messages="donateItemForm.itemvalue.$error">
+	    <div ng-messages-include="/messages.html"></div>
+	  </div>
+        </md-input-container>
+      </div>
       I would hate to see my item go for less than this amount.
+      <div layout="row" layout-align="start center">
+        $
+        <md-input-container>
+	  <label>Minimum Value (USD)</label>
+	  <input
+	     type="number"
+	     ng-model="item.minvalue"
+	     name="itemminvalue"
+	     min="0"
+	     required
+	     ></input>
+	  <div ng-messages="donateItemForm.itemminvalue.$error">
+	    <div ng-messages-include="/messages.html"></div>
+	  </div>
+        </md-input-container>
+      </div>
+
+      <b>My item falls in the following category</b>
       <md-input-container>
-	<label>Minimum Value</label>
-	<input
-	   type="number"
-	   ng-model="item.minvalue"
-	   name="itemminvalue"
-	   min="0"
-	   class="form-control"
-	   required
-	   ></input>
-	<div ng-messages="donateItemForm.itemminvalue.$error">
+        <md-radio-group
+           ng-model="item.category"
+	   name="itemcategory"
+           required
+           >
+          <md-radio-button value="event">Event (like a dinner party, poker night, a class, anything with multiple spots that happens later.)</md-radio-button>
+          <md-radio-button value="object">Object or service (a thing that can sit on the table, a gift certificate, haircut, computer consulting, photo shoot.  It could be later, but it’s sold a single thing.)</md-radio-button>
+        </md-radio-group>
+	<div ng-messages="donateItemForm.itemcategory.$error">
 	  <div ng-messages-include="/messages.html"></div>
 	</div>
       </md-input-container>
+
       <div ng-show="item.category == 'object'">
         How many items are you selling?
         <br>
@@ -177,7 +183,7 @@
 	     type="number"
 	     ng-model="quantity"
 	     name="quantity"
-	     class="form-control"
+             min="0"
 	     required
 	     ></input>
 	  <div ng-messages="donateItemForm.quantity.$error">
@@ -194,7 +200,7 @@
 	  <input
 	     type="number"
 	     ng-model="quantity"
-	     class="form-control"
+             min="0"
 	     required
 	   ></input>
 	  <div ng-messages="donateItemForm.quantity.$error">
@@ -204,21 +210,21 @@
       </div>
 
       <div ng-show="item.category == 'event'">
-	<b>What is the date of the event you will host?</b>
+        What is the date of the event you will host?
+        We highly recommend choosing and advertising a specific date.
         <br>
-	We highly recommend choosing and advertising a specific date.
+        If you absolutely can’t pick an exact date, enter the timeframe notes you know at this point, like “A Saturday in July”
         <br>
         <md-datepicker
            ng-model="eventdate"
            md-placeholder="Event Date"
            aria-label="Date Picker"
-           required
            >
         </md-datepicker>
       </div>
 
+      Choose one of these policies for kids.
       <div ng-show="item.category == 'event'">
-	<label>Choose one of these policies for kids.</label>
         <md-radio-group ng-model="item.policy" required>
 	   <div ng-repeat="policy in policies">
 	     <md-radio-button
@@ -226,7 +232,8 @@
 	        name="policy"
 	        value="{{policy}}"
                 aria-label="Decision"
-	        >  <span translate="{{policy}}"></span>
+                required
+	        >&nbsp;<span translate="{{policy}}"></span>
              </md-radio-button>
 	   </div>
 	   <div ng-messages="donateItemForm.itempolicy.$error">
@@ -234,21 +241,7 @@
 	   </div>
         </md-radio-group>
       </div>
-      <b>If you are not an attendee of SVUUS</b>
-      <br>
-      If you're a friend of an SVUUS person, or a business, please tell us the SVUUS person that asked you to donate.
-      <md-input-container>
-	<label>Referrer</label>
-	<input
-	   type="text"
-	   ng-model="item.referee"
-	   name="referree"
-	   class="form-control"
-	   ></input>
-      </md-input-container>
-      <b>If your donated item does not sell...</b>
-      <br>
-      It will be donated to a charitable organization. If you prefer to keep it if it does not sell, you are responsible for taking it at the end of the auction. If you will not be attending the auction, please ask a friend to retrieve it for you.
+      If your donated item does not sell, it will be donated to a charitable organization. If you prefer to keep it if it does not sell, you are responsible for taking it at the end of the auction. If you will not be attending the auction, please ask a friend to retrieve it for you.
       <md-radio-group ng-model="item.disclaimer" required >
 	<md-radio-button
 	   type="radio"
