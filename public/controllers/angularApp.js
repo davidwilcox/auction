@@ -591,10 +591,10 @@ app.controller('BuyTicketsCtrl', [
 	};
 
         $scope.calculateTotal = function() {
-            return $scope.numAdultTickets*15
-                +$scope.numHighSchoolTickets*10
-                +$scope.numJuniorHighTickets*10
-                +$scope.numChildTickets*5;
+            return $scope.numAdultTickets*16
+                +$scope.numHighSchoolTickets*12
+                +$scope.numJuniorHighTickets*6
+                +$scope.numChildTickets*6;
         };
 
 	$scope.computeOrderDetails = function() {

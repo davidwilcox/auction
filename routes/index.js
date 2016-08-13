@@ -336,6 +336,28 @@ router.post('/login', function(req, res, next) {
     })(req, res, next);
 });
 
+router.post('/deletebidder', auth, function(req, res, next) {
+});
+    
+router.post('/deleteitem', auth, function(req, res, next) {
+    var itemid = req.body.itemid;
+
+    var params = {
+        TableName: "items",
+        Key: {
+            id: itemid
+        };
+    };
+
+    docClient.delete(params, function(err, data) {
+        if ( err ) {
+            res.status(401).json({error: err});
+        } else {
+            res.status(200).json({message: "item added"});
+        }
+    });
+});
+
 router.post('/submititem', auth, function(req, res, next) {
     var item = req.body;
     item.id = guid();
