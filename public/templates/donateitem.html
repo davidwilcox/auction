@@ -3,6 +3,7 @@
   <div ng-show="error">
     <span>{{ error.message }}</span>
   </div>
+  <img src="http://davidwilcox.github.io/images/wildwildwest.jpg">
 
   <form
      ng-submit="donateitem()"
@@ -10,23 +11,23 @@
      >
     <md-card layout-padding>
       <p>
-        Welcome to the South Valley Annual Goods and Services Auction Fundraiser! Our event his year is Saturday, November 14th 2015, precisely at 6:00 pm. We'll be taking donations through Sunday, November 8th at midnight. To donate an item to our auction, fill in all the areas below. PLEASE write it like you're trying to interest the reader in buying your item! Required areas are noted with a red asterisk.
+        Welcome to the South Valley Annual Goods and Services Auction Fundraiser!  Our event is Saturday, November 12th, 2016, precisely at 6:00pm.
       </p>
       <p>
-
-        If you have more than one item, you'll need to fill this form for each item. Note that it should autofill your info on your second form.
+        We’ll be taking donations through Sunday, November 6th at midnight.  Fill in the area below to donate an item and hit the “Donate Item” button at the end.  If you have more than one item, fill out the page for each item.  PLEASE write it like you’re trying to interest the reader in buying your item.  (Required fields have an asterisk.)
       </p>
       <p>
-
-        Please contact Marilyn Smith at <a href='mailto:smith3390@comcast.net'>smith3390@comcast.net</a> if you have any questions.
+        If you have questions, contact Marilyn Smith at smith3390@comcast.net.
       </p>
       <p>
-        <b>Thank you for making this year's auction GREAT!</b>
+        <b>Thank you for making this year’s auction GREAT!</b>
       </p>
     </md-card>
     <br>
     <md-card layout-padding>
-      Full name. If several people are donating together, list all names, but put the main contact first. Put that person's email and phone number in the next fields.
+      Who’s Donating This Item?  (big and bold first line I mentioned before)
+
+Enter the name (or names!) of the person or group donating this item (you can change it from the autofilled name):
       <md-input-container>
 	<label>Donor Name</label>
 	<input
@@ -39,9 +40,7 @@
 	  <div ng-messages-include="/messages.html"></div>
 	</div>
       </md-input-container>
-      <b>What is the best phone number for reaching you?</b>
-      <br>
-      Please put in the dashes. Example 801-555-4891.
+      What phone number should people call about this item?  (Again, you can change from the autofill.)
       <md-input-container>
 	<label>Phone Number</label>
 	<input
@@ -49,12 +48,14 @@
 	   ng-model="donor.phonenumber"
 	   name="donorphonenumber"
 	   required
+           phone-input
 	   ></input>
 	<div ng-messages="donateItemForm.donorphonenumber.$error">
 	  <div ng-messages-include="/messages.html"></div>
 	</div>
       </md-input-container>
       <md-input-container>
+        What email should people use to contact the donor(s)?
 	<label>Email Address</label>
 	<input
 	   type="text"
@@ -67,12 +68,12 @@
 	</div>
       </md-input-container>
 
-      <b>Picture of yourself.</b>
+      Give us a photo of you, or the donating group!
       <input class="ng-hide" id="input-file-id" type="file" ng-file-select="onFileSelect($files)" accept="image/*" />
-      <label for="input-file-id" class="md-button md-raised md-primary">Choose PICTURE</label>
+      <label for="input-file-id" class="md-button md-raised md-primary">click to upload a photo</label>
       <div>
-	<label>Image Preview.</label>
         <div ng-hide="imageSrc">
+	  <label>Image Preview.</label>
 	  <div ng-show="donor.photoid">
 	    <img ng-src="http://svuus-photos.s3.amazonaws.com/{{donor.photoid}}" style="width:100px"></img>
 	  </div>
@@ -165,7 +166,7 @@
            required
            >
           <md-radio-button value="event">Event (like a dinner party, poker night, a class, anything with multiple spots that happens later.)</md-radio-button>
-          <md-radio-button value="object">Object or service (a thing that can sit on the table, a gift certificate, haircut, computer consulting, photo shoot.  It could be later, but it’s sold a single thing.)</md-radio-button>
+          <md-radio-button value="object">Object or service (a thing that can sit on the table, a gift certificate, haircut, computer consulting, photo shoot.  It could be later, but it's sold as a single thing.)</md-radio-button>
         </md-radio-group>
 	<div ng-messages="donateItemForm.itemcategory.$error">
 	  <div ng-messages-include="/messages.html"></div>
@@ -181,7 +182,7 @@
 	  <label>Quantity</label>
 	  <input
 	     type="number"
-	     ng-model="quantity"
+	     ng-model="item.quantity"
 	     name="quantity"
              min="0"
 	     required
@@ -199,7 +200,7 @@
 	  <label>Number of Spots</label>
 	  <input
 	     type="number"
-	     ng-model="quantity"
+	     ng-model="item.quantity"
              min="0"
 	     required
 	   ></input>
@@ -213,17 +214,25 @@
         What is the date of the event you will host?
         We highly recommend choosing and advertising a specific date.
         <br>
-        If you absolutely can’t pick an exact date, enter the timeframe notes you know at this point, like “A Saturday in July”
-        <br>
         <md-datepicker
-           ng-model="eventdate"
+           ng-model="item.eventdate"
            md-placeholder="Event Date"
            aria-label="Date Picker"
            >
         </md-datepicker>
+        If you absolutely can’t pick an exact date, enter the timeframe notes you know at this point, like “A Saturday in July”
+        <br>
+        <md-input-container>
+          <label>Time Notes</label>
+          <input
+             type="text"
+             ng-model="item.eventtypedtime"
+             >
+        </md-input-container>
       </div>
 
       Choose one of these policies for kids.
+      <br>
       <div ng-show="item.category == 'event'">
         <md-radio-group ng-model="item.policy" required>
 	   <div ng-repeat="policy in policies">
