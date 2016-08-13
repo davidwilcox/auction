@@ -346,7 +346,7 @@ router.post('/deleteitem', auth, function(req, res, next) {
         TableName: "items",
         Key: {
             id: itemid
-        };
+        }
     };
 
     docClient.delete(params, function(err, data) {
