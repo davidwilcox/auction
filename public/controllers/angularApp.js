@@ -271,7 +271,7 @@ app.directive('viewperson', function() {
     return {
         templateUrl: '/templates/viewperson.html',
         controller: 'ViewPersonCtrl',
-        scope: {
+        bindings: {
             person: '=',
             items: '='
         }
@@ -689,17 +689,48 @@ app.controller( 'SilentBidSheetsCtrl',[
 
 app.controller('ViewItemGenericCtrl', [function() {}]);
 
+app.controller('ViewItemAdminCtrl', ['$scope', 'auth', "$http", function($scope, auth, $http) {
+
+    $scope.saveitem = function(item) {
+        console.log("TRYING");
+        $http.post("/submititem", item, {headers: {
+            Authorization: "Bearer " + auth.getToken()
+        } } ).success(function(data) {
+            console.log("SUCCESS");
+            item.message = "Item changed!";
+        }).error(function(error) {
+            console.log("ERROR");
+            item.message = error;
+        });
+    };
+
+    $scope.policies = ["KIDSFREE","KIDSFREECOUNT","EVERYBODYCOUNTS","THREEPRICES","OVER14","OVER21","KIDSPARTY"];
+}]);
+
 
 app.directive('viewitem', function() {
     return {
         templateUrl: '/templates/viewitemgeneric.html',
         controller: 'ViewItemGenericCtrl',
         bindings: {
-            item: '=',
-            tickets: '='
+            tickets: '=',
+            item: '='
         }
     };
 });
+
+
+app.directive('viewitemadmin', function() {
+    return {
+        templateUrl: '/templates/viewitemadmin.html',
+        controller: 'ViewItemAdminCtrl',
+        bindings: {
+            tickets: '=',
+            item: '='
+        }
+    };
+});
+
 
 app.controller('ViewItemCtrl', [
     '$scope',
@@ -722,6 +753,7 @@ app.controller( 'ViewDonatedItemsCtrl', [
     '$http',
     'auth',
     function($scope, $q, tickets, $http, auth) {
+
 	var promises = [];
 	promises.push($http.get('/all/items'));
 	promises.push($http.get('/all/tickets'));

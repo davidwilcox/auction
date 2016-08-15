@@ -281,31 +281,31 @@ var passport = require('passport');
 
 router.post('/addadmin', function(req, res, next) {
 
-	var params = {
-	    TableName: "users",
-	    Key: {
-		email: req.body.email
-	    },
-	    UpdateExpression: "SET #b = :v_isadmin",
-	    Item: {},
-	    ExpressionAttributeNames:{
-		"#b": "admin"
-	    },
-	    ExpressionAttributeValues: {
-		":v_isadmin": true
-	    },
-	    ReturnValues: "UPDATED_NEW"
-	};
+    var params = {
+	TableName: "users",
+	Key: {
+	    email: req.body.email
+	},
+	UpdateExpression: "SET #b = :v_isadmin",
+	Item: {},
+	ExpressionAttributeNames:{
+	    "#b": "admin"
+	},
+	ExpressionAttributeValues: {
+	    ":v_isadmin": true
+	},
+	ReturnValues: "UPDATED_NEW"
+    };
 
-	docClient.update(params, function(err, data) {
-		if ( err ) {
-		    console.log(err);
-		    res.json( {err: err, success: false } );
-		} else {
-		    res.json( {success: true} );
-		}
-	    });
+    docClient.update(params, function(err, data) {
+	if ( err ) {
+	    console.log(err);
+	    res.json( {err: err, success: false } );
+	} else {
+	    res.json( {success: true} );
+	}
     });
+});
 
 
 router.post('/login', function(req, res, next) {
@@ -338,7 +338,37 @@ router.post('/login', function(req, res, next) {
 
 router.post('/deletebidder', auth, function(req, res, next) {
 });
+
+router.post('/assignitemtype', auth, function(req, res, next) {
+    var itemid = req.body.itemid;
+    var type = req.body.type;
+
     
+    var params = {
+        TableName: "items",
+        Key: {
+            id: itemid
+        },
+        UpdateExpression: "SET #t = :v_type",
+        ExpressionAttributeNames: {
+            "#t": "type"
+        },
+        ExpressionAttributeValues:  {
+            ":v_type": type
+        },
+        ReturnValues: "UPDATED_NEW"
+    };
+
+    docClient.update(params, function(err, data) {
+	if ( err ) {
+	    console.log(err);
+	    res.json( {err: err, success: false } );
+	} else {
+	    res.json( {success: true} );
+	}
+    });
+});
+
 router.post('/deleteitem', auth, function(req, res, next) {
     var itemid = req.body.itemid;
 
@@ -360,9 +390,12 @@ router.post('/deleteitem', auth, function(req, res, next) {
 
 router.post('/submititem', auth, function(req, res, next) {
     var item = req.body;
-    item.id = guid();
-    item.price = item.minvalue;
-    item.buyers = [];
+    if ( !item.id )
+        item.id = guid();
+    if ( !item.price )
+        item.price = item.minvalue;
+    if ( !item.buyers )
+        item.buyers = [];
 
     var params = {
 	TableName: "items",
