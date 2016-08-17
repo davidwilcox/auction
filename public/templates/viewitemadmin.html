@@ -1,0 +1,120 @@
+<md-card layout-padding>
+  <md-card-title>
+    <md-card-title-text>
+      <span class="md-headline">
+        <md-input-container>
+          <label>Donor Name</label>
+          <input
+             ng-model="item.donor.name"
+             type="text"
+             >
+        </md-input-container>
+      </span>
+      <span class="md-subhead">
+        <div layout="row">
+          <md-input-container>
+            <label>Donor Email</label>
+	    <input
+               ng-model="item.donor.email"
+               type="text"
+               >
+          </md-input-container>
+          <md-input-container>
+            <label>Donor Phone Number</label>
+            <input
+               type="text"
+               ng-model="item.donor.phonenumber"
+               >
+          </md-input-container>
+        </div>
+      </span>
+    </md-card-title-text>
+    <md-card-title-media>
+      <img ng-src="http://svuus-photos.s3.amazonaws.com/{{item.donor.photoid}}" >
+    </md-card-title-media>
+  </md-card-title>
+  {{item.message}}
+  <div layout="row">
+    <md-input-container>
+      <label>Item Name</label>
+      <input
+         type="text"
+         ng-model="item.name"
+         >
+    </md-input-container>
+    <md-input-container>
+      <label>Item Category</label>
+      <input
+         type="text"
+         ng-model="item.category"
+         >
+    </md-input-container>
+    <md-input-container>
+      <label>Item Starting Bid</label>
+      <input
+         type="text"
+         ng-model="item.minvalue"
+         >
+      </md-input-container>
+    <md-input-container>
+      <label>Item Value</label>
+      <input
+         type="text"
+         ng-model="item.value"
+         >
+    </md-input-container>
+    <md-input-container>
+      <label>Item Quantity</label>
+      <input
+         type="text"
+         ng-model="item.quantity"
+         >
+    </md-input-container>
+  </div>
+  <div layout="row">
+    <md-input-container>
+      <label>Item Description</label>
+      <input
+         type="text"
+         ng-model="item.description"
+         >
+    </md-input-container>
+  </div>
+  <div layout="row" ng-show="item.policy">
+
+    <md-input-container>
+      <label>Event Policy</label>
+      <md-select ng-model="item.policy">
+        <div ng-repeat="policy in policies">
+          <md-option value="{{policy}}">&nbsp;<span translate="{{policy}}"></span></md-option>
+        </div>
+      </md-select>
+    </md-input-container>
+  </div>
+  <div>
+    <md-button class="md-primary md-raised" ng-click="saveitem(item)">Save Item Changes</md-button>
+  </div>
+  <div ng-repeat="buyer in item.buyers">
+    <md-card layout-padding>
+      <md-card-title>
+	<md-card-title-text>
+	  <span class="md-headline">
+	    <a ui-sref="viewticket( {bidnumber: buyer} )">{{tickets[buyer].name}}</a>
+	  </span>
+	  <span class="md-subhead">
+	    {{tickets[buyer].login}}
+	  </span>
+	</md-card-title-text>
+        <md-card-actions layout="row" layout-align="end">
+          <md-button class="md-icon-button" ng-click="removeBidderFromItem(item, buyer)" >
+            <md-icon>clear</md-icon>
+          </md-button>
+	</md-card-actions>
+      </md-card-title>
+      <div layout="row">
+	<label>Buyer Phone</label>
+	{{tickets[buyer].buyer.phonenumber}}
+      </div>
+    </md-card>
+  </div>
+</md-card>
