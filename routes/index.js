@@ -397,6 +397,7 @@ router.post('/submititem', auth, function(req, res, next) {
     if ( !item.buyers )
         item.buyers = [];
 
+    console.log(item);
     var params = {
 	TableName: "items",
 	Item: item
@@ -404,8 +405,12 @@ router.post('/submititem', auth, function(req, res, next) {
 
     docClient.put(params, function(err, data) {
 	if ( err ) {
+            console.log("err");
+            console.log(err);
 	    res.status(401).json({error: err});
 	} else {
+            console.log("data");
+            console.log(data);
 	    res.status(200).json({message: "item added"});
 	}
     });
@@ -487,6 +492,32 @@ router.post('/chargecustomer', auth, function(req, res, next) {
     });
 });
 
+
+/*
+router.post('/deletebidderfromitem', auth, function(req, res, next) {
+    var itemid = req.body.itemid;
+    var bidnum = req.body.bidnum;
+
+    var params = {
+        TableName: "tickets"
+        Key: {
+            bidnumber: bidnum
+        },
+        UpdateExpression: "DELETE #b :v_itemid"
+        ExpressoinAttributeNames: {
+            "#b": "boughtitems"
+        },
+        ExpressionAttributeValues: {
+            ":v_itemid": [itemid]
+        },
+        ReturnValues: "UPDATED_NEW"
+    };
+
+    docClient.update(params, function(err, data) {
+        
+    });
+});
+*/
 
 router.post('/addbuyer', auth, function(req, res, next) {
     var guestid = req.body.guestid;

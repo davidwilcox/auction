@@ -692,14 +692,25 @@ app.controller('ViewItemGenericCtrl', [function() {}]);
 app.controller('ViewItemAdminCtrl', ['$scope', 'auth', "$http", function($scope, auth, $http) {
 
     $scope.saveitem = function(item) {
-        console.log("TRYING");
+        delete item.message;
         $http.post("/submititem", item, {headers: {
             Authorization: "Bearer " + auth.getToken()
         } } ).success(function(data) {
-            console.log("SUCCESS");
             item.message = "Item changed!";
         }).error(function(error) {
-            console.log("ERROR");
+            item.message = error;
+        });
+    };
+
+    $scope.removeBidderFromItem = function(item, bidder) {
+        console.log("removing");
+        $http.post("/deletebidderfromitem", {
+            itemid: item.id,
+            bidnum: bidder
+        }, {headers: {
+        } } ).success(function(data) {
+            item.message = "Bidder deleted.";
+        }).error(function(error) {
             item.message = error;
         });
     };
