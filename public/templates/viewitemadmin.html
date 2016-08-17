@@ -34,13 +34,20 @@
     </md-card-title-media>
   </md-card-title>
   {{item.message}}
-  <div>
+  <div layout="row">
     <md-input-container>
       <label>Item Category</label>
       <md-select ng-model="item.category">
 	<md-option value="event">Event</md-option>
         <md-option value="object">Object or service</md-option>
       </md-select>
+    </md-input-container>
+    <md-input-container>
+      <label>Item Number</label>
+      <input
+	 type="number"
+	 ng-model="item.number"
+	 />
     </md-input-container>
   </div>
   <div layout="row">
