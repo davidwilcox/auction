@@ -1,7 +1,7 @@
 <div layout-padding>
 
   <div ng-show="error">
-    <span>{{ error.message }}</span>
+    <span>{{ error }}</span>
   </div>
   <img src="http://davidwilcox.github.io/images/wildwildwest.jpg">
 
@@ -220,15 +220,17 @@ Enter the name (or names!) of the person or group donating this item (you can ch
            aria-label="Date Picker"
            >
         </md-datepicker>
-        If you absolutely can’t pick an exact date, enter the timeframe notes you know at this point, like “A Saturday in July”
-        <br>
-        <md-input-container>
-          <label>Time Notes</label>
-          <input
-             type="text"
-             ng-model="item.eventtypedtime"
-             >
-        </md-input-container>
+	<div>
+          If you absolutely can’t pick an exact date, enter the timeframe notes you know at this point, like “A Saturday in July”
+          <br>
+          <md-input-container>
+            <label>Time Notes</label>
+            <input
+               type="text"
+               ng-model="item.eventtypedtime"
+               >
+          </md-input-container>
+	</div>
       </div>
 
       Choose one of these policies for kids.
@@ -262,6 +264,6 @@ Enter the name (or names!) of the person or group donating this item (you can ch
 	</div>
       </md-radio-group>
     </md-card>
-    <button type="submit">Donate Item</button>
+    <md-button class="md-raised md-primary" type="submit">Donate Item</md-button>
   </form>
 </div>

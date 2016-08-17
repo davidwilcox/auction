@@ -627,29 +627,36 @@ app.controller('BuyTicketsCtrl', [
 
         $scope.doCheckout = function(token) {
             var promises = [];
+	    $scope.submitProgress = 0;
             charges.charge({
                 purchaser: auth.currentUser().email,
                 stripe_token: token.id,
                 amount: $scope.calculateTotal()*100
             }).then(function(data) {
-                $scope.tickets.forEach(function(ticket) {
-                    ticket.customer_id = data.data.customer_id;
+		$scope.submitProgress = 10;
+
+		$scope.tickets.forEach(function(ticket) {
+		    ticket.customer_id = data.data.customer_id;
 		    if ( auth.isLoggedIn() )
 		        ticket.login = auth.currentUser().email;
 		    else
 		        ticket.login = "a@a.a";
-		    promises.push(tickets.purchase(ticket));
 	        });
-	        $q.all(promises).then(function(data) {
-		    // route to confirmation page.
-		    $state.go('buyticketsconfirmation');
-	        }, function(data) {
-		    // route to error page.
-		    console.log("ERROR");
-		    console.log(data);
-	        });
+
+		var purchase_ticket = function(num) {
+		    tickets.purchase($scope.tickets[num]).then(function(data) {
+			if ( num == $scope.tickets.length - 1 ) {
+			    $state.go('buyticketsconfirmation');
+			} else {
+			    purchase_ticket(num+1);
+			}
+		    }, function(err) {
+			console.log(err);
+		    });
+		};
+		purchase_ticket(0);
             }, function(err) {
-                
+                console.log(err);
             });
 
         };

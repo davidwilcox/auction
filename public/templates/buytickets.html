@@ -1,5 +1,8 @@
 <div>
 
+  <div ng-show="submitProgress">
+    <md-progress-linear md-mode="determinate" value="{{submitProgress}}"></md-progress-linear>
+  </div>
   <div layout="column" layout-padding>
     Enter info here for your FIRST ticket.  If you need more than one ticket, click the blue button below.
     <div layout="row" >

@@ -473,6 +473,8 @@ router.post('/chargecustomer', auth, function(req, res, next) {
         description: purchaser,
         source: stripe_token
     }, function(cust_err, customer) {
+	console.log(cust_err);
+	console.log(customer);
         stripe.charges.create({
             amount: amount,
             currency: "usd",
