@@ -8,7 +8,12 @@
 	  <div ng-repeat="ticket in tickets track by $index">
 	    <md-card layout-padding>
 	      <div layout="row" flex>
-		<md-card-title></md-card-title>
+		<md-card-title>
+		  <md-input-container>
+		    <label>Name</label>
+		    <input ng-model="ticket.name" size="50">
+		  </md-input-container>
+		</md-card-title>
 
                 <md-card-actions layout="row" layout-align="end">
                   <md-button class="md-icon-button" ng-click="removeTicket($index)" >
@@ -17,11 +22,6 @@
 		</md-card-actions>
 	      </div>
 	      
-	      <md-input-container>
-		<label>Name</label>
-		<input ng-model="ticket.name" >
-	      </md-input-container>
-
 
 	      <label>Age Category</label>
 	      <md-radio-group ng-model="ticket.agegroup" ng-change="computeOrderDetails()" required>
