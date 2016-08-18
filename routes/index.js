@@ -57,8 +57,10 @@ router.post('/createguest', function(req, res, next) {
     var cnt = 0;
     var put_user = function() {
 	cnt++;
-        if ( cnt == 5 )
+        if ( cnt == 5 ) {
             res.status(400).json("error","unstable bid number");
+	    return;
+	}
         var params = {
             TableName: "bidnumber",
             Key: {
