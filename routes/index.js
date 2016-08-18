@@ -157,6 +157,52 @@ router.get('/guest/:guestid', function(req, res, next) {
 });
 
 
+router.get('/allitems', function(req, res, next) {
+    var params = {
+	TableName: "items"
+    };
+
+    console.log(req);
+
+    if ( req.query.searchname && req.query.searchitemnumber ) {
+	params.FilterExpression = "(#itemname = :itemname) AND (#itemnumber = :itemnumber)";
+	params.ExpressionAttributeValues =  {
+	    ":itemname": req.query.searchname,
+	    ":itemnumber": parseInt(req.query.searchitemnumber)
+	};
+	params.ExpressionAttributeNames = {
+	    "#itemname": "name",
+	    "#itemnumber": "number"
+	};
+    }
+    else if ( req.query.searchname ) {
+	params.FilterExpression = "(#itemname = :itemname)";
+	params.ExpressionAttributeValues =  {
+	    ":itemname": req.query.searchname
+	};
+	params.ExpressionAttributeNames = {
+	    "#itemname": "name"
+	};
+    } else if ( req.query.searchitemnumber ) {
+	params.FilterExpression = "(#itemnumber = :itemnumber)";
+	params.ExpressionAttributeValues =  {
+	    ":itemnumber": parseInt(req.query.searchitemnumber)
+	};
+	params.ExpressionAttributeNames = {
+	    "#itemnumber": "number"
+	};
+    }
+    console.log(params);
+    docClient.scan(params, function(err, data) {
+	if ( err ) {
+	    console.error(err);
+	} else {
+	    res.json(data.Items);
+	}
+    });
+});
+
+
 router.get('/allguests', function(req, res, next) {
     var params = {
 	TableName: "tickets"

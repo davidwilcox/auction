@@ -2,6 +2,27 @@
   <div ng-show="error">
     <span>{{ error.message }}</span>
   </div>
+  <div layout="row">
+    <md-input-container>
+      <label>Search Name</label>
+      <input
+	 ng-model="searchname"
+	 type="text"
+	 >
+    </md-input-container>
+    <md-input-container>
+      <label>Item Number Search</label>
+      <input
+	 type="text"
+	 ng-model="searchitemnumber"
+	 >
+    </md-input-container>
+    <div>
+      <md-button class="md-primary md-raised" ng-click="performSearch()">Find Item</md-button>
+    </div>
+  </div>
+  
+
   <div ng-repeat="item in items">
     <viewitemadmin item="{{item}}"></viewitemadmin>
     <br>

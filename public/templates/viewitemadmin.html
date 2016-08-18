@@ -11,28 +11,29 @@
 	      <input
 		 type="text"
 		 ng-model="item.name"
+		 size="40"
 		 >
 	  </md-input-container>
 	  </span>
 	</md-card-title-text>
       </md-card-title>
 
-      {{item.message}}
+      <font color="red">{{item.message}}</font>
 
       <div layout="row">
 	<md-input-container>
 	  <label>Item Description</label>
 	  <textarea
              ng-model="item.description"
-	     size="90"
+	     cols="60"
 	     md-maxlength="500"
              >
 	  </textarea>
 	</md-input-container>
       </div>
 
-      <div layout="row">
-	$
+      <div layout="row" layout-align="start center">
+	<span>$</span>
       	<md-input-container>
 	  <label>Item Starting Bid</label>
 	  <input
@@ -46,6 +47,14 @@
 	  <input
              type="text"
              ng-model="item.value"
+             >
+	</md-input-container>
+	$
+	<md-input-container>
+	  <label>Item Sell Price</label>
+	  <input
+             type="text"
+             ng-model="item.price"
              >
 	</md-input-container>
       </div>
@@ -108,6 +117,7 @@
               <input
 		 ng-model="item.donor.name"
 		 type="text"
+		 size="40"
 		 >
             </md-input-container>
 	  </span>
