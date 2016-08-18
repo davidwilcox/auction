@@ -19,3 +19,9 @@
 .active > button {
 	background-color: #FF4081!important
 }
+
+.dropdown {
+    width:50%;
+    display:block;
+
+}

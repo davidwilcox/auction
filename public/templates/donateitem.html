@@ -90,7 +90,7 @@ Enter the name (or names!) of the person or group donating this item (you can ch
       <h3><b>I'm offering a...</b></h3>
       <br>
       <div id="itemnamecharacters">
-        Please keep this succint. <font size="2">{{itemMaxLength - item.name.length}} remaining.</font>
+        Please keep this succint.
       </div>
       <md-input-container>
         <label>Item Name</label>
@@ -98,8 +98,7 @@ Enter the name (or names!) of the person or group donating this item (you can ch
 	   type="text"
 	   ng-model="item.name"
 	   name="itemname"
-	   ng-maxlength="{{itemMaxLength}}"
-	   maxlength="{{itemMaxLength}}"
+	   md-maxlength="{{itemMaxLength}}"
 	   required
 	   ></input>
 	<div ng-messages="donateItemForm.itemname.$error">
@@ -108,14 +107,12 @@ Enter the name (or names!) of the person or group donating this item (you can ch
       </md-input-container>
       Here's a little more information about it.
       What is great about this item? What would make someone want to buy it? Write like you're trying to sell it!
-      <font size="2">{{descriptionMaxLength - item.description.length}} characters remaining.</font>
       <md-input-container>
 	<label>Description</label>
 	<textarea
 	   ng-model="item.description"
 	   name="itemdescription"
-	   ng-maxlength="{{descriptionMaxLength}}"
-	   maxlength="{{descriptionMaxLength}}"
+	   md-maxlength="{{descriptionMaxLength}}"
 	   required
 	   ></textarea>
 	<div ng-messages="donateItemForm.itemdescription.$error">
