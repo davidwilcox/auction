@@ -68,6 +68,66 @@ app.factory('tickets', ['$http', '$q', function($http, $q) {
     };
 }]);
 
+// allow you to format a text input field.
+// <input type="text" ng-model="test" format="number" />
+// <input type="text" ng-model="test" format="currency" />
+app.directive('format', ['$filter', function ($filter) {
+    return {
+	require: '?ngModel',
+	link: function (scope, elem, attrs, ctrl) {
+	    if (!ctrl) return;
+	    
+	    ctrl.$formatters.unshift(function (a) {
+		return $filter(attrs.format)(ctrl.$modelValue)
+	    });
+
+	    elem.bind('blur', function(event) {
+		var plainNumber = elem.val().replace(/[^\d|\-+|\.+]/g, '');
+		elem.val($filter(attrs.format)(plainNumber));
+	    });
+	}
+    };
+}]);
+
+
+app.directive('phoneInput', function($filter, $browser) {
+    return {
+        require: 'ngModel',
+        link: function($scope, $element, $attrs, ngModelCtrl) {
+            var listener = function() {
+                var value = $element.val().replace(/[^0-9]/g, '');
+                $element.val($filter('tel')(value, false));
+            };
+
+            // This runs when we update the text field
+            ngModelCtrl.$parsers.push(function(viewValue) {
+                return viewValue.replace(/[^0-9]/g, '').slice(0,10);
+            });
+
+            // This runs when the model gets updated on the scope directly and keeps our view in sync
+            ngModelCtrl.$render = function() {
+                $element.val($filter('tel')(ngModelCtrl.$viewValue, false));
+            };
+
+            $element.bind('change', listener);
+            $element.bind('keydown', function(event) {
+                var key = event.keyCode;
+                // If the keys include the CTRL, SHIFT, ALT, or META keys, or the arrow keys, do nothing.
+                // This lets us support copy and paste too
+                if (key == 91 || (15 < key && key < 19) || (37 <= key && key <= 40)){
+                    return;
+                }
+                $browser.defer(listener); // Have to do this or changes don't get picked up properly
+            });
+
+            $element.bind('paste cut', function() {
+                $browser.defer(listener);
+            });
+        }
+
+    };
+});
+
 
 
 app.config([
@@ -791,10 +851,13 @@ app.controller( 'ViewDonatedItemsCtrl', [
 	    promises.push($http.get('/allitems' + queryString));
 	    promises.push($http.get('/all/tickets'));
 	    $q.all(promises).then(function(data) {
-		$scope.items = {};
+		$scope.items = [];
 		data_items = data[0].data;
 		data_items.forEach(function(item) {
-		    $scope.items[item.id] = item;
+		    $scope.items.push(item);
+		});
+		$scope.items.sort(function(item1, item2) {
+		    return new Date(item1.date) > new Date(item2.date);
 		});
 		tickets_items = data[1].data;
 		$scope.tickets = {};
@@ -825,7 +888,7 @@ app.controller( 'MyDonatedItemsCtrl',[
 	    $scope.items = {};
 	    data_items = data[0].data;
 	    data_items.forEach(function(item) {
-		if ( item.donor.email == auth.currentUserEmail() ) {
+		if ( item.email == auth.currentUserEmail() ) {
 		    $scope.items[item.id] = item;
 		}
 	    });

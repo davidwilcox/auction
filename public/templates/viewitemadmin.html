@@ -1,6 +1,24 @@
 <md-card layout-padding>
   <div layout="row">
-    <md-card flex layout-padding>
+    <md-card flex layout-padding class="viewitem-nomargin">
+      <div layout="row">
+	<md-input-container>
+	  <label>Item Number</label>
+	  <input
+	     type="number"
+	     ng-model="item.number"
+	     />
+	</md-input-container>
+	<md-input-container>
+	  <label>Item Type</label>
+	  <md-select ng-model="item.type">
+	    <md-option value="live">Live</md-option>
+	    <md-option value="silent">Silent</md-option>
+	    <md-option value="fixed">Fixed</md-option>
+	    <md-option value="raffle">Raffle</md-option>
+	  </md-select>
+	</md-input-container>
+      </div>
       <md-card-title>
 	<md-card-title-text>
 
@@ -11,7 +29,7 @@
 	      <input
 		 type="text"
 		 ng-model="item.name"
-		 size="40"
+		 size="50"
 		 >
 	  </md-input-container>
 	  </span>
@@ -25,7 +43,7 @@
 	  <label>Item Description</label>
 	  <textarea
              ng-model="item.description"
-	     cols="60"
+	     cols="70"
 	     md-maxlength="500"
              >
 	  </textarea>
@@ -33,28 +51,28 @@
       </div>
 
       <div layout="row" layout-align="start center">
-	<span>$</span>
-      	<md-input-container>
+	<md-input-container>
 	  <label>Item Starting Bid</label>
 	  <input
              type="text"
              ng-model="item.minvalue"
+	     format="currency"
              >
 	</md-input-container>
-	$
 	<md-input-container>
 	  <label>Item Value</label>
 	  <input
              type="text"
              ng-model="item.value"
+	     format="currency"
              >
 	</md-input-container>
-	$
 	<md-input-container>
 	  <label>Item Sell Price</label>
 	  <input
              type="text"
              ng-model="item.price"
+	     format="currency"
              >
 	</md-input-container>
       </div>
@@ -68,24 +86,6 @@
 	  </md-select>
 	</md-input-container>
 	<md-input-container>
-	  <label>Item Number</label>
-	  <input
-	     type="number"
-	     ng-model="item.number"
-	     />
-	</md-input-container>
-      </div>
-      <div layout="row">
-	<md-input-container>
-	  <label>Item Type</label>
-	  <md-select ng-model="item.type">
-	    <md-option value="live">Live</md-option>
-	    <md-option value="silent">Silent</md-option>
-	    <md-option value="fixed">Fixed</md-option>
-	    <md-option value="raffle">Raffle</md-option>
-	  </md-select>
-	</md-input-container>
-	<md-input-container>
 	  <label>Item Quantity</label>
 	  <input
              type="text"
@@ -95,11 +95,11 @@
       </div>
       <div layout="row" ng-show="item.policy">
 
-	<md-input-container>
+	<md-input-container style="width:100%">
 	  <label>Event Policy</label>
 	  <md-select ng-model="item.policy" class="dropdown">
             <div ng-repeat="policy in policies">
-              <md-option value="{{policy}}">&nbsp;<span translate="{{policy}}"></span></md-option>
+	      <md-option value="{{policy}}">&nbsp;<span translate="{{policy}}"></span></md-option>
             </div>
 	  </md-select>
 	</md-input-container>

@@ -122,7 +122,6 @@ Enter the name (or names!) of the person or group donating this item (you can ch
       What is this item worth?
       Your best guess is fine.
       <div layout="row" layout-align="start center">
-        $
         <md-input-container>
 	  <label>Fair Market Value (USD)</label>
 	  <input
@@ -130,6 +129,7 @@ Enter the name (or names!) of the person or group donating this item (you can ch
 	     ng-model="item.value"
 	     name="itemvalue"
 	     min="0"
+	     format="currency"
 	     required
 	     ></input>
 	  <div ng-messages="donateItemForm.itemvalue.$error">
@@ -139,13 +139,13 @@ Enter the name (or names!) of the person or group donating this item (you can ch
       </div>
       I would hate to see my item go for less than this amount.
       <div layout="row" layout-align="start center">
-        $
         <md-input-container>
 	  <label>Minimum Value (USD)</label>
 	  <input
 	     type="number"
 	     ng-model="item.minvalue"
 	     name="itemminvalue"
+	     format="currency"
 	     min="0"
 	     required
 	     ></input>

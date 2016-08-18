@@ -442,6 +442,7 @@ router.post('/submititem', auth, function(req, res, next) {
         item.price = item.minvalue;
     if ( !item.buyers )
         item.buyers = [];
+    item.date = new Date();
 
     console.log(item);
     var params = {

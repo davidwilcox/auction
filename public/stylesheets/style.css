@@ -21,7 +21,8 @@
 }
 
 .dropdown {
-    width:50%;
-    display:block;
+}
 
+.viewitem-nomargin md-input-container {
+    margin: 0px
 }
