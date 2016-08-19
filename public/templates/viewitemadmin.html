@@ -162,7 +162,7 @@
 	    </span>
 	  </md-card-title-text>
 	</md-card-title>
-	<div ng-repeat="buyer in item.buyers">
+	<div ng-repeat="buyer in item.buyers.values">
 	  <div layout="row">
 	    <div ><a ui-sref="viewticket( {bidnumber: buyer} )">{{tickets[buyer].name}} (#{{buyer}})</a></div>
 	    <md-button class="md-icon-button" ng-click="removeBidderFromItem(item, buyer)" >

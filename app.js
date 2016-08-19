@@ -44,16 +44,17 @@ app.use(function(req, res, next) {
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
-  app.use(function(err, req, res, next) {
+    app.use(function(err, req, res, next) {
+	console.log(err.stack);
+      if ( err.status == 500 ) {
+          console.log(err.message);
+          console.log(err.stack);
+      }
     res.status(err.status || 500);
     res.render('error', {
       message: err.message,
       error: err
     });
-      if ( err.status == 500 ) {
-          console.log(err.message);
-          console.log(err.stack);
-      }
   });
 } else {
 

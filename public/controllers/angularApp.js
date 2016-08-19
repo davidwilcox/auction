@@ -771,14 +771,6 @@ app.controller('ViewItemAdminCtrl', ['$scope', 'auth', "$http", function($scope,
         });
     };
 
-    $scope.deleteitem = function(item) {
-	http.post("/deleteitem", item, {headers: {
-	    Authorization: "Bearer " + auth.getToken()
-	} } ).success(function(data) {
-	    delete item;
-	});
-    };
-
     $scope.removeBidderFromItem = function(item, bidder) {
         console.log("removing");
         $http.post("/deletebidderfromitem", {
@@ -787,6 +779,8 @@ app.controller('ViewItemAdminCtrl', ['$scope', 'auth', "$http", function($scope,
         }, {headers: {
 	    Authorization: "Bearer " + auth.getToken()
         } } ).success(function(data) {
+	    var index = item.buyers.values.indexOf(bidder);
+	    item.buyers.values.splice(index,1);
             item.message = "Bidder deleted.";
         }).error(function(error) {
             item.message = error;
@@ -843,6 +837,17 @@ app.controller( 'ViewDonatedItemsCtrl', [
     'auth',
     function($scope, $q, tickets, $http, auth) {
 
+	
+	$scope.deleteitem = function(item) {
+	    $http.post("/deleteitem", item, {headers: {
+		Authorization: "Bearer " + auth.getToken()
+	    } } ).success(function(data) {
+		var index = $scope.items.indexOf(item);
+		$scope.items.splice(index,1);
+	    });
+	};
+
+
 	$scope.performSearch = function() {
 	    console.log("performing");
 	    delete $scope.items;
@@ -894,7 +899,6 @@ app.controller( 'MyDonatedItemsCtrl',[
     function($scope, $q, tickets, $http, auth) {
 
 	$scope.performSearch = function() {
-	    console.log("performing");
 	    delete $scope.items;
 	    delete $scope.tickets;
 
@@ -916,7 +920,6 @@ app.controller( 'MyDonatedItemsCtrl',[
 		data_items = data[0].data;
 		data_items.forEach(function(item) {
 		    if ( item.email == auth.currentUserEmail() ) {
-			console.log("THERE");
 			item.buyer_emails = item.buyers.map(
 			    function(bidnum) {
 				return $scope.tickets[bidnum].login;
@@ -925,7 +928,6 @@ app.controller( 'MyDonatedItemsCtrl',[
 			$scope.items.push(item);
 		    }
 		});
-		console.log($scope.items);
 		$scope.items.sort(function(item1, item2) {
 		    return new Date(item1.date) > new Date(item2.date);
 		});
@@ -934,6 +936,7 @@ app.controller( 'MyDonatedItemsCtrl',[
 		tickets_items.forEach(function(ticket) {
 		    $scope.tickets[ticket.bidnumber] = ticket;
 		});
+		console.log($scope.items);
 		console.log($scope.tickets);
 	    }, function(err) {
 		console.log("err");

@@ -171,7 +171,6 @@ router.get("/findtickets/:email", function(req, res, next) {
 	    console.error(err);
 	    res.status(401).json({error: err});
 	} else {
-	    console.log(data);
 	    res.json(data.Items);
 	}
     });
@@ -452,25 +451,6 @@ router.post('/assignitemtype', auth, function(req, res, next) {
     });
 });
 
-router.post('/deleteitem', auth, function(req, res, next) {
-    var itemid = req.body.itemid;
-
-    var params = {
-        TableName: "items",
-        Key: {
-            id: itemid
-        }
-    };
-
-    docClient.delete(params, function(err, data) {
-        if ( err ) {
-            res.status(401).json({error: err});
-        } else {
-            res.status(200).json({message: "item added"});
-        }
-    });
-});
-
 router.post('/submititem', auth, function(req, res, next) {
     var item = req.body;
     if ( !item.id )
@@ -481,13 +461,10 @@ router.post('/submititem', auth, function(req, res, next) {
         item.buyers = docClient.createSet(item.buyers);
     item.date = new Date();
 
-    console.log(item);
     var params = {
 	TableName: "items",
 	Item: item
     };
-
-    console.log(params);
 
     docClient.put(params, function(err, data) {
 	if ( err ) {
@@ -495,9 +472,7 @@ router.post('/submititem', auth, function(req, res, next) {
             console.log(err);
 	    res.status(401).json({error: err});
 	} else {
-            console.log("data");
-            console.log(data);
-	    res.status(200).json({message: "item added"});
+            res.status(200).json({message: "item added"});
 	}
     });
 });
@@ -582,29 +557,73 @@ router.post('/chargecustomer', auth, function(req, res, next) {
 
 
 router.post('/deleteitem', auth, function(req, res, next) {
-    var bidders = req.body.bidders;
-    var item;
-    var params =  {
-	TableName: "items",
-	Key: {
-	    id: req.body.id
-	}
-    };
-    docClient.delete(params, function(err, data) {
-	if ( err ) {
-	    console.error(err);
-	    res.status(401).json({error: err});
-	} else {
-	    console.log(data);
-	    res.status(200).json({data: data});
-	}
+    console.log("FLL");
+    var itemid = req.body.id;
+    var bidders = req.body.buyers.values;
+    console.log(req.body);
+
+    console.log("MAPPING");
+
+    var promises = bidders.map(function(bidnum) {
+	console.log("MAPPING");
+	return new Promise(function(resolve, reject) {
+	    console.log("in promise");
+	    var params = {
+	        TableName: "tickets",
+		Key: {
+		    bidnumber: bidnum
+		},
+		UpdateExpression: "DELETE #b :v_itemid",
+		ExpressionAttributeNames: {
+		    "#b": "boughtitems"
+		},
+		ExpressionAttributeValues: {
+		    ":v_itemid": docClient.createSet([itemid])
+		},
+		ReturnValues: "UPDATED_NEW"
+	    };
+	    docClient.update(params, function(err, data) {
+		if ( err ) {
+		    console.error(err);
+		    reject(err);
+		} else {
+		    console.log(data);
+		    resolve(data);
+		}
+	    });
+	});
+    });
+    console.log("THERE");
+    Promise.all(promises).then(function(data) {
+	var item_params = {
+	    TableName: "items",
+	    Key: {
+		id: itemid
+	    }
+	};
+
+	docClient.delete(item_params, function(err, data) {
+	    if ( err ) {
+		console.log(err);
+		res.status(401).json({error: err});
+	    } else {
+		res.status(200).json({data: data});
+	    }
+	});
+    }, function(err) {
+	console.error(err);
+	res.status(401).json({error: err});
     });
 });
+
 
 
 router.post('/deletebidderfromitem', auth, function(req, res, next) {
     var itemid = req.body.itemid;
     var bidnum = req.body.bidnum;
+
+    console.log(itemid);
+    console.log(bidnum);
 
     var params = {
         TableName: "tickets",
@@ -616,7 +635,7 @@ router.post('/deletebidderfromitem', auth, function(req, res, next) {
             "#b": "boughtitems"
         },
         ExpressionAttributeValues: {
-            ":v_itemid": itemid
+            ":v_itemid": docClient.createSet([itemid])
         },
         ReturnValues: "UPDATED_NEW"
     };
@@ -627,8 +646,30 @@ router.post('/deletebidderfromitem', auth, function(req, res, next) {
 	    console.error(err);
 	    res.status(401).json({error: err});
 	} else {
-	    console.log(data);
-	    res.status(200).json({data: data});
+
+	    var item_params = {
+		TableName: "items",
+		Key: {
+		    id: itemid
+		},
+		UpdateExpression: "DELETE #b :v_buyerid",
+		ExpressionAttributeNames: {
+		    "#b": "buyers"
+		},
+		ExpressionAttributeValues: {
+		    ":v_buyerid": docClient.createSet([bidnum])
+		},
+		ReturnValues: "UPDATED_NEW"
+	    };
+
+	    docClient.update(item_params, function(err, data) {
+		if ( err ) {
+		    console.log(err);
+		    res.status(401).json({error: err});
+		} else {
+		    res.status(200).json({data: data});
+		}
+	    });
 	}
     });
 });
