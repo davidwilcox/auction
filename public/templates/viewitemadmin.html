@@ -1,7 +1,7 @@
 <md-card layout-padding>
   <div layout="row">
     <md-card flex layout-padding class="viewitem-nomargin">
-      <div layout="row">
+      <div layout="row" ng-show="isAdmin()">
 	<md-input-container>
 	  <label>Item Number</label>
 	  <input
@@ -104,8 +104,13 @@
 	  </md-select>
 	</md-input-container>
       </div>
-      <div>
-	<md-button class="md-primary md-raised" ng-click="saveitem(item)">Save Item Changes</md-button>
+      <div layout="row">
+	<div>
+	  <md-button class="md-primary md-raised" ng-click="saveitem(item)">Save Item Changes</md-button>
+	</div>
+	<div>
+	  <md-button class="md-primary md-raised" ng-click="deleteitem(item)">Delete Item</md-button>
+	</div>
       </div>
     </md-card>
     <md-card flex layout-pading>
@@ -128,6 +133,7 @@
 		<input
 		   ng-model="item.donor.email"
 		   type="text"
+		   size="60"
 		   >
               </md-input-container>
 	    </div>

@@ -44,6 +44,7 @@
     <label>Donor Referee</label>
     {{item.referee}}
   </div>
+  <md-button class="md-primary md-raised" href="mailto:{{item.concated_emails}}">Email Buyers</md-button>
   <div ng-repeat="buyer in item.buyers">
     <md-card layout-padding>
       <md-card-title>

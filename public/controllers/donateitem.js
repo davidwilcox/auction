@@ -40,6 +40,7 @@ app.filter('tel', function () {
     };
 });
 
+
 app.controller('DonateItemCtrl', [
     '$scope',
     '$state',
@@ -78,7 +79,6 @@ app.controller('DonateItemCtrl', [
 	$scope.donateitem = function() {
 
 	    picture = $scope.imageSrc;
-	    filename = $scope.file.name;
 
 
 	    submit_item = function() {
@@ -99,6 +99,7 @@ app.controller('DonateItemCtrl', [
 	    $scope.donor.photoid = $scope.imageurl;
 
 	    if ( picture ) {
+		filename = $scope.file.name;
                 payload = {
 		    "photo": picture,
 		    "filename": filename

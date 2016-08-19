@@ -758,6 +758,8 @@ app.controller('ViewItemGenericCtrl', [function() {}]);
 
 app.controller('ViewItemAdminCtrl', ['$scope', 'auth', "$http", function($scope, auth, $http) {
 
+    $scope.isAdmin = auth.isAdmin;
+
     $scope.saveitem = function(item) {
         delete item.message;
         $http.post("/submititem", item, {headers: {
@@ -769,12 +771,21 @@ app.controller('ViewItemAdminCtrl', ['$scope', 'auth', "$http", function($scope,
         });
     };
 
+    $scope.deleteitem = function(item) {
+	http.post("/deleteitem", item, {headers: {
+	    Authorization: "Bearer " + auth.getToken()
+	} } ).success(function(data) {
+	    delete item;
+	});
+    };
+
     $scope.removeBidderFromItem = function(item, bidder) {
         console.log("removing");
         $http.post("/deletebidderfromitem", {
             itemid: item.id,
             bidnum: bidder
         }, {headers: {
+	    Authorization: "Bearer " + auth.getToken()
         } } ).success(function(data) {
             item.message = "Bidder deleted.";
         }).error(function(error) {
@@ -881,26 +892,52 @@ app.controller( 'MyDonatedItemsCtrl',[
     '$http',
     'auth',
     function($scope, $q, tickets, $http, auth) {
-	var promises = [];
-	promises.push($http.get('/all/items'));
-	promises.push($http.get('/all/tickets'));
-	$q.all(promises).then(function(data) {
-	    $scope.items = {};
-	    data_items = data[0].data;
-	    data_items.forEach(function(item) {
-		if ( item.email == auth.currentUserEmail() ) {
-		    $scope.items[item.id] = item;
-		}
-	    });
 
-	    tickets_items = data[1].data;
-	    $scope.tickets = {};
-	    tickets_items.forEach(function(ticket) {
-		$scope.tickets[ticket.bidnumber] = ticket;
+	$scope.performSearch = function() {
+	    console.log("performing");
+	    delete $scope.items;
+	    delete $scope.tickets;
+
+	    var promises = [];
+	    var queryString = '';
+	    if ( $scope.searchname )
+		queryString += "?searchname=" + $scope.searchname;
+	    if ( $scope.searchitemnumber ) {
+		if ( queryString )
+		    queryString += "&";
+		else
+		    queryString += "?";
+		queryString += "searchitemnumber=" + $scope.searchitemnumber;
+	    }
+	    promises.push($http.get('/allitems' + queryString));
+	    promises.push($http.get('/all/tickets'));
+	    $q.all(promises).then(function(data) {
+		$scope.items = [];
+		data_items = data[0].data;
+		data_items.forEach(function(item) {
+		    if ( item.email == auth.currentUserEmail() ) {
+			console.log("THERE");
+			item.buyer_emails = item.buyers.map(
+			    function(bidnum) {
+				return $scope.tickets[bidnum].login;
+			    });
+			item.concated_emails = item.buyer_emails.join(',');
+			$scope.items.push(item);
+		    }
+		});
+		console.log($scope.items);
+		$scope.items.sort(function(item1, item2) {
+		    return new Date(item1.date) > new Date(item2.date);
+		});
+		tickets_items = data[1].data;
+		$scope.tickets = {};
+		tickets_items.forEach(function(ticket) {
+		    $scope.tickets[ticket.bidnumber] = ticket;
+		});
+		console.log($scope.tickets);
+	    }, function(err) {
+		console.log("err");
 	    });
-	    console.log($scope.items);
-	    console.log($scope.tickets);
-	}, function(err) {
-	    console.log("err");
-	});
+	};
+	$scope.performSearch();
     }]);

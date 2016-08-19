@@ -100,10 +100,43 @@ router.post('/createguest', function(req, res, next) {
 			    "buyer": guest.buyer,
 			    "date": guest.date,
 			    "login": guest.login,
-			    "bidnumber": mybidnumber,
-			    "boughtitems": []
+			    "bidnumber": mybidnumber
 			}
 		    };
+		    /*
+		    
+		    var params = {
+			TableName: "tickets",
+			Item: {
+			    name: {
+				S: guest.name
+			    },
+			    foodRes: {
+				S: guest.foodRes
+			    },
+			    agegroup: {
+				S: guest.agegroup
+			    },
+			    buyer: {
+				M: { email: {
+				    S: guest.buyer.email
+				} }
+			    },
+			    date: {
+				S: guest.date,
+			    },
+			    login: {
+				S: guest.login
+			    },
+			    bidnumber: {
+				N: String(mybidnumber)
+			    },
+			    boughtitems: {
+				SS: []
+			    }
+			}
+		    };
+		    */
 
 		    console.log(params);
 
@@ -345,6 +378,8 @@ router.post('/addadmin', function(req, res, next) {
 	ReturnValues: "UPDATED_NEW"
     };
 
+    console.log(params);
+
     docClient.update(params, function(err, data) {
 	if ( err ) {
 	    console.log(err);
@@ -442,8 +477,8 @@ router.post('/submititem', auth, function(req, res, next) {
         item.id = guid();
     if ( !item.price )
         item.price = item.minvalue;
-    if ( !item.buyers )
-        item.buyers = [];
+    if ( item.buyers )
+        item.buyers = docClient.createSet(item.buyers);
     item.date = new Date();
 
     console.log(item);
@@ -451,6 +486,8 @@ router.post('/submititem', auth, function(req, res, next) {
 	TableName: "items",
 	Item: item
     };
+
+    console.log(params);
 
     docClient.put(params, function(err, data) {
 	if ( err ) {
@@ -544,31 +581,59 @@ router.post('/chargecustomer', auth, function(req, res, next) {
 });
 
 
-/*
+router.post('/deleteitem', auth, function(req, res, next) {
+    var bidders = req.body.bidders;
+    var item;
+    var params =  {
+	TableName: "items",
+	Key: {
+	    id: req.body.id
+	}
+    };
+    docClient.delete(params, function(err, data) {
+	if ( err ) {
+	    console.error(err);
+	    res.status(401).json({error: err});
+	} else {
+	    console.log(data);
+	    res.status(200).json({data: data});
+	}
+    });
+});
+
+
 router.post('/deletebidderfromitem', auth, function(req, res, next) {
     var itemid = req.body.itemid;
     var bidnum = req.body.bidnum;
 
     var params = {
-        TableName: "tickets"
+        TableName: "tickets",
         Key: {
             bidnumber: bidnum
         },
-        UpdateExpression: "DELETE #b :v_itemid"
-        ExpressoinAttributeNames: {
+        UpdateExpression: "DELETE #b :v_itemid",
+        ExpressionAttributeNames: {
             "#b": "boughtitems"
         },
         ExpressionAttributeValues: {
-            ":v_itemid": [itemid]
+            ":v_itemid": itemid
         },
         ReturnValues: "UPDATED_NEW"
     };
+    console.log(params);
 
     docClient.update(params, function(err, data) {
-        
+	if ( err ) {
+	    console.error(err);
+	    res.status(401).json({error: err});
+	} else {
+	    console.log(data);
+	    res.status(200).json({data: data});
+	}
     });
 });
-*/
+
+
 
 router.post('/addbuyer', auth, function(req, res, next) {
     var guestid = req.body.guestid;
@@ -579,16 +644,18 @@ router.post('/addbuyer', auth, function(req, res, next) {
 	Key: {
 	    bidnumber: guestid
 	},
-	UpdateExpression: "SET #b = list_append(#b, :v_itemid)",
+	UpdateExpression: "ADD #b :v_itemid",
 	Item: {},
 	ExpressionAttributeNames:{
 	    "#b": "boughtitems"
 	},
 	ExpressionAttributeValues: {
-	    ":v_itemid": [itemid]
+	    ":v_itemid": docClient.createSet([itemid])
 	},
 	ReturnValues: "UPDATED_NEW"
     };
+
+    console.log(params);
 
     docClient.update(params, function(err, data) {
 	if ( err ) {
@@ -600,13 +667,13 @@ router.post('/addbuyer', auth, function(req, res, next) {
 		Key: {
 		    id: itemid
 		},
-		UpdateExpression: "SET #b = list_append(#b, :v_buyerid)",
+		UpdateExpression: "ADD #b :v_buyerid",
 		Item: {},
 		ExpressionAttributeNames: {
 		    "#b": "buyers"
 		},
 		ExpressionAttributeValues: {
-		    ":v_buyerid": [guestid]
+		    ":v_buyerid": docClient.createSet([guestid])
 		},
 		ReturnValues: "UPDATED_NEW"
 	    };
