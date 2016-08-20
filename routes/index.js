@@ -418,9 +418,6 @@ router.post('/login', function(req, res, next) {
     })(req, res, next);
 });
 
-router.post('/deletebidder', auth, function(req, res, next) {
-});
-
 router.post('/assignitemtype', auth, function(req, res, next) {
     var itemid = req.body.itemid;
     var type = req.body.type;
@@ -556,18 +553,69 @@ router.post('/chargecustomer', auth, function(req, res, next) {
 });
 
 
+
+router.post('/deletebidder', auth, function(req, res, next) {
+    console.log("DELETING");
+    console.log(req.body);
+    var bidnum = req.body.bidnumber;
+    var items = req.body.boughtitems.values;
+
+    var promises = items.map(function(itemid) {
+	return new Promise(function(resolve, reject) {
+	    var params = {
+	        TableName: "items",
+		Key: {
+		    id: itemid
+		},
+		UpdateExpression: "DELETE #b :v_bidnum",
+		ExpressionAttributeNames: {
+		    "#b": "buyers"
+		},
+		ExpressionAttributeValues: {
+		    ":v_bidnum": docClient.createSet([bidnum])
+		},
+		ReturnValues: "UPDATED_NEW"
+	    };
+	    docClient.update(params, function(err, data) {
+		if ( err ) {
+		    console.error(err);
+		    reject(err);
+		} else {
+		    console.log(data);
+		    resolve(data);
+		}
+	    });
+	});
+    });
+    Promise.all(promises).then(function(data) {
+	var item_params = {
+	    TableName: "tickets",
+	    Key: {
+		bidnumber: bidnum
+	    }
+	};
+
+	docClient.delete(item_params, function(err, data) {
+	    if ( err ) {
+		console.log(err);
+		res.status(401).json({error: err});
+	    } else {
+		res.status(200).json({data: data});
+	    }
+	});
+    }, function(err) {
+	console.error(err);
+	res.status(401).json({error: err});
+    });
+});
+
+
 router.post('/deleteitem', auth, function(req, res, next) {
-    console.log("FLL");
     var itemid = req.body.id;
     var bidders = req.body.buyers.values;
-    console.log(req.body);
-
-    console.log("MAPPING");
 
     var promises = bidders.map(function(bidnum) {
-	console.log("MAPPING");
 	return new Promise(function(resolve, reject) {
-	    console.log("in promise");
 	    var params = {
 	        TableName: "tickets",
 		Key: {
@@ -593,7 +641,6 @@ router.post('/deleteitem', auth, function(req, res, next) {
 	    });
 	});
     });
-    console.log("THERE");
     Promise.all(promises).then(function(data) {
 	var item_params = {
 	    TableName: "items",

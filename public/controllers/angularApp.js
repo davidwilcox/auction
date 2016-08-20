@@ -355,8 +355,10 @@ app.controller('ViewTicketCtrl', [
 app.controller('ViewRegisteredPeopleCtrl', [
     '$scope',
     'tickets',
+    'auth',
     '$http',
-    function($scope, tickets, $http) {
+    '$mdDialog',
+    function($scope, tickets, auth, $http, $mdDialog) {
 	tickets.getAll().then(
 	    function(result) {
 		$scope.tickets = result;
@@ -373,6 +375,34 @@ app.controller('ViewRegisteredPeopleCtrl', [
 		    $scope.items[item.id] = item;
 		});
 	    });
+	var delete_bidder = function(bidnum) {
+	    var idx = $scope.tickets.findIndex(function(ticket) {
+		return ticket.bidnumber == bidnum;
+	    });
+	    $http.post("/deletebidder", $scope.tickets[idx], {headers: {
+		Authorization: "Bearer " + auth.getToken() } }).then(
+		    function(data) {
+			$scope.message = "Bidder " + bidnum + " has been deleted.";
+			$scope.tickets.splice(idx,1);
+			console.log($scope.tickets);
+		    }, function(err) {
+			$scope.message = err;
+		    });
+	};
+	$scope.confirm_delete = function(ev, bidnum) {
+	    // Appending dialog to document.body to cover sidenav in docs app
+	    var confirm = $mdDialog.confirm()
+	        .title('Are you sure you want to delete this bidder?')
+	        .textContent('Even after deleting, you will still need to refund the bidder the money they paid for entrance to the auction. You probably want to log into stripe to do this.')
+	        .ariaLabel('Confirm Deletion')
+	        .targetEvent(ev)
+	        .ok('Yes! Delete The Bidder!')
+	        .cancel('No! Whoops!');
+	    $mdDialog.show(confirm).then(function() {
+		delete_bidder(bidnum);
+	    }, function() {
+	    });
+	};
     }]);
 
 
