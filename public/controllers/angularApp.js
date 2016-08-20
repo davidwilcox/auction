@@ -725,6 +725,8 @@ app.controller('BuyTicketsCtrl', [
             }).then(function(data) {
 		$scope.submitProgress = 10;
 
+		console.log(data.data.customer_id);
+
 		$scope.tickets.forEach(function(ticket) {
 		    ticket.customer_id = data.data.customer_id;
 		    if ( auth.isLoggedIn() )
@@ -732,6 +734,8 @@ app.controller('BuyTicketsCtrl', [
 		    else
 		        ticket.login = "a@a.a";
 	        });
+
+		console.log($scope.tickets);
 
 		var purchase_ticket = function(num) {
 		    tickets.purchase($scope.tickets[num]).then(function(data) {

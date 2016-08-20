@@ -94,51 +94,16 @@ router.post('/createguest', function(req, res, next) {
 		    var params = {
 			TableName: "tickets",
 			Item: {
-			    "name": guest.name,
-			    "foodRes": guest.foodRes,
-			    "agegroup": guest.agegroup,
-			    "buyer": guest.buyer,
-			    "date": guest.date,
-			    "login": guest.login,
-			    "bidnumber": mybidnumber
+			    name: guest.name,
+			    foodRes: guest.foodRes,
+			    agegroup: guest.agegroup,
+			    buyer: guest.buyer,
+			    date: guest.date,
+			    login: guest.login,
+			    bidnumber: mybidnumber,
+			    stripe_customer_id: guest.customer_id
 			}
 		    };
-		    /*
-		    
-		    var params = {
-			TableName: "tickets",
-			Item: {
-			    name: {
-				S: guest.name
-			    },
-			    foodRes: {
-				S: guest.foodRes
-			    },
-			    agegroup: {
-				S: guest.agegroup
-			    },
-			    buyer: {
-				M: { email: {
-				    S: guest.buyer.email
-				} }
-			    },
-			    date: {
-				S: guest.date,
-			    },
-			    login: {
-				S: guest.login
-			    },
-			    bidnumber: {
-				N: String(mybidnumber)
-			    },
-			    boughtitems: {
-				SS: []
-			    }
-			}
-		    };
-		    */
-
-		    console.log(params);
 
 		    docClient.put(params, function(err, data) {
 			if (err) {
@@ -558,7 +523,9 @@ router.post('/deletebidder', auth, function(req, res, next) {
     console.log("DELETING");
     console.log(req.body);
     var bidnum = req.body.bidnumber;
-    var items = req.body.boughtitems.values;
+    var items = [];
+    if ( req.body.boughtitems )
+	items = req.body.boughtitems.values;
 
     var promises = items.map(function(itemid) {
 	return new Promise(function(resolve, reject) {
@@ -612,7 +579,9 @@ router.post('/deletebidder', auth, function(req, res, next) {
 
 router.post('/deleteitem', auth, function(req, res, next) {
     var itemid = req.body.id;
-    var bidders = req.body.buyers.values;
+    var bidders = [];
+    if ( req.body.buyers )
+	bidders = req.body.buyers.values;
 
     var promises = bidders.map(function(bidnum) {
 	return new Promise(function(resolve, reject) {
