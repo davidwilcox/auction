@@ -25,11 +25,12 @@
     </div>
     <div>
       <md-input-container>
-        <label>LAST NAME, FIRST NAME</label>
+        <label>Full Name</label>
         <input type="text"
 	       name="name"
 	       ng-model="user.name"
-               size="60">
+               size="60"
+	       required>
       </md-input-container>
     </div>
     <div>
@@ -37,17 +38,19 @@
         <label>Phone Number</label>
         <input type="text"
 	       name="phonenumber"
-	       ng-model="user.phonenumber">
+	       ng-model="user.phonenumber"
+	       phone-input
+	       required
+	       >
       </md-input-container>
     </div>
-    <b>Picture (nice to have if you want to do a party donation)</b>
+    <b>Picture of You or Your Family (So people can see who’s donating)</b>
 
     <div>
       <input class="ng-hide" id="input-file-id" type="file" ng-file-select="onFileSelect($files)" accept="image/*" >
       <label for="input-file-id" class="md-button md-raised md-primary">Choose PICTURE</label>
     </div>
     <div>
-      <div><label>Image Preview</label></div>
       <div><i ng-hide="imageSrc">No image chosen.</i></div>
       <div><img ng-src="{{imageSrc}}" style="width:300px"></div>
       <div>  <progress value="{{progress}}"></progress></div>

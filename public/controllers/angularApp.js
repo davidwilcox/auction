@@ -94,14 +94,14 @@ app.directive('phoneInput', function($filter, $browser) {
     return {
         require: 'ngModel',
         link: function($scope, $element, $attrs, ngModelCtrl) {
-            var listener = function() {
-                var value = $element.val().replace(/[^0-9]/g, '');
+	    var listener = function() {
+	        var value = $element.val().replace(/[^0-9]/g, '');
                 $element.val($filter('tel')(value, false));
             };
 
             // This runs when we update the text field
             ngModelCtrl.$parsers.push(function(viewValue) {
-                return viewValue.replace(/[^0-9]/g, '').slice(0,10);
+		return viewValue.replace(/[^0-9]/g, '').slice(0,10);
             });
 
             // This runs when the model gets updated on the scope directly and keeps our view in sync
@@ -111,7 +111,7 @@ app.directive('phoneInput', function($filter, $browser) {
 
             $element.bind('change', listener);
             $element.bind('keydown', function(event) {
-                var key = event.keyCode;
+		var key = event.keyCode;
                 // If the keys include the CTRL, SHIFT, ALT, or META keys, or the arrow keys, do nothing.
                 // This lets us support copy and paste too
                 if (key == 91 || (15 < key && key < 19) || (37 <= key && key <= 40)){
@@ -503,8 +503,10 @@ app.controller('InsertBidsCtrl', [
 	$scope.addbidder = function(item) {
 	    content = {
 		guestid: item.bidder,
-		itemid: item.id
+		itemid: item.id,
+		price: item.price
 	    };
+	    console.log(content);
 	    $http.post("/addbuyer",content, {headers: {
 		Authorization: "Bearer " + auth.getToken() } }).success(function(data) {
 		    $scope.message = data;
@@ -900,19 +902,38 @@ app.controller( 'ViewDonatedItemsCtrl', [
 	    }
 	    promises.push($http.get('/allitems' + queryString));
 	    promises.push($http.get('/all/tickets'));
+	    promises.push($http.get('/all/transactions'));
 	    $q.all(promises).then(function(data) {
 		$scope.items = [];
-		data_items = data[0].data;
-		data_items.forEach(function(item) {
-		    $scope.items.push(item);
-		});
-		$scope.items.sort(function(item1, item2) {
-		    return new Date(item1.date) > new Date(item2.date);
-		});
-		tickets_items = data[1].data;
+		var tickets_items = data[1].data;
 		$scope.tickets = {};
 		tickets_items.forEach(function(ticket) {
 		    $scope.tickets[ticket.bidnumber] = ticket;
+		});
+
+
+		var raw_transactions = data[2].data;
+		$scope.transactions_by_item = {};
+		raw_transactions.forEach(function(transaction) {
+		    if ( !$scope.transactions_by_item[transaction.itemid] )
+			$scope.transactions_by_item[transaction.itemid] = [];
+		    $scope.transactions_by_item[transaction.itemid].push(transaction);
+		});
+		console.log($scope.transactions_by_item);
+
+		data_items = data[0].data;
+		data_items.forEach(function(item) {
+		    $scope.items.push(item);
+		    if ( item.buyers ) {
+			item.buyer_emails = item.buyers.values.map(
+			    function(bidnum) {
+				return $scope.tickets[bidnum].login;
+			    });
+			item.concated_emails = item.buyer_emails.join(',');
+		    }
+		});
+		$scope.items.sort(function(item1, item2) {
+		    return new Date(item1.date) > new Date(item2.date);
 		});
 		console.log($scope.items);
 		console.log($scope.tickets);
@@ -949,29 +970,45 @@ app.controller( 'MyDonatedItemsCtrl',[
 	    }
 	    promises.push($http.get('/allitems' + queryString));
 	    promises.push($http.get('/all/tickets'));
+	    promises.push($http.get('/all/transactions'));
 	    $q.all(promises).then(function(data) {
+		tickets_items = data[1].data;
+		$scope.tickets = {};
+		tickets_items.forEach(function(ticket) {
+		    if ( !$scope.transactions_by_item[transaction.itemid] )
+			$scope.transactions_by_item[transaction.itemid] = [];
+		    $scope.tickets[ticket.bidnumber] = ticket;
+		});
+
+
+		var raw_transactions = data[2].data;
+		$scope.transactions_by_item = {};
+		raw_transactions.forEach(function(transaction) {
+		    $scope.transactions_by_item[transaction.itemid] = transaction;
+		});
+
+
 		$scope.items = [];
 		data_items = data[0].data;
 		data_items.forEach(function(item) {
+		    console.log(item.email);
+		    console.log(item.name);
 		    if ( item.email == auth.currentUserEmail() ) {
-			item.buyer_emails = item.buyers.map(
-			    function(bidnum) {
-				return $scope.tickets[bidnum].login;
-			    });
-			item.concated_emails = item.buyer_emails.join(',');
+			console.log(item.buyers);
+			if ( item.buyers ) {
+			    item.buyer_emails = item.buyers.values.map(
+				function(bidnum) {
+				    return $scope.tickets[bidnum].login;
+				});
+			    item.concated_emails = item.buyer_emails.join(',');
+			}
 			$scope.items.push(item);
 		    }
 		});
 		$scope.items.sort(function(item1, item2) {
 		    return new Date(item1.date) > new Date(item2.date);
 		});
-		tickets_items = data[1].data;
-		$scope.tickets = {};
-		tickets_items.forEach(function(ticket) {
-		    $scope.tickets[ticket.bidnumber] = ticket;
-		});
 		console.log($scope.items);
-		console.log($scope.tickets);
 	    }, function(err) {
 		console.log("err");
 	    });

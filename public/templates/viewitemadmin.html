@@ -36,8 +36,6 @@
 	</md-card-title-text>
       </md-card-title>
 
-      <font color="red">{{item.message}}</font>
-
       <div layout="row">
 	<md-input-container>
 	  <label>Item Description</label>
@@ -52,7 +50,7 @@
 
       <div layout="row" layout-align="start center">
 	<md-input-container>
-	  <label>Item Starting Bid</label>
+	  <label>Item Starting Bid (USD)</label>
 	  <input
              type="text"
              ng-model="item.minvalue"
@@ -60,18 +58,10 @@
              >
 	</md-input-container>
 	<md-input-container>
-	  <label>Item Value</label>
+	  <label>Item Value (USD)</label>
 	  <input
              type="text"
              ng-model="item.value"
-	     format="currency"
-             >
-	</md-input-container>
-	<md-input-container>
-	  <label>Item Sell Price</label>
-	  <input
-             type="text"
-             ng-model="item.price"
 	     format="currency"
              >
 	</md-input-container>
@@ -103,6 +93,9 @@
             </div>
 	  </md-select>
 	</md-input-container>
+      </div>
+      <div>
+	<font color="red">{{item.message}}</font>
       </div>
       <div layout="row">
 	<div>
@@ -143,6 +136,7 @@
 		<input
 		   type="text"
 		   ng-model="item.donor.phonenumber"
+		   phone-input
 		   >
               </md-input-container>
             </div>
@@ -162,13 +156,17 @@
 	    </span>
 	  </md-card-title-text>
 	</md-card-title>
-	<div ng-repeat="buyer in item.buyers.values">
+	{{tickets[0]}}
+	<div ng-repeat="transaction in transactions_by_item[item.id]">
 	  <div layout="row">
-	    <div ><a ui-sref="viewticket( {bidnumber: buyer} )">{{tickets[buyer].name}} (#{{buyer}})</a></div>
+	    <div ><a ui-sref="viewticket( {bidnumber: transaction.bidnumber} )">{{transaction.bidnumber}} {{tickets[transaction.bidnumber].name}}</a> {{tickets[transaction.bidnumber].buyer.email}} {{tickets[transaction.bidnumber].buyer.phonenumber | tel}} {{transaction.sellprice | currency}}</div>
 	    <md-button class="md-icon-button" ng-click="removeBidderFromItem(item, buyer)" >
 	      <md-icon>clear</md-icon>
 	    </md-button>
 	  </div>
+	</div>
+	<div>
+	  <md-button class="md-primary md-raised" href="mailto:{{item.concated_emails}}">Email Buyers</md-button>
 	</div>
       </md-card>
 
