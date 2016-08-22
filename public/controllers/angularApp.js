@@ -807,16 +807,16 @@ app.controller('ViewItemAdminCtrl', ['$scope', 'auth', "$http", function($scope,
         });
     };
 
-    $scope.removeBidderFromItem = function(item, bidder) {
+    $scope.removeBidderFromItem = function(item, transaction) {
         console.log("removing");
         $http.post("/deletebidderfromitem", {
-            itemid: item.id,
-            bidnum: bidder
+            itemid: transaction.itemid,
+            bidnum: transaction.bidnumber
         }, {headers: {
 	    Authorization: "Bearer " + auth.getToken()
         } } ).success(function(data) {
-	    var index = item.buyers.values.indexOf(bidder);
-	    item.buyers.values.splice(index,1);
+	    var index = $scope.transactions_by_item[transaction.itemid].indexOf(transaction);
+	    $scope.transactions_by_item[transaction.itemid].splice(index,1);
             item.message = "Bidder deleted.";
         }).error(function(error) {
             item.message = error;

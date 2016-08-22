@@ -596,7 +596,7 @@ router.post('/deletebidderfromitem', auth, function(req, res, next) {
     var params = {
         TableName: "transactions",
         Key: {
-            bidnumber: bidnum,
+            bidnumber: Number(bidnum),
 	    itemid: itemid
         }
     };
