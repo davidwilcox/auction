@@ -924,12 +924,13 @@ app.controller( 'ViewDonatedItemsCtrl', [
 		data_items = data[0].data;
 		data_items.forEach(function(item) {
 		    $scope.items.push(item);
-		    if ( item.buyers ) {
-			item.buyer_emails = item.buyers.values.map(
-			    function(bidnum) {
-				return $scope.tickets[bidnum].login;
+		    if ( $scope.transactions_by_item[item.id] ) {
+			console.log("HERE");
+			item.buyer_emails = $scope.transactions_by_item[item.id].map(
+			    function(transaction) {
+				return $scope.tickets[transaction.bidnumber].login;
 			    });
-			item.concated_emails = item.buyer_emails.join(',');
+			item.concated_emails = item.buyer_emails.join(';');
 		    }
 		});
 		$scope.items.sort(function(item1, item2) {
@@ -991,16 +992,14 @@ app.controller( 'MyDonatedItemsCtrl',[
 		$scope.items = [];
 		data_items = data[0].data;
 		data_items.forEach(function(item) {
-		    console.log(item.email);
-		    console.log(item.name);
 		    if ( item.email == auth.currentUserEmail() ) {
-			console.log(item.buyers);
-			if ( item.buyers ) {
-			    item.buyer_emails = item.buyers.values.map(
-				function(bidnum) {
-				    return $scope.tickets[bidnum].login;
+			if ( $scope.transactions_by_item[item.id] ) {
+			    console.log("HERE");
+			    item.buyer_emails = $scope.transactions_by_item[item.id].map(
+				function(transaction) {
+				    return $scope.tickets[transaction.bidnumber].login;
 				});
-			    item.concated_emails = item.buyer_emails.join(',');
+			    item.concated_emails = item.buyer_emails.join(';');
 			}
 			$scope.items.push(item);
 		    }

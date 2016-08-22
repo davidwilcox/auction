@@ -159,7 +159,7 @@
 	{{tickets[0]}}
 	<div ng-repeat="transaction in transactions_by_item[item.id]">
 	  <div layout="row">
-	    <div ><a ui-sref="viewticket( {bidnumber: transaction.bidnumber} )">{{transaction.bidnumber}} {{tickets[transaction.bidnumber].name}}</a> {{tickets[transaction.bidnumber].buyer.email}} {{tickets[transaction.bidnumber].buyer.phonenumber | tel}} {{transaction.sellprice | currency}}</div>
+	    <div >{{transaction.bidnumber}} {{tickets[transaction.bidnumber].name}} <a href="mailto:{{tickets[transaction.bidnumber].buyer.email}}">{{tickets[transaction.bidnumber].buyer.email}}</a> {{tickets[transaction.bidnumber].buyer.phonenumber | tel}} {{transaction.sellprice | currency}}</div>
 	    <md-button class="md-icon-button" ng-click="removeBidderFromItem(item, transaction)" >
 	      <md-icon>clear</md-icon>
 	    </md-button>
