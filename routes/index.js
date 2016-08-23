@@ -72,6 +72,7 @@ router.post('/createguest', function(req, res, next) {
             if ( err ) {
 		console.log(err);
 	    }
+            console.log(data);
 	    var mybidnumber = data.Item.number;
 	    var params = {
 		TableName: "bidnumber",
@@ -87,6 +88,7 @@ router.post('/createguest', function(req, res, next) {
 		    "#numname": "number"
 		}
 	    };
+            console.log(params);
 	    docClient.put(params, function(err, data) {
 		if ( err ) {
 		    console.log(err);
