@@ -1,11 +1,4 @@
 <div>
-  <div ng-show="error" >
-    <span>{{ error.message }}</span>
-  </div>
-  <div ng-show="message" >
-    <span>{{ message.message }}</span>
-  </div>
-
   <div ng-repeat="item in items">
     <md-card layout-padding>
       <md-card-title>
@@ -48,6 +41,9 @@
 	       >
           </md-input-container>
         </div>
+	<div>
+	  {{item.message}}
+	</div>
         <div>
           <md-button
 	     ng-click="addbidder(item)"

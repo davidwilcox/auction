@@ -509,9 +509,9 @@ app.controller('InsertBidsCtrl', [
 	    console.log(content);
 	    $http.post("/addbuyer",content, {headers: {
 		Authorization: "Bearer " + auth.getToken() } }).success(function(data) {
-		    $scope.message = data;
+		    item.message = data.message;
 		}).error(function(error) {
-		    $scope.error = error;
+		    item.message = error;
 		});
 	};
 
