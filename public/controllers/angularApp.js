@@ -45,7 +45,7 @@ app.factory('charges', ['$http', 'auth', function($http, auth) {
 
 
 
-app.factory('tickets', ['$http', '$q', function($http, $q) {
+app.factory('tickets', ['$http', function($http) {
 
     return {
 	purchase: function(ticket) {
@@ -514,6 +514,15 @@ app.controller('InsertBidsCtrl', [
 		    $scope.error = error;
 		});
 	};
+
+	$scope.findBidder = function(item) {
+	    $http.get('/findticket/' + item.bidder).then(function(data) {
+		console.log(data);
+		item.foundbidder = data.data;
+	    }, function(err) {
+		console.log(err);
+	    });
+	};
     }]);
 
 
@@ -639,12 +648,11 @@ app.directive('datetimez', function() {
 
 app.controller('BuyTicketsCtrl', [
     '$scope',
-    '$q',
     '$state',
     'tickets',
     'charges',
     'auth',
-    function($scope, $q, $state, tickets, charges, auth) {
+    function($scope, $state, tickets, charges, auth) {
 	$scope.ticketTypes = ["ADULT_TICKET","HIGHSCHOOL_TICKET","JUNIORHIGH_TICKET","CHILD_TICKET"];
 	console.log($scope.ticketTypes);
 	$scope.tickets = [];
@@ -865,15 +873,79 @@ app.controller('ViewItemCtrl', [
     }]);
 
 
+app.factory('items', ['$http', '$q', function($http, $q) {
+    var o = {
+    };
+    o.performSearch = function(searchterms) {
+
+	var promises = [];
+	var queryString = '';
+	if ( searchterms.searchname )
+	    queryString += "?searchname=" + searchterms.searchname;
+	if ( searchterms.searchitemnumber ) {
+	    if ( queryString )
+		queryString += "&";
+	    else
+		queryString += "?";
+	    queryString += "searchitemnumber=" + searchterms.searchitemnumber;
+	}
+	promises.push($http.get('/allitems' + queryString));
+	promises.push($http.get('/all/tickets'));
+	promises.push($http.get('/all/transactions'));
+	var deferred = $q.defer();
+	$q.all(promises).then(function(data) {
+	    var items = [];
+	    var tickets_items = data[1].data;
+	    var tickets = {};
+	    tickets_items.forEach(function(ticket) {
+		tickets[ticket.bidnumber] = ticket;
+	    });
+
+
+	    var raw_transactions = data[2].data;
+	    var transactions_by_item = {};
+	    raw_transactions.forEach(function(transaction) {
+		if ( !transactions_by_item[transaction.itemid] )
+		    transactions_by_item[transaction.itemid] = [];
+		transactions_by_item[transaction.itemid].push(transaction);
+	    });
+
+	    data_items = data[0].data;
+	    data_items.forEach(function(item) {
+		items.push(item);
+		if ( transactions_by_item[item.id] ) {
+		    item.buyer_emails = transactions_by_item[item.id].map(
+			function(transaction) {
+			    return tickets[transaction.bidnumber].login;
+			});
+		    item.concated_emails = item.buyer_emails.join(';');
+		}
+	    });
+	    items.sort(function(item1, item2) {
+		return new Date(item1.date) > new Date(item2.date);
+	    });
+	    deferred.resolve({
+		items: items,
+		tickets: tickets,
+		transactions_by_item: transactions_by_item});
+	}, function(err) {
+	    deferred.reject(err);
+	    console.log("err");
+	});
+	return deferred.promise;
+    };
+
+    return o;
+}]);
+
+
 app.controller( 'ViewDonatedItemsCtrl', [
     '$scope',
-    '$q',
     'tickets',
-    '$http',
+    'items',
     'auth',
-    function($scope, $q, tickets, $http, auth) {
+    function($scope, tickets, items, auth) {
 
-	
 	$scope.deleteitem = function(item) {
 	    $http.post("/deleteitem", item, {headers: {
 		Authorization: "Bearer " + auth.getToken()
@@ -883,9 +955,28 @@ app.controller( 'ViewDonatedItemsCtrl', [
 	    });
 	};
 
+	items.performSearch({
+	    searchname: $scope.searchname,
+	    searchitemnumber: $scope.searchitemnumber
+	}).then(function(data) {
+	    $scope.items = data.items;
+	    $scope.tickets = data.tickets;
+	    $scope.transactions_by_item = data.transactions_by_item;
+	}, function(err) {
+	    console.log(err);
+	});
+   }]);
+
+
+app.controller( 'MyDonatedItemsCtrl',[
+    '$scope',
+    '$q',
+    'tickets',
+    '$http',
+    'auth',
+    function($scope, $q, tickets, $http, auth) {
 
 	$scope.performSearch = function() {
-	    console.log("performing");
 	    delete $scope.items;
 	    delete $scope.tickets;
 
@@ -917,84 +1008,14 @@ app.controller( 'ViewDonatedItemsCtrl', [
 		raw_transactions.forEach(function(transaction) {
 		    if ( !$scope.transactions_by_item[transaction.itemid] )
 			$scope.transactions_by_item[transaction.itemid] = [];
-		    $scope.transactions_by_item[transaction.itemid].push(transaction);
-		});
-		console.log($scope.transactions_by_item);
-
-		data_items = data[0].data;
-		data_items.forEach(function(item) {
-		    $scope.items.push(item);
-		    if ( $scope.transactions_by_item[item.id] ) {
-			console.log("HERE");
-			item.buyer_emails = $scope.transactions_by_item[item.id].map(
-			    function(transaction) {
-				return $scope.tickets[transaction.bidnumber].login;
-			    });
-			item.concated_emails = item.buyer_emails.join(';');
-		    }
-		});
-		$scope.items.sort(function(item1, item2) {
-		    return new Date(item1.date) > new Date(item2.date);
-		});
-		console.log($scope.items);
-		console.log($scope.tickets);
-	    }, function(err) {
-		console.log("err");
-	    });
-	};
-	$scope.performSearch();
-    }]);
-
-
-app.controller( 'MyDonatedItemsCtrl',[
-    '$scope',
-    '$q',
-    'tickets',
-    '$http',
-    'auth',
-    function($scope, $q, tickets, $http, auth) {
-
-	$scope.performSearch = function() {
-	    delete $scope.items;
-	    delete $scope.tickets;
-
-	    var promises = [];
-	    var queryString = '';
-	    if ( $scope.searchname )
-		queryString += "?searchname=" + $scope.searchname;
-	    if ( $scope.searchitemnumber ) {
-		if ( queryString )
-		    queryString += "&";
-		else
-		    queryString += "?";
-		queryString += "searchitemnumber=" + $scope.searchitemnumber;
-	    }
-	    promises.push($http.get('/allitems' + queryString));
-	    promises.push($http.get('/all/tickets'));
-	    promises.push($http.get('/all/transactions'));
-	    $q.all(promises).then(function(data) {
-		tickets_items = data[1].data;
-		$scope.tickets = {};
-		tickets_items.forEach(function(ticket) {
-		    if ( !$scope.transactions_by_item[transaction.itemid] )
-			$scope.transactions_by_item[transaction.itemid] = [];
-		    $scope.tickets[ticket.bidnumber] = ticket;
-		});
-
-
-		var raw_transactions = data[2].data;
-		$scope.transactions_by_item = {};
-		raw_transactions.forEach(function(transaction) {
 		    $scope.transactions_by_item[transaction.itemid] = transaction;
 		});
 
 
-		$scope.items = [];
 		data_items = data[0].data;
 		data_items.forEach(function(item) {
 		    if ( item.email == auth.currentUserEmail() ) {
 			if ( $scope.transactions_by_item[item.id] ) {
-			    console.log("HERE");
 			    item.buyer_emails = $scope.transactions_by_item[item.id].map(
 				function(transaction) {
 				    return $scope.tickets[transaction.bidnumber].login;
@@ -1007,7 +1028,6 @@ app.controller( 'MyDonatedItemsCtrl',[
 		$scope.items.sort(function(item1, item2) {
 		    return new Date(item1.date) > new Date(item2.date);
 		});
-		console.log($scope.items);
 	    }, function(err) {
 		console.log("err");
 	    });

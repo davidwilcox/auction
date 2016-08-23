@@ -126,6 +126,24 @@ router.post('/createguest', function(req, res, next) {
     put_user();
 });
 
+router.get("/findticket/:bidnumber", function(req, res, next) {
+    var params = {
+	TableName: "tickets",
+	Key: {
+	    "bidnumber": Number(req.params.bidnumber)
+	}
+    };
+    console.log(params);
+    docClient.get(params, function(err, data) {
+	if ( data )
+	    res.status(200).json(data.Item);
+	else {
+	    console.log(err);
+	    res.status(401).json(err);
+	}
+    });
+});
+
 router.get("/findtickets/:email", function(req, res, next) {
     var params = {
 	TableName: "tickets",
@@ -421,10 +439,6 @@ router.post('/submititem', auth, function(req, res, next) {
     var item = req.body;
     if ( !item.id )
         item.id = guid();
-    if ( !item.price )
-        item.price = item.minvalue;
-    if ( item.buyers )
-        item.buyers = docClient.createSet(item.buyers);
     item.date = new Date();
 
     var params = {

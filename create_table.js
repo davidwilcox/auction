@@ -86,8 +86,11 @@ var params = {
 		AttributeType: "S"
 	}],
     KeySchema: [{
-		AttributeName: "bidnumber",
+	AttributeName: "bidnumber",
         KeyType: "HASH"
+    }, {
+	AttributeName: "login",
+	KeyType: "RANGE"
     }],
 	GlobalSecondaryIndexes: [
         {

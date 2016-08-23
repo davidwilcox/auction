@@ -11,53 +11,32 @@
       <md-card-title>
         <md-card-title-text>
           <span class="md-headline">
-	    {{item.donor.name}}
-          </span>
-          <span class="md-subhead">
-	    {{item.donor.email}}
+	    {{item.number}} {{item.name}}
           </span>
         </md-card-title-text>
       </md-card-title>
       <div layout="row">
-        <label>Donor Phone Number</label>
-        {{item.donor.phone}}
+	{{item.donor.name}}
       </div>
       <div layout="row">
-        <label>Item Category</label>
-        {{item.category}}
+        {{item.type}} {{item.category}}
       </div>
       <div layout="row">
-        <label>Item Description</label>
-        {{item.description}}
-      </div>
-      <div layout="row">
-        <label>Item Name</label>
-        {{item.name}}
-      </div>
-      <div layout="row">
-        <label>Item Starting Bid</label>
-        {{item.minvalue | currency}}
-      </div>
-      <div layout="row">
-        <label>Item Value</label>
-        {{item.value | currency}}
-      </div>
-      <div layout="row" ng-show="item.policy">
-        <label>Event Policy</label>
-        <span translate="{{item.policy}}"></span>
-      </div>
-      <div layout="row" ng-show="item.referee">
-        <label>Donor Referee</label>
-        {{item.referee}}
+	{{item.quantity}}
       </div>
       <form ng-submit="addbidder">
-        <div>
+        <div layout="row">
           <md-input-container>
-          <label>Bidder #</label>
-          <input
-	     type="number"
-	     ng-model="item.bidder"
-	     >
+            <label>Bidder #</label>
+            <input
+	       type="number"
+	       ng-model="item.bidder"
+	       ng-blur="findBidder(item)"
+	       >
+	  </md-input-container>
+	  <div ng-show="item.foundbidder">
+	    {{item.foundbidder.name}}
+	  </div>
         </div>
         <div>
           <md-input-container>
