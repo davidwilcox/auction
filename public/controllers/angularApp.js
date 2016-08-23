@@ -918,7 +918,7 @@ app.factory('items', ['$http', '$q', function($http, $q) {
 			function(transaction) {
 			    return tickets[transaction.bidnumber].login;
 			});
-		    item.concated_emails = item.buyer_emails.join(';');
+		    item.concated_emails = item.buyer_emails.join(',');
 		}
 	    });
 	    items.sort(function(item1, item2) {
