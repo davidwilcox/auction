@@ -1032,7 +1032,7 @@ app.controller( 'MyDonatedItemsCtrl',[
 		data_items = data[0].data;
 		data_items.forEach(function(item) {
 		    if ( item.email == auth.currentUserEmail() ) {
-			if ( $scope.transactions_by_item[item.id] ) {
+			if ( $scope.transactions_by_item[item.id].length ) {
 			    item.buyer_emails = $scope.transactions_by_item[item.id].map(
 				function(transaction) {
 				    return $scope.tickets[transaction.bidnumber].login;
