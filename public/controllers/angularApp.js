@@ -939,13 +939,15 @@ app.factory('items', ['$http', '$q', function($http, $q) {
 
 	    data_items = data[0].data;
 	    data_items.forEach(function(item) {
-		items.push(item);
-		if ( transactions_by_item[item.id] ) {
-		    item.buyer_emails = transactions_by_item[item.id].map(
-			function(transaction) {
-			    return tickets[transaction.bidnumber].login;
-			});
-		    item.concated_emails = item.buyer_emails.join(',');
+		if ( item.email == searchterms.email ) {
+		    items.push(item);
+		    if ( transactions_by_item[item.id] ) {
+			item.buyer_emails = transactions_by_item[item.id].map(
+			    function(transaction) {
+				return tickets[transaction.bidnumber].login;
+			    });
+			item.concated_emails = item.buyer_emails.join(',');
+		    }
 		}
 	    });
 	    items.sort(function(item1, item2) {
@@ -1002,63 +1004,16 @@ app.controller( 'MyDonatedItemsCtrl',[
     'tickets',
     '$http',
     'auth',
-    function($scope, $q, tickets, $http, auth) {
+    'items',
+    function($scope, $q, tickets, $http, auth, items) {
 
-	$scope.performSearch = function() {
-	    delete $scope.items;
-	    delete $scope.tickets;
-
-	    var promises = [];
-	    var queryString = '';
-	    if ( $scope.searchname )
-		queryString += "?searchname=" + $scope.searchname;
-	    if ( $scope.searchitemnumber ) {
-		if ( queryString )
-		    queryString += "&";
-		else
-		    queryString += "?";
-		queryString += "searchitemnumber=" + $scope.searchitemnumber;
-	    }
-	    promises.push($http.get('/allitems' + queryString));
-	    promises.push($http.get('/all/tickets'));
-	    promises.push($http.get('/all/transactions'));
-	    $q.all(promises).then(function(data) {
-		$scope.items = [];
-		var tickets_items = data[1].data;
-		$scope.tickets = {};
-		tickets_items.forEach(function(ticket) {
-		    $scope.tickets[ticket.bidnumber] = ticket;
-		});
-
-
-		var raw_transactions = data[2].data;
-		$scope.transactions_by_item = {};
-		raw_transactions.forEach(function(transaction) {
-		    if ( !$scope.transactions_by_item[transaction.itemid] )
-			$scope.transactions_by_item[transaction.itemid] = [];
-		    $scope.transactions_by_item[transaction.itemid] = transaction;
-		});
-
-
-		data_items = data[0].data;
-		data_items.forEach(function(item) {
-		    if ( item.email == auth.currentUserEmail() ) {
-			if ( $scope.transactions_by_item[item.id].length ) {
-			    item.buyer_emails = $scope.transactions_by_item[item.id].map(
-				function(transaction) {
-				    return $scope.tickets[transaction.bidnumber].login;
-				});
-			    item.concated_emails = item.buyer_emails.join(',');
-			}
-			$scope.items.push(item);
-		    }
-		});
-		$scope.items.sort(function(item1, item2) {
-		    return new Date(item1.date) > new Date(item2.date);
-		});
-	    }, function(err) {
-		console.log("err");
-	    });
-	};
-	$scope.performSearch();
+	items.performSearch({
+	    email: auth.currentUserEmail()
+	}).then(function(data) {
+	    $scope.items = data.items;
+	    $scope.tickets = data.tickets;
+	    $scope.transactions_by_item = data.transactions_by_item;
+	}, function(err) {
+	    console.log(err);
+	});	    
     }]);
