@@ -7,11 +7,15 @@
 	  <input
 	     type="number"
 	     ng-model="item.number"
+	     ng-blur="saveitem(item)"
 	     />
 	</md-input-container>
 	<md-input-container>
 	  <label>Item Type</label>
-	  <md-select ng-model="item.type">
+	  <md-select
+	     ng-model="item.type"
+	     ng-blur="saveitem(item)"
+	     >
 	    <md-option value="live">Live</md-option>
 	    <md-option value="silent">Silent</md-option>
 	    <md-option value="fixed">Fixed</md-option>
@@ -30,6 +34,7 @@
 		 type="text"
 		 ng-model="item.name"
 		 size="50"
+		 ng-blur="saveitem(item)"
 		 >
 	  </md-input-container>
 	  </span>
@@ -43,6 +48,7 @@
              ng-model="item.description"
 	     cols="70"
 	     md-maxlength="500"
+	     ng-blur="saveitem(item)"
              >
 	  </textarea>
 	</md-input-container>
@@ -54,6 +60,7 @@
 	  <input
              type="text"
              ng-model="item.minvalue"
+	     ng-blur="saveitem(item)"
 	     format="currency"
              >
 	</md-input-container>
@@ -63,6 +70,7 @@
              type="text"
              ng-model="item.value"
 	     format="currency"
+	     ng-blur="saveitem(item)"
              >
 	</md-input-container>
       </div>
@@ -70,7 +78,9 @@
       <div layout="row" style="overflow: hidden;">
 	<md-input-container>
 	  <label>Item Category</label>
-	  <md-select ng-model="item.category">
+	  <md-select
+	     ng-blur="saveitem(item)"
+	     ng-model="item.category">
 	    <md-option value="event">Event</md-option>
             <md-option value="object">Object or service</md-option>
 	  </md-select>
@@ -79,6 +89,7 @@
 	  <label>Item Quantity</label>
 	  <input
              type="text"
+	     ng-blur="saveitem(item)"
              ng-model="item.quantity"
              >
 	</md-input-container>
@@ -87,7 +98,9 @@
 
 	<md-input-container style="width:100%">
 	  <label>Event Policy</label>
-	  <md-select ng-model="item.policy" class="dropdown">
+	  <md-select
+	     ng-model="item.policy"
+	     ng-blur="saveitem(item)" class="dropdown">
             <div ng-repeat="policy in policies">
 	      <md-option value="{{policy}}">&nbsp;<span translate="{{policy}}"></span></md-option>
             </div>
@@ -98,9 +111,6 @@
 	<font color="red">{{item.message}}</font>
       </div>
       <div layout="row">
-	<div>
-	  <md-button class="md-primary md-raised" ng-click="saveitem(item)">Save Item Changes</md-button>
-	</div>
 	<div>
 	  <md-button class="md-primary md-raised" ng-click="deleteitem(item)">Delete Item</md-button>
 	</div>
@@ -116,6 +126,7 @@
 		 ng-model="item.donor.name"
 		 type="text"
 		 size="40"
+		 ng-blur="saveitem(item)"
 		 >
             </md-input-container>
 	  </span>
@@ -127,6 +138,7 @@
 		   ng-model="item.donor.email"
 		   type="text"
 		   size="60"
+		   ng-blur="saveitem(item)"
 		   >
               </md-input-container>
 	    </div>
@@ -137,6 +149,7 @@
 		   type="text"
 		   ng-model="item.donor.phonenumber"
 		   phone-input
+		   ng-blur="saveitem(item)"
 		   >
               </md-input-container>
             </div>
