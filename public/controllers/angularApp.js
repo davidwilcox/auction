@@ -156,10 +156,10 @@ app.config([
 		templateUrl: '/templates/viewregisteredpeople.html',
 		controller: 'ViewRegisteredPeopleCtrl'
 	    })
-	    .state('admin.viewdonateditems', {
-		url: '/viewdonateditems',
-		templateUrl: '/templates/viewdonateditems.html',
-		controller: 'ViewDonatedItemsCtrl'
+	    .state('admin.modifydonateditems', {
+		url: '/modifydonateditems',
+		templateUrl: '/templates/modifydonateditems.html',
+		controller: 'ModifyDonatedItemsCtrl'
 	    })
 	    .state('buyticketsconfirmation', {
 		url: '/buyticketsconfirmation',
@@ -968,7 +968,7 @@ app.factory('items', ['$http', '$q', function($http, $q) {
 }]);
 
 
-app.controller( 'ViewDonatedItemsCtrl', [
+app.controller( 'ModifyDonatedItemsCtrl', [
     '$scope',
     'tickets',
     'items',
