@@ -938,8 +938,9 @@ app.factory('items', ['$http', '$q', function($http, $q) {
 	    });
 
 	    data_items = data[0].data;
+	    console.log(data_items);
 	    data_items.forEach(function(item) {
-		if ( item.email == searchterms.email ) {
+		if ( !searchterms.email || item.email == searchterms.email ) {
 		    items.push(item);
 		    if ( transactions_by_item[item.id] ) {
 			item.buyer_emails = transactions_by_item[item.id].map(
@@ -989,9 +990,11 @@ app.controller( 'ModifyDonatedItemsCtrl', [
 	    searchname: $scope.searchname,
 	    searchitemnumber: $scope.searchitemnumber
 	}).then(function(data) {
+	    console.log("HERE");
 	    $scope.items = data.items;
 	    $scope.tickets = data.tickets;
 	    $scope.transactions_by_item = data.transactions_by_item;
+	    console.log($scope.items);
 	}, function(err) {
 	    console.log(err);
 	});
