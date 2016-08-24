@@ -99,9 +99,6 @@ var params = {
     KeySchema: [{
 	AttributeName: "bidnumber",
         KeyType: "HASH"
-    }, {
-	AttributeName: "login",
-	KeyType: "RANGE"
     }],
     GlobalSecondaryIndexes: [
 	{

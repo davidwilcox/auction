@@ -7,8 +7,8 @@ AWS.config.update({
 
 var dynamodb = new AWS.DynamoDB();
 
-["transactions", "donors", "bid_number_count", "tickets", "items", "users", "bidnumber"].forEach(function(name) {
-//["tickets", "transactions"].forEach(function(name) {
+//["transactions", "donors", "bid_number_count", "tickets", "items", "users", "bidnumber"].forEach(function(name) {
+["tickets", "transactions"].forEach(function(name) {
     console.log(name);
 	var params = {
 		TableName : name

@@ -522,20 +522,31 @@ app.controller('InsertBidsCtrl', [
 		price: item.price
 	    };
 	    console.log(content);
-	    $http.post("/addbuyer",content, {headers: {
-		Authorization: "Bearer " + auth.getToken() } }).success(function(data) {
-		    item.message = data.message;
-		}).error(function(error) {
-		    item.message = error;
-		});
+	    $http.get('/findticket/' + item.bidder, {
+		cache: true
+	    }).then(function(data) {
+		if ( data.data != '' ) {
+		    $http.post("/addbuyer",content, {headers: {
+			Authorization: "Bearer " + auth.getToken() } }).success(function(data) {
+			    item.message = data.message;
+			}).error(function(error) {
+			    item.message = error;
+			});
+		}
+	    });
 	};
 
 	$scope.findBidder = function(item) {
-	    $http.get('/findticket/' + item.bidder).then(function(data) {
+	    $http.get('/findticket/' + item.bidder, {
+		cache: true
+	    }).then(function(data) {
 		console.log(data);
-		item.foundbidder = data.data;
+		if ( data.data == '' )
+		    item.foundbidder = {name: "Invalid bidder"};
+		else
+		    item.foundbidder = data.data;
 	    }, function(err) {
-		console.log(err);
+		item.foundbidder = {name: "Invalid bidder"};
 	    });
 	};
     }]);

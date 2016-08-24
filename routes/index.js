@@ -133,7 +133,7 @@ router.get("/findticket/:bidnumber", function(req, res, next) {
 	    "bidnumber": Number(req.params.bidnumber)
 	}
     };
-    docClient.get(params, function(err, data) {
+    docClient.query(params, function(err, data) {
 	if ( data )
 	    res.status(200).json(data.Item);
 	else {
@@ -660,6 +660,8 @@ router.post('/addbuyer', auth, function(req, res, next) {
     var guestid = req.body.guestid;
     var itemid = req.body.itemid;
     var sellprice = req.body.price;
+
+    
 
     var params = {
 	TableName: "transactions",
