@@ -156,7 +156,6 @@
 	    </span>
 	  </md-card-title-text>
 	</md-card-title>
-	{{tickets[0]}}
 	<div ng-repeat="transaction in transactions_by_item[item.id]">
 	  <div layout="row">
 	    <div >{{transaction.bidnumber}} {{tickets[transaction.bidnumber].name}} <a href="mailto:{{tickets[transaction.bidnumber].buyer.email}}">{{tickets[transaction.bidnumber].buyer.email}}</a> {{tickets[transaction.bidnumber].buyer.phonenumber | tel}} {{transaction.sellprice | currency}}</div>

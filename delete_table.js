@@ -1,13 +1,15 @@
 var AWS = require("aws-sdk");
 
 AWS.config.update({
-  region: "us-west-2"
+  region: "us-west-2",
+  endpoint: "localhost:8000"
 });
 
 var dynamodb = new AWS.DynamoDB();
 
-["donors", "bid_number_count", "tickets", "items", "users", "bidnumber"].forEach(function(name) {
-	console.log(name);
+["transactions", "donors", "bid_number_count", "tickets", "items", "users", "bidnumber"].forEach(function(name) {
+//["tickets", "transactions"].forEach(function(name) {
+    console.log(name);
 	var params = {
 		TableName : name
 	};

@@ -358,23 +358,38 @@ app.controller('ViewRegisteredPeopleCtrl', [
     'auth',
     '$http',
     '$mdDialog',
-    function($scope, tickets, auth, $http, $mdDialog) {
+    '$q',
+    function($scope, tickets, auth, $http, $mdDialog, $q) {
 	tickets.getAll().then(
 	    function(result) {
 		$scope.tickets = result;
 		console.log(result);
 	    });
-	$http.get("/all/items").error(
-	    function(error) {
-		console.log(error);
-		$scope.error = error;
-	    }).success(function(data) {
-		$scope.items = {};
-		data.forEach(function(item) {
-		    console.log(item);
-		    $scope.items[item.id] = item;
-		});
+
+
+
+	var promises = [];
+	promises.push($http.get("/all/items"));
+	promises.push($http.get("/all/transactions"));
+	$scope.transactions_by_bidder = new Map();
+
+	$q.all(promises).then(function(data) {
+	    console.log(data);
+	    data[1].data.forEach(function(transaction) {
+		if ( !$scope.transactions_by_bidder[transaction.bidnumber] )
+		    $scope.transactions_by_bidder[transaction.bidnumber] = [];
+		$scope.transactions_by_bidder[transaction.bidnumber].push(transaction);
 	    });
+	    $scope.items = {};
+	    data[0].data.forEach(function(item) {
+		console.log(item);
+		$scope.items[item.id] = item;
+	    });
+	}, function(err) {
+	    console.log(error);
+	    $scope.error = error;
+	});
+
 	var delete_bidder = function(bidnum) {
 	    var idx = $scope.tickets.findIndex(function(ticket) {
 		return ticket.bidnumber == bidnum;
@@ -670,7 +685,9 @@ app.controller('BuyTicketsCtrl', [
 		date: Date()
 	    };
 	    return ticket;
-	}
+	};
+
+	$scope.currentUserEmail = auth.currentUserEmail();
 
 	var initializeTickets = function() {
 	    $scope.tickets = [];
@@ -817,9 +834,8 @@ app.controller('ViewItemAdminCtrl', ['$scope', 'auth', "$http", function($scope,
 
     $scope.removeBidderFromItem = function(item, transaction) {
         console.log("removing");
-        $http.post("/deletebidderfromitem", {
-            itemid: transaction.itemid,
-            bidnum: transaction.bidnumber
+        $http.post("/deletetransaction", {
+            transactionid: transaction.id
         }, {headers: {
 	    Authorization: "Bearer " + auth.getToken()
         } } ).success(function(data) {
@@ -947,6 +963,7 @@ app.controller( 'ViewDonatedItemsCtrl', [
     function($scope, tickets, items, auth) {
 
 	$scope.deleteitem = function(item) {
+	    item.transactions = $scope.transactions_by_item[item.id];
 	    $http.post("/deleteitem", item, {headers: {
 		Authorization: "Bearer " + auth.getToken()
 	    } } ).success(function(data) {
@@ -1020,7 +1037,7 @@ app.controller( 'MyDonatedItemsCtrl',[
 				function(transaction) {
 				    return $scope.tickets[transaction.bidnumber].login;
 				});
-			    item.concated_emails = item.buyer_emails.join(';');
+			    item.concated_emails = item.buyer_emails.join(',');
 			}
 			$scope.items.push(item);
 		    }

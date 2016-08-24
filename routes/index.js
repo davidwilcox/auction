@@ -133,7 +133,6 @@ router.get("/findticket/:bidnumber", function(req, res, next) {
 	    "bidnumber": Number(req.params.bidnumber)
 	}
     };
-    console.log(params);
     docClient.get(params, function(err, data) {
 	if ( data )
 	    res.status(200).json(data.Item);
@@ -154,7 +153,7 @@ router.get("/findtickets/:email", function(req, res, next) {
 	}
     };
     docClient.query(params, function(err, data) {
-	if (err)  {
+	if (err || !data.Items) {
 	    console.error(err);
 	    res.status(401).json({error: err});
 	} else {
@@ -182,8 +181,6 @@ router.get('/allitems', function(req, res, next) {
     var params = {
 	TableName: "items"
     };
-
-    console.log(req);
 
     if ( req.query.searchname && req.query.searchitemnumber ) {
 	params.FilterExpression = "contains(#itemname, :itemname) AND (#itemnumber = :itemnumber)";
@@ -239,6 +236,7 @@ router.get('/allguests', function(req, res, next) {
 
 
 router.get("/all/:table", function(req, res, next) {
+    console.log("HERE");
     var params = {
 	TableName: req.params.table
     };
@@ -539,81 +537,109 @@ router.post('/chargecustomer', auth, function(req, res, next) {
 
 router.post('/deletebidder', auth, function(req, res, next) {
     var bidnum = req.body.bidnumber;
+    //var transactionids = req.body.transactionids;
 
-    var params = {
-	TableName: "transactions",
-	Key: {
-	    bidnumber: bidnumber
-	}
-    };
-    docClient.delete(params, function(err, data) {
+    var promises = [];
 
+    /*
+    transactionids.forEach(function(transactionid) {
+	let deferred = new Promise(function(resolve, reject) {
+	    let params = {
+		TableName: "transactions",
+		Key: {
+		    transactionid: transactionid
+		}
+	    };
+
+	    docClient.delete(params, function(err, data) {
+		if ( err )
+		    reject(err);
+		if ( data )
+		    resolve(data);
+	    });
+	});
+	promises.push(deferred);
+    });
+    */
+    promises.push(new Promise(function(resolve, reject) {
 	var item_params = {
 	    TableName: "tickets",
 	    Key: {
 		bidnumber: bidnum
 	    }
 	};
-
 	docClient.delete(item_params, function(err, data) {
-	    if ( err ) {
-		console.log(err);
-		res.status(401).json({error: err});
-	    } else {
-		res.status(200).json({data: data});
-	    }
+	    if ( err )
+		reject(err);
+	    if ( data )
+		resolve(data);
 	});
+    }));
+    Promise.all(promises).then(function(data) {
+	console.log(data);
+	res.status(200).json(data);
+    }, function(err) {
+	console.log(err);
+	res.status(401).json(err);
     });
 });
 
 
 router.post('/deleteitem', auth, function(req, res, next) {
-    var itemid = req.body.id;
+    var itemid = req.body.item.id;
+    var transactionids = req.body.transactionids;
 
-    var params = {
-	TableName: "transactions",
-	Key: {
-	    itemid: itemid
-	}
-    };
-    docClient.delete(params, function(err, data) {
-	if ( err ) {
-	    console.error(err);
-	    res.status(401).json({error: err});
-	} else {
-	    var item_params = {
-		TableName: "items",
+    
+    transactionids.forEach(function(transactionid) {
+	let deferred = new Promise(function(resolve, reject) {
+	    let params = {
+		TableName: "transactions",
 		Key: {
-		    id: itemid
+		    transactionid: transactionid
 		}
 	    };
 
-	    docClient.delete(item_params, function(err, data) {
-		if ( err ) {
-		    console.log(err);
-		    res.status(401).json({error: err});
-		} else {
-		    res.status(200).json({data: data});
-		}
+	    docClient.delete(params, function(err, data) {
+		if ( err )
+		    reject(err);
+		if ( data )
+		    resolve(data);
 	    });
-	}
+	});
+	promises.push(deferred);
+    });
+    promises.push(new Promise(function(resolve, reject) {
+	var item_params = {
+	    TableName: "items",
+	    Key: {
+		id: itemid
+	    }
+	};
+	docClient.delete(item_params, function(err, data) {
+	    if ( err )
+		reject(err);
+	    if ( data )
+		resolve(data);
+	});
+    }));
+    Promise.all(promises).then(function(data) {
+	console.log(data);
+	res.status(200).json(data);
+    }, function(err) {
+	console.log(err);
+	res.status(401).json(err);
     });
 });
 
 
 
-router.post('/deletebidderfromitem', auth, function(req, res, next) {
-    var itemid = req.body.itemid;
-    var bidnum = req.body.bidnum;
-
-    console.log(itemid);
-    console.log(bidnum);
+router.post('/deletetransaction', auth, function(req, res, next) {
+    var transactionid = req.body.transactionid;
 
     var params = {
         TableName: "transactions",
         Key: {
-            bidnumber: Number(bidnum),
-	    itemid: itemid
+            transactionid: transactionid
         }
     };
     console.log(params);
@@ -640,11 +666,10 @@ router.post('/addbuyer', auth, function(req, res, next) {
 	Item: {
 	    bidnumber: guestid,
 	    itemid: itemid,
+	    transactionid: guid(),
 	    sellprice: sellprice
 	},
     };
-
-    console.log(params);
 
     docClient.put(params, function(err, data) {
 	if ( err ) {

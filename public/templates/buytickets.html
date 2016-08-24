@@ -53,41 +53,41 @@
           <div>
             <span>{{numAdultTickets}}</span>
             <span>Adult Tickets</span>
-            <span>x $15 =</span>
-            <span>${{numAdultTickets*15}}</span>
+            <span>x $16 =</span>
+            <span>${{numAdultTickets*16}}</span>
           </div>
           
           <div>
             <span>{{numHighSchoolTickets}}</span>
             <span>High School Tickets</span>
-            <span>x $10 =</span>
-            <span>${{numHighSchoolTickets*10}}</span>
+            <span>x $12 =</span>
+            <span>${{numHighSchoolTickets*12}}</span>
           </div>
 
           <div>
             <span>{{numJuniorHighTickets}}</span>
             <span>Junior High Tickets</span>
-            <span>x $10 =</span>
-            <span>${{numJuniorHighTickets*10}}</span>
+            <span>x $6 =</span>
+            <span>${{numJuniorHighTickets*6}}</span>
           </div>
 
           
           <div>
             <span>{{numChildTickets}}</span>
             <span>Child Tickets</span>
-            <span>x $5 =</span>
-            <span>${{numChildTickets*5}}</span>
+            <span>x $6 =</span>
+            <span>${{numChildTickets*6}}</span>
           </div>
 
           <div>
             <b>Total: ${{calculateTotal()}}</b>
           </div>
-          
           <div>
             <md-button stripe-checkout="doCheckout"
+		       data-email="{{currentUserEmail}}"
 		       data-key="pk_test_TplRtT5yloUqkARvZ1QR4dzt"
-		       data-name="Simple Example"
-		       data-description="Widget"
+		       data-name="SVUUS Auction"
+		       data-description="Tickets"
 		       data-amount="${{calculateTotal()*100}}"
                        class="md-primary md-raised"
 		       >
@@ -100,9 +100,10 @@
     <div layout-align="left" layout="row">
       <md-button ng-click="addTicket()" class="md-primary md-raised">Add additional ticket to order</md-button>
       <md-button stripe-checkout="doCheckout"
+		 data-email="{{currentUserEmail}}"
 		 data-key="pk_test_TplRtT5yloUqkARvZ1QR4dzt"
-		 data-name="Simple Example"
-		 data-description="Widget"
+		 data-name="SVUUS Auction"
+		 data-description="Tickets"
 		 data-amount="${{calculateTotal()*100}}"
                  class="md-primary md-raised"
 		 >

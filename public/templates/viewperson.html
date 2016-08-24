@@ -28,9 +28,9 @@
         <span class="md-subhead">Bought Items</span>
       </md-card-title-text>
     </md-card-title>
-    <div ng-repeat="item in ticket.boughtitems">
+    <div ng-repeat="transaction in transactions_by_bidder[ticket.bidnumber]">
       <div layout="row">
-	<a ui-sref="viewitem({ itemid: item })">{{items[item].name}}</a>
+	<a ui-sref="viewitem({ itemid: transaction.itemid })">{{items[transaction.itemid].name}}</a>
       </div>
     </div>
   </md-card>
