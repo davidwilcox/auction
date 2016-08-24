@@ -50,6 +50,9 @@ app.controller('DonateItemCtrl', [
     'fileReader',
     function($scope, $state, $http, $window, auth, fileReader) {
 
+	$scope.eventMinDate = new Date(2016, 10, 13);
+	$scope.eventMaxDate = new Date(2017, 11, 31);
+
         $scope.getFile = function () {
             $scope.progress = 0;
             fileReader.readAsDataUrl($scope.file, $scope)

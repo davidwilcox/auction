@@ -251,6 +251,11 @@ app.config([
 		    }
 		}]
             })
+	    .state('viewdonateditems', {
+		url: '/viewdonateditems',
+		templateUrl: '/templates/viewdonateditems.html',
+		controller: 'ViewDonatedItemsCtrl'
+	    })
 	    .state('myauction.mydonateditems', {
 		url: '/mydonateditems',
 		templateUrl: '/templates/viewdonateditems.html',
@@ -998,17 +1003,30 @@ app.controller( 'ModifyDonatedItemsCtrl', [
 	}, function(err) {
 	    console.log(err);
 	});
-   }]);
+    }]);
 
+
+app.controller( 'ViewDonatedItemsCtrl',[
+    '$scope',
+    'auth',
+    'items',
+    function($scope, auth, items) {
+
+	items.performSearch({
+	}).then(function(data) {
+	    $scope.items = data.items;
+	    $scope.tickets = data.tickets;
+	    $scope.transactions_by_item = data.transactions_by_item;
+	}, function(err) {
+	    console.log(err);
+	});	    
+    }]);
 
 app.controller( 'MyDonatedItemsCtrl',[
     '$scope',
-    '$q',
-    'tickets',
-    '$http',
     'auth',
     'items',
-    function($scope, $q, tickets, $http, auth, items) {
+    function($scope, auth, items) {
 
 	items.performSearch({
 	    email: auth.currentUserEmail()

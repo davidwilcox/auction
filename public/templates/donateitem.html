@@ -213,6 +213,8 @@ Enter the name (or names!) of the person or group donating this item (you can ch
            ng-model="item.eventdate"
            md-placeholder="Event Date"
            aria-label="Date Picker"
+	   md-min-date="eventMinDate"
+	   md-max-date="eventMaxDate"
            >
         </md-datepicker>
 	<div>
@@ -247,6 +249,9 @@ Enter the name (or names!) of the person or group donating this item (you can ch
         </md-radio-group>
       </div>
       If your donated item does not sell, it will be donated to a charitable organization. If you prefer to keep it if it does not sell, you are responsible for taking it at the end of the auction. If you will not be attending the auction, please ask a friend to retrieve it for you.
+      <p ng-show="item.category == 'event'">
+	(Yes, we know this doesn’t really apply to your dinner party, but please click it anyway...!)
+      </p>
       <md-radio-group ng-model="item.disclaimer" required >
 	<md-radio-button
 	   type="radio"
