@@ -4,18 +4,18 @@
       <md-card-title>
         <md-card-title-text>
           <span class="md-headline">
-	    {{item.number}} {{item.name}}
+	    {{item.number}} &nbsp;--&nbsp; {{item.name}}
           </span>
         </md-card-title-text>
       </md-card-title>
       <div layout="row">
-	{{item.donor.name}}
+	<font size="2">Donor Name:</font> {{item.donor.name}}
       </div>
       <div layout="row">
-        {{item.type}} {{item.category}}
+        <font size="2">Type:</font> {{item.type}}
       </div>
       <div layout="row">
-	{{item.quantity}}
+	<font size="2">Quantity:</font> {{item.quantity}}
       </div>
       <form ng-submit="addbidder">
         <div layout="row">
