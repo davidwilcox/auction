@@ -591,8 +591,8 @@ router.post('/deleteitem', auth, function(req, res, next) {
 
     
     transactionids.forEach(function(transactionid) {
-	let deferred = new Promise(function(resolve, reject) {
-	    let params = {
+	var deferred = new Promise(function(resolve, reject) {
+	    var params = {
 		TableName: "transactions",
 		Key: {
 		    transactionid: transactionid
