@@ -133,7 +133,7 @@ router.get("/findticket/:bidnumber", function(req, res, next) {
 	    "bidnumber": Number(req.params.bidnumber)
 	}
     };
-    docClient.query(params, function(err, data) {
+    docClient.get(params, function(err, data) {
 	if ( data )
 	    res.status(200).json(data.Item);
 	else {
@@ -586,18 +586,21 @@ router.post('/deletebidder', auth, function(req, res, next) {
 
 
 router.post('/deleteitem', auth, function(req, res, next) {
-    var itemid = req.body.item.id;
-    var transactionids = req.body.transactionids;
+    var itemid = req.body.id;
+    var transactions = req.body.transactions;
 
-    
-    transactionids.forEach(function(transactionid) {
+
+    var promises = [];
+
+    transactions.forEach(function(transaction) {
 	var deferred = new Promise(function(resolve, reject) {
 	    var params = {
 		TableName: "transactions",
 		Key: {
-		    transactionid: transactionid
+		    transactionid: transaction.transactionid
 		}
 	    };
+	    console.log(params);
 
 	    docClient.delete(params, function(err, data) {
 		if ( err )
@@ -615,6 +618,7 @@ router.post('/deleteitem', auth, function(req, res, next) {
 		id: itemid
 	    }
 	};
+	console.log(item_params);
 	docClient.delete(item_params, function(err, data) {
 	    if ( err )
 		reject(err);

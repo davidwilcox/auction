@@ -980,10 +980,13 @@ app.controller( 'ModifyDonatedItemsCtrl', [
     'tickets',
     'items',
     'auth',
-    function($scope, tickets, items, auth) {
+    '$http',
+    function($scope, tickets, items, auth, $http) {
 
 	$scope.deleteitem = function(item) {
 	    item.transactions = $scope.transactions_by_item[item.id];
+	    if ( !item.transactions )
+		item.transactions = [];
 	    $http.post("/deleteitem", item, {headers: {
 		Authorization: "Bearer " + auth.getToken()
 	    } } ).success(function(data) {
