@@ -30,7 +30,7 @@
 
 	    <md-input-container>
 	      <label>Item Name</label>
-	      <input
+	      <textarea
 		 type="text"
 		 ng-model="item.name"
 		 size="50"
@@ -172,7 +172,7 @@
 	<div ng-repeat="transaction in transactions_by_item[item.id]">
 	  <div layout="row">
 	    <div >{{transaction.bidnumber}} {{tickets[transaction.bidnumber].name}} <a href="mailto:{{tickets[transaction.bidnumber].buyer.email}}">{{tickets[transaction.bidnumber].buyer.email}}</a> {{tickets[transaction.bidnumber].buyer.phonenumber | tel}} {{transaction.sellprice | currency}}</div>
-	    <md-button class="md-icon-button" ng-click="removeBidderFromItem(item, transaction)" >
+	    <md-button class="md-icon-button" ng-click="removeBidderFromItem($event, item, transaction)" >
 	      <md-icon>clear</md-icon>
 	    </md-button>
 	  </div>

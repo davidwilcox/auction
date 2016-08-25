@@ -4,7 +4,7 @@
     <md-progress-linear md-mode="determinate" value="{{submitProgress}}"></md-progress-linear>
   </div>
   <div layout="column" layout-padding>
-    Enter info here for your FIRST ticket.  If you need more than one ticket, click the blue button below.
+    Enter info here for your FIRST ticket.  If you need more than one ticket, click the blue “Add” button below, and scroll down to enter the additional info.
     <div layout="row" >
       <div flex="66">
 	<div layout="column">
@@ -37,7 +37,7 @@
               <label>Dietary Restrictions</label>
               <md-radio-group ng-model="ticket.foodRes">
                 <md-radio-button value="NONE_FOOD">No food restrictions</md-radio-button>
-                <md-radio-button value="VEGAN_FOOD">Vegan</md-radio-button>
+                <md-radio-button value="VEGETARIAN_FOOD">Vegetarian</md-radio-button>
                 <md-radio-button value="GLUTENFREE_FOOD">Gluten-free</md-radio-button>
               </md-radio-group>
 

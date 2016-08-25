@@ -16,7 +16,7 @@ app.config(['$translateProvider', function ($translateProvider) {
 	JUNIORHIGH_TICKET: "Junior High School",
 	CHILD_TICKET: "Child",
 	NONE_FOOD: "No food restrictions",
-	VEGAN_FOOD: "Vegan",
+	VEGETARIAN_FOOD: "Vegetarian",
 	GLUTENFREE_FOOD: "Gluten-free"
     });
     $translateProvider.preferredLanguage('en');
@@ -833,7 +833,7 @@ app.controller( 'SilentBidSheetsCtrl',[
 
 app.controller('ViewItemGenericCtrl', [function() {}]);
 
-app.controller('ViewItemAdminCtrl', ['$scope', 'auth', "$http", function($scope, auth, $http) {
+app.controller('ViewItemAdminCtrl', ['$scope', 'auth', "$http", '$mdDialog', function($scope, auth, $http, $mdDialog) {
 
     $scope.isAdmin = auth.isAdmin;
 
@@ -848,20 +848,29 @@ app.controller('ViewItemAdminCtrl', ['$scope', 'auth', "$http", function($scope,
         });
     };
 
-    $scope.removeBidderFromItem = function(item, transaction) {
-        console.log("removing");
-	console.log(transaction);
-        $http.post("/deletetransaction", {
-            transactionid: transaction.transactionid
-        }, {headers: {
-	    Authorization: "Bearer " + auth.getToken()
-        } } ).success(function(data) {
-	    var index = $scope.transactions_by_item[transaction.itemid].indexOf(transaction);
-	    $scope.transactions_by_item[transaction.itemid].splice(index,1);
-            item.message = "Bidder deleted.";
-        }).error(function(error) {
-            item.message = error;
-        });
+    $scope.removeBidderFromItem = function(event, item, transaction) {
+
+	// Appending dialog to document.body to cover sidenav in docs app
+	var confirm = $mdDialog.confirm()
+	    .title('Are you sure you want to delete this transaction?')
+	    .ariaLabel('Confirm Deletion')
+	    .targetEvent(event)
+	    .ok('Yes! Delete The transaction!')
+	    .cancel('No! Whoops!');
+	$mdDialog.show(confirm).then(function() {
+	    $http.post("/deletetransaction", {
+		transactionid: transaction.transactionid
+	    }, {headers: {
+		Authorization: "Bearer " + auth.getToken()
+	    } } ).success(function(data) {
+		var index = $scope.transactions_by_item[transaction.itemid].indexOf(transaction);
+		$scope.transactions_by_item[transaction.itemid].splice(index,1);
+		item.message = "Transaction deleted.";
+	    }).error(function(error) {
+		item.message = error;
+	    });
+	}, function() {
+	});
     };
 
     $scope.policies = ["KIDSFREE","KIDSFREECOUNT","EVERYBODYCOUNTS","THREEPRICES","OVER14","OVER21","KIDSPARTY"];
@@ -981,17 +990,29 @@ app.controller( 'ModifyDonatedItemsCtrl', [
     'items',
     'auth',
     '$http',
-    function($scope, tickets, items, auth, $http) {
+    '$mdDialog',
+    function($scope, tickets, items, auth, $http, $mdDialog) {
 
-	$scope.deleteitem = function(item) {
-	    item.transactions = $scope.transactions_by_item[item.id];
-	    if ( !item.transactions )
-		item.transactions = [];
-	    $http.post("/deleteitem", item, {headers: {
-		Authorization: "Bearer " + auth.getToken()
-	    } } ).success(function(data) {
-		var index = $scope.items.indexOf(item);
-		$scope.items.splice(index,1);
+	$scope.deleteitem = function(event, item) {
+	    
+	    // Appending dialog to document.body to cover sidenav in docs app
+	    var confirm = $mdDialog.confirm()
+		.title('Are you sure you want to delete this item?')
+		.ariaLabel('Confirm Deletion')
+		.targetEvent(event)
+		.ok('Yes! Delete The item!')
+		.cancel('No! Whoops!');
+	    $mdDialog.show(confirm).then(function() {
+
+		item.transactions = $scope.transactions_by_item[item.id];
+		if ( !item.transactions )
+		    item.transactions = [];
+		$http.post("/deleteitem", item, {headers: {
+		    Authorization: "Bearer " + auth.getToken()
+		} } ).success(function(data) {
+		    var index = $scope.items.indexOf(item);
+		    $scope.items.splice(index,1);
+		});
 	    });
 	};
 
@@ -999,11 +1020,9 @@ app.controller( 'ModifyDonatedItemsCtrl', [
 	    searchname: $scope.searchname,
 	    searchitemnumber: $scope.searchitemnumber
 	}).then(function(data) {
-	    console.log("HERE");
 	    $scope.items = data.items;
 	    $scope.tickets = data.tickets;
 	    $scope.transactions_by_item = data.transactions_by_item;
-	    console.log($scope.items);
 	}, function(err) {
 	    console.log(err);
 	});

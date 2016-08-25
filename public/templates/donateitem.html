@@ -3,7 +3,7 @@
   <div ng-show="error">
     <span>{{ error }}</span>
   </div>
-  <img src="http://davidwilcox.github.io/images/wildwildwest.jpg">
+  <img style="width:100%" src="http://davidwilcox.github.io/images/wildwildwest.jpg">
 
   <form
      ng-submit="donateitem()"
@@ -54,9 +54,9 @@ Enter the name (or names!) of the person or group donating this item (you can ch
 	  <div ng-messages-include="/messages.html"></div>
 	</div>
       </md-input-container>
+      What email should people use to contact the donor(s)?
       <md-input-container>
-        What email should people use to contact the donor(s)?
-	<label>Email Address</label>
+        <label>Email Address</label>
 	<input
 	   type="text"
 	   name="email"
@@ -68,12 +68,11 @@ Enter the name (or names!) of the person or group donating this item (you can ch
 	</div>
       </md-input-container>
 
-      Give us a photo of you, or the donating group!
+      Give us a photo of you, or the donating group!  (Again, you can change it from the image from your original registration.)
       <input class="ng-hide" id="input-file-id" type="file" ng-file-select="onFileSelect($files)" accept="image/*" />
       <label for="input-file-id" class="md-button md-raised md-primary">click to upload a photo</label>
       <div>
         <div ng-hide="imageSrc">
-	  <label>Image Preview.</label>
 	  <div ng-show="donor.photoid">
 	    <img ng-src="http://svuus-photos.s3.amazonaws.com/{{donor.photoid}}" style="width:100px"></img>
 	  </div>

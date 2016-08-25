@@ -50,8 +50,8 @@ router.post('/createguest', function(req, res, next) {
     } else if ( guest.agegroup != 'ADULT_TICKET' && guest.agegroup != 'HIGHSCHOOL_TICKET' && guest.agegroup != 'CHILD_TICKET' && guest.agegroup != "JUNIORHIGH_TICKET" ) {
 	res.status(300).send({Message:"'agegroup' should be set to 'ADULT_TICKET', 'HIGHSCHOOL_TICKET', 'HIGHSCHOOL_TICKET' or 'CHILD_TICKET'"});
 	return;
-    } else if ( guest.foodRes != 'NONE_FOOD' && guest.foodRes != 'VEGAN_FOOD' && guest.foodRes != 'GLUTENFREE_FOOD' ) {
-	res.status(300).send({Message:"'foodRes' should be set to 'VEGAN_FOOD', 'NONE_FOOD' or 'GLUTENFREE_FOOD'"});
+    } else if ( guest.foodRes != 'NONE_FOOD' && guest.foodRes != 'VEGETARIAN_FOOD' && guest.foodRes != 'GLUTENFREE_FOOD' ) {
+	res.status(300).send({Message:"'foodRes' should be set to 'VEGETARIAN_FOOD', 'NONE_FOOD' or 'GLUTENFREE_FOOD'"});
 	return;
     }
 
