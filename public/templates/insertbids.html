@@ -1,58 +1,80 @@
 <div>
   <div ng-repeat="item in items">
     <md-card layout-padding>
-      <md-card-title>
-        <md-card-title-text>
-          <span class="md-headline">
-	    {{item.number}} &nbsp;--&nbsp; {{item.name}}
-          </span>
-        </md-card-title-text>
-      </md-card-title>
       <div layout="row">
-	<font size="2">Donor Name: &nbsp;</font> {{item.donor.name}}
-      </div>
-      <div layout="row">
-        <font size="2">Type: &nbsp;</font> {{item.type}}
-      </div>
-      <div layout="row">
-	<font size="2">Quantity: &nbsp;</font> {{item.quantity}}
-      </div>
-      <form ng-submit="addbidder">
-        <div layout="row">
-          <md-input-container>
-            <label>Bidder #</label>
-            <input
-	       type="number"
-	       ng-model="item.bidder"
-	       ng-blur="findBidder(item)"
-	       >
-	  </md-input-container>
-	  <div ng-show="item.bidder">
-	    {{findBidder(item)}}
+	<div flex>
+	  <md-card-title>
+            <md-card-title-text>
+              <span class="md-headline">
+		{{item.number}} &nbsp;--&nbsp; {{item.name}}
+              </span>
+            </md-card-title-text>
+	  </md-card-title>
+	  <div layout="row">
+	    <font size="2">Donor Name: &nbsp;</font> {{item.donor.name}}
 	  </div>
-        </div>
-        <div>
-          <md-input-container>
-            <label>Price</label>
-            <input
-	       type="text"
-	       ng-model="item.price"
-	       format="currency"
-	       >
-          </md-input-container>
-        </div>
-	<div>
-	  {{item.message}}
+	  <div layout="row">
+            <font size="2">Type: &nbsp;</font> {{item.type}}
+	  </div>
+	  <div layout="row">
+	    <font size="2">Quantity: &nbsp;</font> {{item.quantity}}
+	  </div>
+	  <form ng-submit="addbidder">
+            <div layout="row">
+              <md-input-container>
+		<label>Bidder #</label>
+		<input
+		   type="text"
+		   ng-model="item.bidder"
+		   >
+	      </md-input-container>
+	      <div ng-show="item.bidder">
+		<div ng-repeat="biddername in findBidders(item) track by $index">
+		  {{biddername}}
+		</div>
+	      </div>
+            </div>
+            <div>
+              <md-input-container>
+		<label>Price</label>
+		<input
+		   type="text"
+		   ng-model="item.price"
+		   format="currency"
+		   >
+              </md-input-container>
+            </div>
+	    <div>
+	      {{item.message}}
+	    </div>
+            <div>
+              <md-button
+		 ng-click="addbidders(item)"
+		 class="md-primary md-raised"
+		 >
+		Add Bidders
+              </md-button>
+            </div>
+	  </form>
 	</div>
-        <div>
-          <md-button
-	     ng-click="addbidder(item)"
-             class="md-primary md-raised"
-             >
-	    Add Bidder
-          </md-button>
-        </div>
-      </form>
+	<md-card layout-padding>
+	  <md-card-title>
+	    <md-card-title-text>
+	      <span class="md-headline">
+		Buyers
+	      </span>
+	    </md-card-title-text>
+	  </md-card-title>
+	  <div ng-repeat="transaction in transactions_by_item[item.id]">
+	    <div layout="row">
+	      <div >{{transaction.bidnumber}} {{tickets[transaction.bidnumber].name}} {{transaction.sellprice | currency}}</div>
+	      <md-button class="md-icon-button" ng-click="removeBidderFromItem($event, item, transaction)" >
+		<md-icon>clear</md-icon>
+	      </md-button>
+	    </div>
+	  </div>
+	</md-card>
+      </div>
     </md-card>
   </div>
 </div>

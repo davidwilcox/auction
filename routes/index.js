@@ -661,20 +661,25 @@ router.post('/deletetransaction', auth, function(req, res, next) {
 
 
 router.post('/addbuyer', auth, function(req, res, next) {
-    var guestid = req.body.guestid;
+    var bidnumber = req.body.bidnumber;
     var itemid = req.body.itemid;
-    var sellprice = req.body.price;
+    var sellprice = req.body.sellprice;
+    var tid = req.body.transactionid;
 
+    var it = {
+	bidnumber: Number(bidnumber),
+	itemid: itemid,
+	transactionid: guid(),
+	sellprice: sellprice
+    };
+
+    if ( tid )
+	it.transactionid = tid;
     
 
     var params = {
 	TableName: "transactions",
-	Item: {
-	    bidnumber: guestid,
-	    itemid: itemid,
-	    transactionid: guid(),
-	    sellprice: sellprice
-	},
+	Item: it,
     };
 
     docClient.put(params, function(err, data) {
@@ -682,7 +687,8 @@ router.post('/addbuyer', auth, function(req, res, next) {
 	    console.log(err);
 	    res.status(401).json({error: err});
 	} else {
-	    res.status(200).json({message: "item added"});
+	    console.log(data);
+	    res.status(200).json(it);
 	}
     });
 });

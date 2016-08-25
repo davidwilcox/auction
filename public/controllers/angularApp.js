@@ -45,6 +45,17 @@ app.factory('charges', ['$http', 'auth', function($http, auth) {
 
 
 
+function guid() {
+    function s4() {
+	return Math.floor((1 + Math.random()) * 0x10000)
+	    .toString(16)
+	    .substring(1);
+    }
+    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+	s4() + '-' + s4() + s4() + s4();
+}
+
+
 app.factory('tickets', ['$http', function($http) {
 
     return {
@@ -810,7 +821,6 @@ app.controller('ViewItemAdminCtrl', ['$scope', 'auth', "$http", '$mdDialog', fun
 	    }).error(function(error) {
 		item.message = error;
 	    });
-	}, function() {
 	});
     };
 
@@ -932,7 +942,9 @@ app.controller('InsertBidsCtrl', [
     'auth',
     'items',
     '$http',
-    function($scope, auth, items, $http) {
+    '$mdDialog',
+    '$q',
+    function($scope, auth, items, $http, $mdDialog, $q) {
 
 	items.performSearch({
 	}).then(function(data) {
@@ -941,41 +953,86 @@ app.controller('InsertBidsCtrl', [
 	    $scope.transactions_by_item = data.transactions_by_item;
 	});
 
-	$scope.updatesellprice = function(item) {
-	    content = {
-		itemid: item.id,
-		price: item.price
+	var addbidder = function(bidnumber, itemid, price) {
+	    var content = {
+		bidnumber: bidnumber,
+		itemid: itemid,
+		sellprice: price,
+		transactionid: guid()
 	    };
-	    $http.post("/updatesellprice", content, {headers: {
-		Authorization: "Bearer " + auth.getToken() } }).success(function(data) {
-		    $scope.message = data;
-		}).error(function(error) {
-		    $scope.error = error;
-		});
-	};
-	$scope.addbidder = function(item) {
-	    content = {
-		guestid: item.bidder,
-		itemid: item.id,
-		price: item.price
-	    };
-	    if ( !(item.bidder in $scope.tickets) ) {
+	    if ( !(bidnumber in $scope.tickets) ) {
 		return;
 	    }
-	    $http.post("/addbuyer",content, {headers: {
-		Authorization: "Bearer " + auth.getToken() } }).success(function(data) {
-		    item.message = data.message;
+	    return $http.post("/addbuyer",content, {headers: {
+		Authorization: "Bearer " + auth.getToken() } });
+	    /*.success(function(data) {
+	      if ( !(itemid in $scope.transactions_by_item) ) {
+	      $scope.transactions_by_item[itemid] = [];
+	      }
+	      $scope.transactions_by_item[itemid].push(content);
+	      }).error(function(error) {
+	      console.log(error);
+	      });
+	    */
+	};
+
+	$scope.addbidders = function(item) {
+	    var arr = item.bidder.split(" ");
+	    var promises = [];
+	    arr.forEach(function(bidnumber) {
+		promises.push(addbidder(bidnumber, item.id, item.price));
+	    });
+	    $q.all(promises).then(function(data) {
+		data.forEach(function(inddata) {
+		    var transaction = inddata.data;
+		    if ( !(transaction.itemid in $scope.transactions_by_item) )
+			$scope.transactions_by_item[transaction.itemid] = [];
+		    $scope.transactions_by_item[transaction.itemid].push(transaction);
+		});
+	    }, function(err)  {
+		item.message = err;
+	    });
+	};
+
+	var findBidder = function(bidnumber) {
+	    if ( bidnumber in $scope.tickets )
+		return $scope.tickets[bidnumber].name;
+	    return "Invalid Bidder";
+	};
+
+	$scope.findBidders = function(item) {
+	    if ( !item || !item.bidder )
+		return []
+	    var arr = item.bidder.split(" ");
+	    var names = arr.map(findBidder);
+	    return names;
+	};
+
+	
+	$scope.removeBidderFromItem = function(event, item, transaction) {
+
+	    // Appending dialog to document.body to cover sidenav in docs app
+	    var confirm = $mdDialog.confirm()
+		.title('Are you sure you want to delete this transaction?')
+		.ariaLabel('Confirm Deletion')
+		.targetEvent(event)
+		.ok('Yes! Delete The transaction!')
+		.cancel('No! Whoops!');
+	    $mdDialog.show(confirm).then(function() {
+		$http.post("/deletetransaction", {
+		    transactionid: transaction.transactionid
+		}, {headers: {
+		    Authorization: "Bearer " + auth.getToken()
+		} } ).success(function(data) {
+		    var index = $scope.transactions_by_item[transaction.itemid].indexOf(transaction);
+		    $scope.transactions_by_item[transaction.itemid].splice(index,1);
+		    item.message = "Transaction deleted.";
 		}).error(function(error) {
 		    item.message = error;
 		});
+	    });
 	};
 
-	$scope.findBidder = function(item) {
-	    if ( item.bidder in $scope.tickets ) {
-		return $scope.tickets[item.bidder].name;
-	    }
-	    return "Invalid Bidder";
-	};
     }]);
 
 
