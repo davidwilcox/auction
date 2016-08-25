@@ -850,8 +850,9 @@ app.controller('ViewItemAdminCtrl', ['$scope', 'auth', "$http", function($scope,
 
     $scope.removeBidderFromItem = function(item, transaction) {
         console.log("removing");
+	console.log(transaction);
         $http.post("/deletetransaction", {
-            transactionid: transaction.id
+            transactionid: transaction.transactionid
         }, {headers: {
 	    Authorization: "Bearer " + auth.getToken()
         } } ).success(function(data) {
