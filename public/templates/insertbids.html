@@ -27,8 +27,8 @@
 	       ng-blur="findBidder(item)"
 	       >
 	  </md-input-container>
-	  <div ng-show="item.foundbidder">
-	    {{item.foundbidder.name}}
+	  <div ng-show="item.bidder">
+	    {{findBidder(item)}}
 	  </div>
         </div>
         <div>

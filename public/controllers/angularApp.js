@@ -498,65 +498,6 @@ app.controller("MyInvoiceCtrl", [
     }]);
 
 
-app.controller('InsertBidsCtrl', [
-    '$scope',
-    '$http',
-    'auth',
-    function($scope, $http, auth) {
-	$http.get("/all/items").success(function(data) {
-	    $scope.items = data;
-	}).error(function(error) {
-	    $scope.error = error;
-	});
-	$scope.updatesellprice = function(item) {
-	    content = {
-		itemid: item.id,
-		price: item.price
-	    };
-	    $http.post("/updatesellprice", content, {headers: {
-		Authorization: "Bearer " + auth.getToken() } }).success(function(data) {
-		    $scope.message = data;
-		}).error(function(error) {
-		    $scope.error = error;
-		});
-	};
-	$scope.addbidder = function(item) {
-	    content = {
-		guestid: item.bidder,
-		itemid: item.id,
-		price: item.price
-	    };
-	    console.log(content);
-	    $http.get('/findticket/' + item.bidder, {
-		cache: true
-	    }).then(function(data) {
-		if ( data.data != '' ) {
-		    $http.post("/addbuyer",content, {headers: {
-			Authorization: "Bearer " + auth.getToken() } }).success(function(data) {
-			    item.message = data.message;
-			}).error(function(error) {
-			    item.message = error;
-			});
-		}
-	    });
-	};
-
-	$scope.findBidder = function(item) {
-	    $http.get('/findticket/' + item.bidder, {
-		cache: true
-	    }).then(function(data) {
-		console.log(data);
-		if ( data.data == '' )
-		    item.foundbidder = {name: "Invalid bidder"};
-		else
-		    item.foundbidder = data.data;
-	    }, function(err) {
-		item.foundbidder = {name: "Invalid bidder"};
-	    });
-	};
-    }]);
-
-
 app.factory('auth', ['$http', '$window', '$q', function($http, $window, $q) {
     var o = {
     };
@@ -982,6 +923,61 @@ app.factory('items', ['$http', '$q', function($http, $q) {
 
     return o;
 }]);
+
+
+
+
+app.controller('InsertBidsCtrl', [
+    '$scope',
+    'auth',
+    'items',
+    '$http',
+    function($scope, auth, items, $http) {
+
+	items.performSearch({
+	}).then(function(data) {
+	    $scope.tickets = data.tickets;
+	    $scope.items = data.items;
+	    $scope.transactions_by_item = data.transactions_by_item;
+	});
+
+	$scope.updatesellprice = function(item) {
+	    content = {
+		itemid: item.id,
+		price: item.price
+	    };
+	    $http.post("/updatesellprice", content, {headers: {
+		Authorization: "Bearer " + auth.getToken() } }).success(function(data) {
+		    $scope.message = data;
+		}).error(function(error) {
+		    $scope.error = error;
+		});
+	};
+	$scope.addbidder = function(item) {
+	    content = {
+		guestid: item.bidder,
+		itemid: item.id,
+		price: item.price
+	    };
+	    if ( !(item.bidder in $scope.tickets) ) {
+		return;
+	    }
+	    $http.post("/addbuyer",content, {headers: {
+		Authorization: "Bearer " + auth.getToken() } }).success(function(data) {
+		    item.message = data.message;
+		}).error(function(error) {
+		    item.message = error;
+		});
+	};
+
+	$scope.findBidder = function(item) {
+	    if ( item.bidder in $scope.tickets ) {
+		return $scope.tickets[item.bidder].name;
+	    }
+	    return "Invalid Bidder";
+	};
+    }]);
+
 
 
 app.controller( 'ModifyDonatedItemsCtrl', [
