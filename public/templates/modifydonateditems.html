@@ -4,9 +4,9 @@
   </div>
   <div layout="row">
     <md-input-container>
-      <label>Search Name</label>
+      <label>Search Item Name</label>
       <input
-	 ng-model="searchname"
+	 ng-model="searchTerms.searchname"
 	 type="text"
 	 >
     </md-input-container>
@@ -14,8 +14,36 @@
       <label>Item Number Search</label>
       <input
 	 type="text"
-	 ng-model="searchitemnumber"
+	 ng-model="searchTerms.searchitemnumber"
 	 >
+    </md-input-container>
+    <md-input-container>
+      <label>Item Type</label>
+      <md-select
+	 ng-model="searchTerms.searchitemtype"
+	 >
+	<md-option value="live">Live</md-option>
+	<md-option value="silent">Silent</md-option>
+	<md-option value="fixed">Fixed</md-option>
+	<md-option value="raffle">Raffle</md-option>
+      </md-select>
+    </md-input-container>
+    <md-input-container>
+      <label>Donor Name</label>
+      <input
+	 type="text"
+	 ng-model="searchTerms.searchdonorname"
+	 >
+    </md-input-container>
+    <md-input-container>
+      <label>Sort</label>
+      <md-select
+	 ng-model="sortval">
+	>
+	<md-option value="date">Item Donation Date</md-option>
+	<md-option value="itemnumber">Item Number</md-option>
+	<md-option value="itemtype">Item Type</md-option>
+      </md-select>
     </md-input-container>
     <div>
       <md-button class="md-primary md-raised" ng-click="performSearch()">Find Item</md-button>
@@ -23,7 +51,7 @@
   </div>
   
 
-  <div ng-repeat="item in items">
+  <div ng-repeat="item in items track by $index">
     <viewitemadmin item="{{item}}"></viewitemadmin>
     <br>
 </div>

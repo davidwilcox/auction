@@ -44,6 +44,103 @@ app.factory('charges', ['$http', 'auth', function($http, auth) {
 }]);
 
 
+app.factory('items', ['$http', '$q', function($http, $q) {
+    var o = {
+    };
+    o.performSearch = function(searchterms, sortval) {
+
+	var promises = [];
+	var queryString = '';
+	if ( searchterms.searchname )
+	    queryString += "?searchname=" + searchterms.searchname;
+	if ( searchterms.searchitemnumber ) {
+	    if ( queryString )
+		queryString += "&";
+	    else
+		queryString += "?";
+	    queryString += "searchitemnumber=" + searchterms.searchitemnumber;
+	}
+	promises.push($http.get('/allitems' + queryString));
+	promises.push($http.get('/all/tickets'));
+	promises.push($http.get('/all/transactions'));
+	var deferred = $q.defer();
+	$q.all(promises).then(function(data) {
+	    var items = [];
+	    var tickets_items = data[1].data;
+	    var tickets = {};
+	    tickets_items.forEach(function(ticket) {
+		tickets[ticket.bidnumber] = ticket;
+	    });
+
+
+	    var raw_transactions = data[2].data;
+	    var transactions_by_item = {};
+	    raw_transactions.forEach(function(transaction) {
+		if ( !transactions_by_item[transaction.itemid] )
+		    transactions_by_item[transaction.itemid] = [];
+		transactions_by_item[transaction.itemid].push(transaction);
+	    });
+
+	    data_items = data[0].data;
+	    console.log(data_items);
+	    /*
+	    var item_has_buyer = function(item,substr) {
+		if ( !item.id in transactions_by_item )
+		    return false;
+		return transactions_by_item[item.id].reduce(function(prevValue,curTransaction) {
+		    return prevValue || tickets[curTransaction.bidnumber].name.includes(substr);
+		}, false);
+	    };
+	    */
+	    console.log("HERE");
+	    data_items.forEach(function(item) {
+		if ( (!searchterms.email || item.email == searchterms.email)
+		     && (!searchterms.searchitemtype || searchterms.searchitemtype == item.type )
+		     && (!searchterms.searchdonorname || item.donor.name.includes(searchterms.searchdonorname) ) ) {
+		    items.push(item);
+		    if ( transactions_by_item[item.id] ) {
+			item.buyer_emails = transactions_by_item[item.id].map(
+			    function(transaction) {
+				return tickets[transaction.bidnumber].login;
+			    });
+			item.concated_emails = item.buyer_emails.join(',');
+		    }
+		}
+	    });
+	    var cmp;
+	    console.log(sortval);
+	    if ( !sortval || sortval == 'date' ) {
+		cmp = function(item1, item2) {
+		    return new Date(item1.date) > new Date(item2.date);
+		};
+	    } else if ( sortval == 'itemnumber' ) {
+		cmp = function(item1, item2) {
+		    return item1.number > item2.number;
+		};
+	    } else {
+		cmp = function(item1, item2) {
+		    return item1.type < item2.type;
+		}
+	    }
+	    items.sort(cmp);
+	    console.log(items);
+	    deferred.resolve({
+		items: items,
+		tickets: tickets,
+		transactions_by_item: transactions_by_item});
+	}, function(err) {
+	    deferred.reject(err);
+	    console.log("err");
+	});
+	return deferred.promise;
+    };
+
+    return o;
+}]);
+
+
+
+
 
 function guid() {
     function s4() {
@@ -866,77 +963,6 @@ app.controller('ViewItemCtrl', [
     }]);
 
 
-app.factory('items', ['$http', '$q', function($http, $q) {
-    var o = {
-    };
-    o.performSearch = function(searchterms) {
-
-	var promises = [];
-	var queryString = '';
-	if ( searchterms.searchname )
-	    queryString += "?searchname=" + searchterms.searchname;
-	if ( searchterms.searchitemnumber ) {
-	    if ( queryString )
-		queryString += "&";
-	    else
-		queryString += "?";
-	    queryString += "searchitemnumber=" + searchterms.searchitemnumber;
-	}
-	promises.push($http.get('/allitems' + queryString));
-	promises.push($http.get('/all/tickets'));
-	promises.push($http.get('/all/transactions'));
-	var deferred = $q.defer();
-	$q.all(promises).then(function(data) {
-	    var items = [];
-	    var tickets_items = data[1].data;
-	    var tickets = {};
-	    tickets_items.forEach(function(ticket) {
-		tickets[ticket.bidnumber] = ticket;
-	    });
-
-
-	    var raw_transactions = data[2].data;
-	    var transactions_by_item = {};
-	    raw_transactions.forEach(function(transaction) {
-		if ( !transactions_by_item[transaction.itemid] )
-		    transactions_by_item[transaction.itemid] = [];
-		transactions_by_item[transaction.itemid].push(transaction);
-	    });
-
-	    data_items = data[0].data;
-	    console.log(data_items);
-	    data_items.forEach(function(item) {
-		if ( !searchterms.email || item.email == searchterms.email ) {
-		    items.push(item);
-		    if ( transactions_by_item[item.id] ) {
-			item.buyer_emails = transactions_by_item[item.id].map(
-			    function(transaction) {
-				return tickets[transaction.bidnumber].login;
-			    });
-			item.concated_emails = item.buyer_emails.join(',');
-		    }
-		}
-	    });
-	    items.sort(function(item1, item2) {
-		return new Date(item1.date) > new Date(item2.date);
-	    });
-	    deferred.resolve({
-		items: items,
-		tickets: tickets,
-		transactions_by_item: transactions_by_item});
-	}, function(err) {
-	    deferred.reject(err);
-	    console.log("err");
-	});
-	return deferred.promise;
-    };
-
-    return o;
-}]);
-
-
-
-
 app.controller('InsertBidsCtrl', [
     '$scope',
     'auth',
@@ -1068,11 +1094,19 @@ app.controller( 'ModifyDonatedItemsCtrl', [
 		});
 	    });
 	};
+	$scope.searchTerms = {};
 
-	items.performSearch({
-	    searchname: $scope.searchname,
-	    searchitemnumber: $scope.searchitemnumber
-	}).then(function(data) {
+	$scope.performSearch = function() {
+	    items.performSearch($scope.searchTerms, $scope.sortval).then(function(data) {
+		$scope.items = data.items;
+		$scope.tickets = data.tickets;
+		$scope.transactions_by_item = data.transactions_by_item;
+	    }, function(err) {
+		console.log(err);
+	    });
+	};
+
+	items.performSearch($scope.searchTerms, $scope.sortval).then(function(data) {
 	    $scope.items = data.items;
 	    $scope.tickets = data.tickets;
 	    $scope.transactions_by_item = data.transactions_by_item;
