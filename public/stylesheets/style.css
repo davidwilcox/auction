@@ -59,6 +59,16 @@ table, th, td {
     border: 1px solid black;
 }
 
+.div-table{
+    display:table;
+}
+.div-table-row{
+    display:table-row;
+}
+.div-table-col{
+    display:table-column;
+}
+
 @media print {
     .page-break {page-break-after: always;}
 }

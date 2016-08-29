@@ -69,16 +69,28 @@ app.factory('items', ['$http', '$q', function($http, $q) {
 	    var tickets_items = data[1].data;
 	    var tickets = {};
 	    tickets_items.forEach(function(ticket) {
+		if ( searchterms.buyeremail
+		     && searchterms.buyeremail != ticket.login )
+		    return;
 		tickets[ticket.bidnumber] = ticket;
 	    });
 
 
 	    var raw_transactions = data[2].data;
 	    var transactions_by_item = {};
+	    var transactions_by_bidnum = {};
 	    raw_transactions.forEach(function(transaction) {
+		console.log(tickets);
+		if ( searchterms.buyeremail
+		     && (!(transaction.bidnumber in tickets)
+			 || searchterms.buyeremail != tickets[transaction.bidnumber].login) )
+		    return;
 		if ( !transactions_by_item[transaction.itemid] )
 		    transactions_by_item[transaction.itemid] = [];
+		if ( !transactions_by_bidnum[transaction.bidnumber] )
+		    transactions_by_bidnum[transaction.bidnumber] = [];
 		transactions_by_item[transaction.itemid].push(transaction);
+		transactions_by_bidnum[transaction.bidnumber].push(transaction);
 	    });
 
 	    data_items = data[0].data;
@@ -119,7 +131,9 @@ app.factory('items', ['$http', '$q', function($http, $q) {
 	    deferred.resolve({
 		items: items,
 		tickets: tickets,
-		transactions_by_item: transactions_by_item});
+		transactions_by_item: transactions_by_item,
+		transactions_by_bidnum: transactions_by_bidnum
+	    });
 	}, function(err) {
 	    deferred.reject(err);
 	    console.log("err");
@@ -589,10 +603,22 @@ app.controller("MyTicketsCtrl", [
 
 app.controller("MyInvoiceCtrl", [
     '$scope',
-    '$http',
     'auth',
-    function($scope, $http, auth) {
+    'items',
+    function($scope, auth, items) {
 	$scope.totalInvoice = 0;
+	items.performSearch({buyeremail: auth.currentUser().email}).then(function(data) {
+	    $scope.tickets = data.tickets;
+	    $scope.items = data.items;
+	    $scope.transactions_by_item = data.transactions_by_item;
+	    $scope.transactions_by_bidnum = data.transactions_by_bidnum;
+
+	    $scope.items_by_itemid = {};
+	    $scope.items.forEach(function(item) {
+		$scope.items_by_itemid[item.id] = item;
+	    });
+	});
+	/*
 	$http.get("/findtickets/" + auth.currentUser().email).success(function(data) {
 	    $scope.tickets = data;
 	    $http.get("/all/items").error(
@@ -616,6 +642,7 @@ app.controller("MyInvoiceCtrl", [
 	}).error(function(error) {
 	    console.log(error);
 	});
+	*/
     }]);
 
 

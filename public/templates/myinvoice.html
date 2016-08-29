@@ -1,24 +1,46 @@
 <div layout-padding>
   <h1>My Invoice</h1>
   <div ng-repeat="ticket in tickets">
-    <div ng-repeat="item in ticket.boughtitems">
-      <div>
-	<md-card>
-	  <div layout="row">
-	    <label>Buyer Name</label>
-	    {{ticket.name}}
-	  </div>
-	  <div layout="row">
-	    <label>Item Name</label>
-	    {{items[item].name}}
-	  </div>
-	  <div layout="row">
-	    <label>Item Price</label>
-	    {{items[item].price}}
-	  </div>
+    THERE
+    {{ticket.name}}
+    {{ticket.bidnumber}}
+    {{ticket}}
+    <div ng-repeat="transaction in transactions_by_bidnum[ticket.bidnumber]">
+      <div layout="row">
+	HERE
+	<div>
+	  {{ticket.name}}
+	</div>
+	&nbsp;
+	<div>
+	  {{items_by_itemid[transaction.itemid].name}}
+	</div>
+	&nbsp;
+	<div>
+	  {{transaction.sellprice | currency}}
 	</div>
       </div>
     </div>
+    <!--
+	<div ng-repeat="item in ticket.boughtitems">
+	  <div>
+	    <md-card>
+	      <div layout="row">
+		<label>Buyer Name</label>
+		{{ticket.name}}
+	      </div>
+	      <div layout="row">
+		<label>Item Name</label>
+		{{items[item].name}}
+	      </div>
+	      <div layout="row">
+		<label>Item Price</label>
+		{{items[item].price}}
+	      </div>
+	  </div>
+	</div>
+  </div>
+  -->
   </div>
   <label>Total</label>
   {{totalInvoice}}
