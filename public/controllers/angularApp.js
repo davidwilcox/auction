@@ -395,7 +395,6 @@ app.config([
 
 app.controller('ViewPersonCtrl', ['$scope',
     function($scope) {
-	$scope.ticket = $scope.person;
 	$scope.ticket.date = new Date($scope.ticket.date);
     }]);
 
@@ -434,9 +433,9 @@ app.directive('viewperson', function() {
     return {
         templateUrl: '/templates/viewperson.html',
         controller: 'ViewPersonCtrl',
-        scope: {
+        bindings: {
             person: '=',
-            items: '='
+	    items: '='
         }
     };
 });
