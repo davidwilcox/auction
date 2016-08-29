@@ -405,8 +405,10 @@ app.config([
 	$urlRouterProvider.otherwise('home');
     }]);
 
-app.controller('ViewPersonCtrl', [
-    function() {
+app.controller('ViewPersonCtrl', ['$scope',
+    function($scope) {
+	$scope.ticket = $scope.person;
+	$scope.ticket.date = new Date($scope.ticket.date);
     }]);
 
 
@@ -444,7 +446,7 @@ app.directive('viewperson', function() {
     return {
         templateUrl: '/templates/viewperson.html',
         controller: 'ViewPersonCtrl',
-        bindings: {
+        scope: {
             person: '=',
             items: '='
         }
@@ -476,7 +478,9 @@ app.controller('ViewRegisteredPeopleCtrl', [
 	tickets.getAll().then(
 	    function(result) {
 		$scope.tickets = result;
-		console.log(result);
+		$scope.tickets.sort(function(ticket1, ticket2) {
+		    return ticket1.date < ticket2.date;
+		});
 	    });
 
 
@@ -487,7 +491,6 @@ app.controller('ViewRegisteredPeopleCtrl', [
 	$scope.transactions_by_bidder = new Map();
 
 	$q.all(promises).then(function(data) {
-	    console.log(data);
 	    data[1].data.forEach(function(transaction) {
 		if ( !$scope.transactions_by_bidder[transaction.bidnumber] )
 		    $scope.transactions_by_bidder[transaction.bidnumber] = [];
@@ -495,7 +498,6 @@ app.controller('ViewRegisteredPeopleCtrl', [
 	    });
 	    $scope.items = {};
 	    data[0].data.forEach(function(item) {
-		console.log(item);
 		$scope.items[item.id] = item;
 	    });
 	}, function(err) {
@@ -865,17 +867,17 @@ app.controller( 'SilentBidSheetsCtrl',[
 	    }).success(function(data) {
 		$scope.items = [];
 		obj = [];
-		console.log(data);
 		data.forEach(function(item) {
-		    obj.push(item);
-		    if ( obj.length == 2 ) {
-			$scope.items.push(obj);
-			obj = [];
+		    if ( item.type == "silent" ) {
+			obj.push(item);
+			if ( obj.length == 2 ) {
+			    $scope.items.push(obj);
+			    obj = [];
+			}
 		    }
 		});
 		if (obj.length == 1)
 		    $scope.items.push(obj)
-		console.log($scope.items.length);
 	    })
     }]);
 

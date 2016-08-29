@@ -15,12 +15,15 @@
     </md-card-actions>
   </div>
   <div layout="row">
-    <label>Dietary Restrictions</label>
+    <label>Age Category: </label><span translate="{{ticket.agegroup}}"></span>
+  </div>
+  <div layout="row">
+    <label>Dietary Restrictions:&nbsp;</label>
     <span translate="{{ticket.foodRes}}"></span>
   </div>
   <div layout="row">
-    <label>Date Created</label>
-    {{ticket.date}}
+    <label>Date Created:</label>
+    {{ticket.date | date:'MMM d,yyyy HH:mm:ss'}}
   </div>
   <md-card layout-padding>
     <md-card-title>
