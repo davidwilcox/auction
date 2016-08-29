@@ -170,27 +170,11 @@
 	    </span>
 	  </md-card-title-text>
 	</md-card-title>
-	<div ng-repeat="transaction in transactions_by_item[item.id]" class="div-table">
-	  <div layout="row">
-	    <div class="div-table-col">
-	      {{transaction.bidnumber}}
-	    </div>
-	    <div class="div-table-col">
-	      {{tickets[transaction.bidnumber].name}}
-	    </div>
-	    <div class="div-table-col">
-	      <a href="mailto:{{tickets[transaction.bidnumber].buyer.email}}">{{tickets[transaction.bidnumber].buyer.email}}</a>
-	    </div>
-	    <div class="div-table-col">
-	      {{tickets[transaction.bidnumber].buyer.phonenumber | tel}}
-	    </div>
-	    <div class="div-table-col">
-	      {{transaction.sellprice | currency}}
-	    </div>
-	    <md-button class="md-icon-button" ng-click="removeBidderFromItem($event, item, transaction)" >
-	      <md-icon>clear</md-icon>
-	    </md-button>
-	  </div>
+	<div ng-repeat="transaction in transactions_by_item[item.id]" layout="row">
+	  <div >{{transaction.bidnumber}} {{tickets[transaction.bidnumber].name}} <a href="mailto:{{tickets[transaction.bidnumber].buyer.email}}">{{tickets[transaction.bidnumber].buyer.email}}</a> {{tickets[transaction.bidnumber].buyer.phonenumber | tel}} {{transaction.sellprice | currency}}</div>
+	  <md-button class="md-icon-button" ng-click="removeBidderFromItem($event, item, transaction)" >
+	    <md-icon>clear</md-icon>
+	  </md-button>
 	</div>
 	<div>
 	  <md-button class="md-primary md-raised" href="mailto:{{item.concated_emails}}">Email Buyers</md-button>
