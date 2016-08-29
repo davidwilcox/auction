@@ -37,7 +37,7 @@
     <script src="https://checkout.stripe.com/checkout.js"></script>
   </head>
   <body ng-app="auction" layout="column">
-    <md-toolbar class="md-primary" ng-controller="NavCtrl as ctrl">
+    <md-toolbar class="md-primary no-print" ng-controller="NavCtrl as ctrl">
       <span class="md-toolbar-tools">
         <a ui-sref-active="active" ui-sref="buytickets" ng-show="ctrl.isLoggedIn()">
 	  <md-button class="md-primary md-raised" ui-sref-active="md-warn">

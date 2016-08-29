@@ -1,4 +1,4 @@
-<div>
+<div class="no-print">
   <a ui-sref-active="active" ui-sref=".viewregisteredpeople" ng-show="isAdmin()">
     <md-button class="md-primary md-raised">View Registered People</md-button>
   </a>
@@ -10,6 +10,9 @@
   </a>
   <a ui-sref-active="active" ui-sref=".add_admin" ng-show="isAdmin()">
     <md-button class="md-primary md-raised">Add Admin</md-button>
+  </a>
+  <a ui-sref-active="active" ui-sref=".silent_bid_sheets" ng-show="isAdmin()">
+    <md-button class="md-primary md-raised">Silent Bid Sheets</md-button>
   </a>
   <ui-view></ui-view>
 </div>

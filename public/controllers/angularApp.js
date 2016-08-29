@@ -269,6 +269,16 @@ app.config([
 		templateUrl: '/templates/modifydonateditems.html',
 		controller: 'ModifyDonatedItemsCtrl'
 	    })
+	    .state('admin.silent_bid_sheets', {
+		url: '/silent_bid_sheets',
+		templateUrl: '/templates/silent_bid_sheets.html',
+		controller: 'SilentBidSheetsCtrl',
+		onEnter: [ '$state', 'auth', function($state, auth) {
+		    if ( !auth.isLoggedIn() ) {
+			$state.go('home');
+		    }
+		}]
+	    })
 	    .state('buyticketsconfirmation', {
 		url: '/buyticketsconfirmation',
 		templateUrl: '/templates/buyticketsconfirmation.html',
@@ -318,16 +328,6 @@ app.config([
 		url: '/mytickets',
 		templateUrl: '/templates/mytickets.html',
 		controller: 'MyTicketsCtrl',
-		onEnter: [ '$state', 'auth', function($state, auth) {
-		    if ( !auth.isLoggedIn() ) {
-			$state.go('home');
-		    }
-		}]
-	    })
-	    .state('silent_bid_sheets', {
-		url: '/silent_bid_sheets',
-		templateUrl: '/templates/silent_bid_sheets.html',
-		controller: 'SilentBidSheetsCtrl',
 		onEnter: [ '$state', 'auth', function($state, auth) {
 		    if ( !auth.isLoggedIn() ) {
 			$state.go('home');
@@ -821,13 +821,12 @@ app.controller('BuyTicketsCtrl', [
 
 		$scope.tickets.forEach(function(ticket) {
 		    ticket.customer_id = data.data.customer_id;
+		    ticket.charge_id = data.data.charge_id;
 		    if ( auth.isLoggedIn() )
 		        ticket.login = auth.currentUser().email;
 		    else
 		        ticket.login = "a@a.a";
 	        });
-
-		console.log($scope.tickets);
 
 		var purchase_ticket = function(num) {
 		    tickets.purchase($scope.tickets[num]).then(function(data) {
