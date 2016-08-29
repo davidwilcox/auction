@@ -1,0 +1,33 @@
+<div ng-repeat='item in items'>
+  <div class="page-break-avoid">
+    <h2>{{item.name}} ({{item.eventdate ? (item.eventdate | date) : item.eventtypedtime}})</h2>
+    <div layout="row" >
+      <div layout="column" flex>
+	<div flex layout="column" layout-fill layout-padding>
+	  <div flex >
+	    <div layout="row" flex>
+	      {{item.description}}
+	    </div>
+	  </div>
+	  <div layout="row">
+	    <div flex layout="row">
+	      <div>
+		Min Bid: {{item.minvalue}}
+	      </div>
+	      &nbsp;&nbsp;
+	      <div>
+		Value: {{item.value}}
+	      </div>
+	    </div>
+	    <div>
+	      <b>Donated by: {{item.donor.name}}</b>
+	    </div>
+	  </div>
+	</div>
+      </div>
+      <div class="live-catalog-image-container">
+	<img ng-src="http://svuus-photos.s3.amazonaws.com/{{item.donor.photoid}}">
+      </div>
+    </div>
+  </div>
+</div>

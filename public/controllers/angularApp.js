@@ -267,6 +267,16 @@ app.config([
 		    }
 		}]
 	    })
+	    .state('admin.live_catalog', {
+		url: '/live_catalog',
+		templateUrl: '/templates/live_catalog.html',
+		controller: 'LiveCatalogCtrl',
+		onEnter: [ '$state', 'auth', function($state, auth) {
+		    if ( !auth.isLoggedIn() ) {
+			$state.go('home');
+		    }
+		}]
+	    })
 	    .state('buyticketsconfirmation', {
 		url: '/buyticketsconfirmation',
 		templateUrl: '/templates/buyticketsconfirmation.html',
@@ -848,28 +858,15 @@ app.controller( 'LiveCatalogCtrl',[
     '$scope',
     'items',
     function($scope, items) {
-	/*
-	items.performSearch(
-	$http.get("/all/items").error(
-	    function(error) {
-		console.log(error);
-		$scope.error = error;
-	    }).success(function(data) {
-		$scope.items = [];
-		obj = [];
-		data.forEach(function(item) {
-		    if ( item.type == "silent" ) {
-			obj.push(item);
-			if ( obj.length == 2 ) {
-			    $scope.items.push(obj);
-			    obj = [];
-			}
-		    }
-		});
-		if (obj.length == 1)
-		    $scope.items.push(obj)
-	    })
-	*/
+	items.performSearch({searchitemtype: "live"}).then(function(data) {
+	    $scope.tickets = data.tickets;
+	    $scope.items = data.items;
+	    $scope.items.forEach(function(item) {
+		if ( item.eventdate )
+		    item.eventdate = new Date(item.eventdate);
+	    });
+	    $scope.transactions_by_item = data.transactions_by_item;
+	});
     }]);
 
 app.controller( 'SilentBidSheetsCtrl',[
