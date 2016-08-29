@@ -51,12 +51,13 @@
     max-height: 100%;
 }
 
-table {
-    border-collapse: collapse;
-}
-
 table, th, td {
     border: 1px solid black;
+}
+
+
+table {
+    border-collapse: collapse;
 }
 
 .div-table{
@@ -64,6 +65,7 @@ table, th, td {
 }
 .div-table-row{
     display:table-row;
+    width:auto;
 }
 .div-table-col{
     display:table-column;

@@ -23,16 +23,6 @@ app.config(['$translateProvider', function ($translateProvider) {
     $translateProvider.useSanitizeValueStrategy('sanitize');
 }]);
 
-app.factory('items', ['$http', function($http) {
-    var o = {
-        get: function(itemid)  {
-            return $http.post('/items', [itemid]);
-        }
-    };
-    return o;
-}]);
-
-
 app.factory('charges', ['$http', 'auth', function($http, auth) {
     var o = {
         charge: function(params)  {
@@ -80,7 +70,6 @@ app.factory('items', ['$http', '$q', function($http, $q) {
 	    var transactions_by_item = {};
 	    var transactions_by_bidnum = {};
 	    raw_transactions.forEach(function(transaction) {
-		console.log(tickets);
 		if ( searchterms.buyeremail
 		     && (!(transaction.bidnumber in tickets)
 			 || searchterms.buyeremail != tickets[transaction.bidnumber].login) )
@@ -513,7 +502,7 @@ app.controller('ViewRegisteredPeopleCtrl', [
 	var promises = [];
 	promises.push($http.get("/all/items"));
 	promises.push($http.get("/all/transactions"));
-	$scope.transactions_by_bidder = new Map();
+	$scope.transactions_by_bidder = {};
 
 	$q.all(promises).then(function(data) {
 	    data[1].data.forEach(function(transaction) {
@@ -617,32 +606,15 @@ app.controller("MyInvoiceCtrl", [
 	    $scope.items.forEach(function(item) {
 		$scope.items_by_itemid[item.id] = item;
 	    });
-	});
-	/*
-	$http.get("/findtickets/" + auth.currentUser().email).success(function(data) {
-	    $scope.tickets = data;
-	    $http.get("/all/items").error(
-		function(error) {
-		    console.log(error);
-		    $scope.error = error;
-		}).success(function(data) {
-		    $scope.totalInvoice = 0;
-		    $scope.items = {};
-		    data.forEach(function(item) {
-			console.log(item);
-			$scope.items[item.id] = item;
-		    });
-		    $scope.tickets.forEach(function(ticket) {
-			ticket.boughtitems.forEach(function(item) {
-			    $scope.totalInvoice += $scope.items[item].price;
-			});
-		    });
-		});
 
-	}).error(function(error) {
-	    console.log(error);
+	    for(var key in $scope.tickets) {
+		if ( $scope.tickets.hasOwnProperty(key) ) {
+		    $scope.transactions_by_bidnum[key].forEach(function(transaction) {
+			$scope.totalInvoice += Number(transaction.sellprice);
+		    });
+		}
+	    }
 	});
-	*/
     }]);
 
 
