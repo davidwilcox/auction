@@ -51,6 +51,7 @@ app.controller('RegisterCtrl', [
 		    "photo": picture,
 		    "filename": filename
 		};
+		$scope.submitted = true;
 		$http.post('/uploadphoto', payload).error(
 		    function(error) {
 			$scope.error = error;

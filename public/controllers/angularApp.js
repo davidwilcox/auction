@@ -83,9 +83,13 @@ app.factory('items', ['$http', '$q', function($http, $q) {
 
 	    data_items = data[0].data;
 
+	    var searchItemType = function(itemtype, search) {
+		return !search || (search === 'unassigned' && itemtype == '') || (search == itemtype);
+	    };
+
 	    data_items.forEach(function(item) {
 		if ( (!searchterms.email || item.email == searchterms.email)
-		     && (!searchterms.searchitemtype || searchterms.searchitemtype == item.type )
+		     && searchItemType(item.type, searchterms.searchitemtype)
 		     && (!searchterms.searchdonorname || item.donor.name.includes(searchterms.searchdonorname) ) ) {
 		    items.push(item);
 		    if ( transactions_by_item[item.id] ) {
@@ -256,6 +260,16 @@ app.config([
 		url: '/modifydonateditems',
 		templateUrl: '/templates/modifydonateditems.html',
 		controller: 'ModifyDonatedItemsCtrl'
+	    })
+	    .state('admin.fixed_price_bid_sheet', {
+		url: '/fixed_price_bid_sheet',
+		templateUrl: '/templates/fixed_price_bid_sheet.html',
+		controller: 'FixedPriceBidSheetCtrl',
+		onEnter: [ '$state', 'auth', function($state, auth) {
+		    if ( !auth.isLoggedIn() ) {
+			$state.go('home');
+		    }
+		}]
 	    })
 	    .state('admin.silent_bid_sheets', {
 		url: '/silent_bid_sheets',
@@ -853,6 +867,36 @@ app.controller( 'MyAuctionCtrl',[
     function($scope) {
     }]);
 
+
+app.controller( 'LiveCatalogCtrl',[
+    '$scope',
+    'items',
+    function($scope, items) {
+	items.performSearch({searchitemtype: "silent"}).then(function(data) {
+	    $scope.tickets = data.tickets;
+	    $scope.items = data.items;
+	    $scope.items.forEach(function(item) {
+		if ( item.eventdate )
+		    item.eventdate = new Date(item.eventdate);
+	    });
+	    $scope.transactions_by_item = data.transactions_by_item;
+	});
+    }]);
+
+app.controller( 'FixedPriceBidSheetCtrl',[
+    '$scope',
+    'items',
+    function($scope, items) {
+	items.performSearch({searchitemtype: "fixed"}).then(function(data) {
+	    $scope.tickets = data.tickets;
+	    $scope.items = data.items;
+	    $scope.items.forEach(function(item) {
+		if ( item.eventdate )
+		    item.eventdate = new Date(item.eventdate);
+	    });
+	    $scope.transactions_by_item = data.transactions_by_item;
+	});
+    }]);
 
 app.controller( 'LiveCatalogCtrl',[
     '$scope',

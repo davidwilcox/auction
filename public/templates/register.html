@@ -79,6 +79,10 @@
         </div>
       </md-input-container>
     </div>
+    <div ng-show="submitted">
+      Uploading your photo... Please wait.
+      <md-progress-linear md-mode="indeterminate"></md-progress-linear>
+    </div>
     <md-button type="submit" class="md-primary md-raised">Register</md-button>
   </form>
 </div>
