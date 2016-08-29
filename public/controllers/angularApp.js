@@ -60,9 +60,9 @@ app.factory('items', ['$http', '$q', function($http, $q) {
 		queryString += "?";
 	    queryString += "searchitemnumber=" + searchterms.searchitemnumber;
 	}
-	promises.push($http.get('/allitems' + queryString));
-	promises.push($http.get('/all/tickets'));
-	promises.push($http.get('/all/transactions'));
+	promises.push($http.get('/allitems' + queryString, { cache: true }));
+	promises.push($http.get('/all/tickets', { cache: true }));
+	promises.push($http.get('/all/transactions', { cache: true } ));
 	var deferred = $q.defer();
 	$q.all(promises).then(function(data) {
 	    var items = [];
@@ -82,17 +82,7 @@ app.factory('items', ['$http', '$q', function($http, $q) {
 	    });
 
 	    data_items = data[0].data;
-	    console.log(data_items);
-	    /*
-	    var item_has_buyer = function(item,substr) {
-		if ( !item.id in transactions_by_item )
-		    return false;
-		return transactions_by_item[item.id].reduce(function(prevValue,curTransaction) {
-		    return prevValue || tickets[curTransaction.bidnumber].name.includes(substr);
-		}, false);
-	    };
-	    */
-	    console.log("HERE");
+
 	    data_items.forEach(function(item) {
 		if ( (!searchterms.email || item.email == searchterms.email)
 		     && (!searchterms.searchitemtype || searchterms.searchitemtype == item.type )
@@ -108,7 +98,6 @@ app.factory('items', ['$http', '$q', function($http, $q) {
 		}
 	    });
 	    var cmp;
-	    console.log(sortval);
 	    if ( !sortval || sortval == 'date' ) {
 		cmp = function(item1, item2) {
 		    return new Date(item1.date) > new Date(item2.date);
@@ -123,7 +112,6 @@ app.factory('items', ['$http', '$q', function($http, $q) {
 		}
 	    }
 	    items.sort(cmp);
-	    console.log(items);
 	    deferred.resolve({
 		items: items,
 		tickets: tickets,
@@ -854,6 +842,35 @@ app.controller('BuyTicketsCtrl', [
 app.controller( 'MyAuctionCtrl',[
     '$scope',
     function($scope) {
+    }]);
+
+
+app.controller( 'LiveCatalogCtrl',[
+    '$scope',
+    'items',
+    function($scope, items) {
+	/*
+	items.performSearch(
+	$http.get("/all/items").error(
+	    function(error) {
+		console.log(error);
+		$scope.error = error;
+	    }).success(function(data) {
+		$scope.items = [];
+		obj = [];
+		data.forEach(function(item) {
+		    if ( item.type == "silent" ) {
+			obj.push(item);
+			if ( obj.length == 2 ) {
+			    $scope.items.push(obj);
+			    obj = [];
+			}
+		    }
+		});
+		if (obj.length == 1)
+		    $scope.items.push(obj)
+	    })
+	*/
     }]);
 
 app.controller( 'SilentBidSheetsCtrl',[
