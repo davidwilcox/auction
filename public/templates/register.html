@@ -29,10 +29,18 @@
     </div>
     <div>
       <md-input-container>
-        <label>Full Name</label>
+        <label>First Name</label>
         <input type="text"
 	       name="name"
-	       ng-model="user.name"
+	       ng-model="user.firstname"
+               size="60"
+	       required>
+      </md-input-container>
+      <md-input-container>
+        <label>Last Name</label>
+        <input type="text"
+	       name="name"
+	       ng-model="user.lastname"
                size="60"
 	       required>
       </md-input-container>
