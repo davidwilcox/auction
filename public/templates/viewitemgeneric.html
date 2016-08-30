@@ -136,7 +136,14 @@
 	</md-card-title>
 	<div ng-repeat="transaction in transactions_by_item[item.id]">
 	  <div layout="row">
-	    <div >{{transaction.bidnumber}} {{tickets[transaction.bidnumber].name}} <a href="mailto:{{tickets[transaction.bidnumber].buyer.email}}">{{tickets[transaction.bidnumber].buyer.email}}</a> {{tickets[transaction.bidnumber].buyer.phonenumber | tel}} {{transaction.sellprice | currency}}</div>
+	    <div >
+              <span ng-show="tickets[transaction.bidnumber].buyer.photoid">
+                <a ng-href="http://svuus-photos.s3.amazonaws.com/{{tickets[transaction.bidnumber].buyer.photoid}}">{{transaction.bidnumber}}</a>
+              </span>
+              <span ng-hide="tickets[transaction.bidnumber].buyer.photoid">
+                {{transaction.bidnumber}}
+              </span>
+                {{tickets[transaction.bidnumber].name}} <a href="mailto:{{tickets[transaction.bidnumber].buyer.email}}">{{tickets[transaction.bidnumber].buyer.email}}</a> {{tickets[transaction.bidnumber].buyer.phonenumber | tel}} {{transaction.sellprice | currency}}</div>
 	    <md-button class="md-icon-button" ng-click="removeBidderFromItem(item, transaction)" >
 	      <md-icon>clear</md-icon>
 	    </md-button>
