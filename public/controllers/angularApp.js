@@ -1074,7 +1074,7 @@ app.controller('InsertBidsCtrl', [
 		transactionid: guid()
 	    };
 	    if ( !(bidnumber in $scope.tickets) ) {
-		return;
+		return $q.resolve();
 	    }
 	    return $http.post("/addbuyer",content, {headers: {
 		Authorization: "Bearer " + auth.getToken() } });
@@ -1097,6 +1097,8 @@ app.controller('InsertBidsCtrl', [
 	    });
 	    $q.all(promises).then(function(data) {
 		data.forEach(function(inddata) {
+                    if ( !inddata )
+                        return;
                     delete item.bidder;
                     delete item.price;
 		    var transaction = inddata.data;
