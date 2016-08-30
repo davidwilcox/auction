@@ -62,7 +62,7 @@ app.factory('items', ['$http', '$q', function($http, $q) {
 	    var tickets_items = data[1].data;
 	    var tickets = {};
 	    var all_tickets = {};
-	    tickets_items.forEach(function(ticket) {
+            tickets_items.forEach(function(ticket) {
 		all_tickets[ticket.bidnumber] = ticket;
 		if ( searchterms.buyeremail
 		     && searchterms.buyeremail != ticket.login
@@ -105,7 +105,7 @@ app.factory('items', ['$http', '$q', function($http, $q) {
 		    if ( transactions_by_item[item.id] ) {
 			item.buyer_emails = transactions_by_item[item.id].map(
 			    function(transaction) {
-				return all_tickets[transaction.bidnumber].login;
+                                return all_tickets[transaction.bidnumber].login;
 			    });
 			item.concated_emails = item.buyer_emails.join(',');
 		    }
@@ -432,6 +432,34 @@ app.config([
 app.controller('ViewPersonCtrl', ['$scope',
     function($scope) {
 	$scope.ticket.date = new Date($scope.ticket.date);
+
+
+        /*
+    $scope.removeBidderFromItem = function(event, item, transaction) {
+
+	// Appending dialog to document.body to cover sidenav in docs app
+	var confirm = $mdDialog.confirm()
+	    .title('Are you sure you want to delete this transaction?')
+	    .ariaLabel('Confirm Deletion')
+	    .targetEvent(event)
+	    .ok('Yes! Delete The transaction!')
+	    .cancel('No! Whoops!');
+	$mdDialog.show(confirm).then(function() {
+	    $http.post("/deletetransaction", {
+		transactionid: transaction.transactionid
+	    }, {headers: {
+		Authorization: "Bearer " + auth.getToken()
+	    } } ).success(function(data) {
+		var index = $scope.transactions_by_item[transaction.itemid].indexOf(transaction);
+		$scope.transactions_by_item[transaction.itemid].splice(index,1);
+		item.message = "Transaction deleted.";
+	    }).error(function(error) {
+		item.message = error;
+	    });
+	});
+    };
+        */
+
     }]);
 
 
@@ -496,24 +524,26 @@ app.controller('ViewRegisteredPeopleCtrl', [
     'auth',
     'items',
     '$mdDialog',
+    '$http',
     '$q',
-    function($scope, tickets, auth, items, $mdDialog, $q) {
+    function($scope, tickets, auth, items, $mdDialog, $http, $q) {
 	items.performSearch($scope.searchTerms).then(function(data) {
 	    $scope.tickets = data.tickets;
 	    $scope.items = data.items;
 	    $scope.transactions_by_bidnum = data.transactions_by_bidnum;
+            $scope.items_by_itemid = {};
+            $scope.items.forEach(function(item) {
+                $scope.items_by_itemid[item.id] = item;
+            });
 	});
 
 	var delete_bidder = function(bidnum) {
-	    var idx = $scope.tickets.findIndex(function(ticket) {
-		return ticket.bidnumber == bidnum;
-	    });
-	    $http.post("/deletebidder", $scope.tickets[idx], {headers: {
+	    $http.post("/deletebidder", {bidnumber: bidnum,
+                                         transactions: $scope.transactions_by_bidnum[bidnum]}, {headers: {
 		Authorization: "Bearer " + auth.getToken() } }).then(
 		    function(data) {
 			$scope.message = "Bidder " + bidnum + " has been deleted.";
-			$scope.tickets.splice(idx,1);
-			console.log($scope.tickets);
+			delete $scope.tickets[bidnum];
 		    }, function(err) {
 			$scope.message = err;
 		    });
@@ -535,7 +565,6 @@ app.controller('ViewRegisteredPeopleCtrl', [
 
 	$scope.performSearch = function() {
 	    items.performSearch($scope.searchTerms).then(function(data) {
-		console.log(data.tickets);
 		$scope.tickets = data.tickets;
 		$scope.items = data.items;
 		$scope.transactions_by_bidnum = data.transactions_by_bidnum;
@@ -1187,7 +1216,7 @@ app.controller( 'ViewDonatedItemsCtrl',[
 	    $scope.transactions_by_item = data.transactions_by_item;
 	}, function(err) {
 	    console.log(err);
-	});	    
+	});
     }]);
 
 app.controller( 'MyDonatedItemsCtrl',[
@@ -1204,5 +1233,5 @@ app.controller( 'MyDonatedItemsCtrl',[
 	    $scope.transactions_by_item = data.transactions_by_item;
 	}, function(err) {
 	    console.log(err);
-	});	    
+	});
     }]);

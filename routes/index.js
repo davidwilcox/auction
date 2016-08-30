@@ -537,17 +537,16 @@ router.post('/chargecustomer', auth, function(req, res, next) {
 
 router.post('/deletebidder', auth, function(req, res, next) {
     var bidnum = req.body.bidnumber;
-    //var transactionids = req.body.transactionids;
+    var transactions = req.body.transactions;
 
     var promises = [];
 
-    /*
-    transactionids.forEach(function(transactionid) {
-	let deferred = new Promise(function(resolve, reject) {
-	    let params = {
+    transactions.forEach(function(transaction) {
+	var deferred = new Promise(function(resolve, reject) {
+	    var params = {
 		TableName: "transactions",
 		Key: {
-		    transactionid: transactionid
+		    transactionid: transaction.transactionid
 		}
 	    };
 
@@ -560,7 +559,7 @@ router.post('/deletebidder', auth, function(req, res, next) {
 	});
 	promises.push(deferred);
     });
-    */
+
     promises.push(new Promise(function(resolve, reject) {
 	var item_params = {
 	    TableName: "tickets",
@@ -568,7 +567,7 @@ router.post('/deletebidder', auth, function(req, res, next) {
 		bidnumber: bidnum
 	    }
 	};
-	docClient.delete(item_params, function(err, data) {
+        docClient.delete(item_params, function(err, data) {
 	    if ( err )
 		reject(err);
 	    if ( data )
@@ -576,7 +575,6 @@ router.post('/deletebidder', auth, function(req, res, next) {
 	});
     }));
     Promise.all(promises).then(function(data) {
-	console.log(data);
 	res.status(200).json(data);
     }, function(err) {
 	console.log(err);
@@ -588,7 +586,6 @@ router.post('/deletebidder', auth, function(req, res, next) {
 router.post('/deleteitem', auth, function(req, res, next) {
     var itemid = req.body.id;
     var transactions = req.body.transactions;
-
 
     var promises = [];
 
