@@ -1097,6 +1097,8 @@ app.controller('InsertBidsCtrl', [
 	    });
 	    $q.all(promises).then(function(data) {
 		data.forEach(function(inddata) {
+                    delete item.bidder;
+                    delete item.price;
 		    var transaction = inddata.data;
 		    if ( !(transaction.itemid in $scope.transactions_by_item) )
 			$scope.transactions_by_item[transaction.itemid] = [];
