@@ -37,10 +37,13 @@ app.factory('charges', ['$http', 'auth', function($http, auth) {
 app.factory('items', ['$http', '$q', function($http, $q) {
     var o = {
     };
+
     o.performSearch = function(searchterms, sortval) {
 
 	var promises = [];
 	var queryString = '';
+	if ( !searchterms )
+	    searchterms = {};
 	if ( searchterms.searchname )
 	    queryString += "?searchname=" + searchterms.searchname;
 	if ( searchterms.searchitemnumber ) {
@@ -50,18 +53,24 @@ app.factory('items', ['$http', '$q', function($http, $q) {
 		queryString += "?";
 	    queryString += "searchitemnumber=" + searchterms.searchitemnumber;
 	}
-	promises.push($http.get('/allitems' + queryString, { cache: true }));
-	promises.push($http.get('/all/tickets', { cache: true }));
-	promises.push($http.get('/all/transactions', { cache: true } ));
+	promises.push($http.get('/allitems' + queryString));
+	promises.push($http.get('/all/tickets'));
+	promises.push($http.get('/all/transactions' ));
 	var deferred = $q.defer();
 	$q.all(promises).then(function(data) {
 	    var items = [];
 	    var tickets_items = data[1].data;
 	    var tickets = {};
+	    var all_tickets = {};
 	    tickets_items.forEach(function(ticket) {
+		all_tickets[ticket.bidnumber] = ticket;
 		if ( searchterms.buyeremail
-		     && searchterms.buyeremail != ticket.login )
+		     && searchterms.buyeremail != ticket.login
+		     || ( searchterms.searchbuyername && !ticket.name.includes(searchterms.searchbuyername) )
+		     || (searchterms.agegroup && ticket.agegroup != searchterms.agegroup )
+		     || (searchterms.dietaryrestrictions && ticket.foodRes != searchterms.dietaryrestrictions) ) {
 		    return;
+		}
 		tickets[ticket.bidnumber] = ticket;
 	    });
 
@@ -96,7 +105,7 @@ app.factory('items', ['$http', '$q', function($http, $q) {
 		    if ( transactions_by_item[item.id] ) {
 			item.buyer_emails = transactions_by_item[item.id].map(
 			    function(transaction) {
-				return tickets[transaction.bidnumber].login;
+				return all_tickets[transaction.bidnumber].login;
 			    });
 			item.concated_emails = item.buyer_emails.join(',');
 		    }
@@ -485,38 +494,14 @@ app.controller('ViewRegisteredPeopleCtrl', [
     '$scope',
     'tickets',
     'auth',
-    '$http',
+    'items',
     '$mdDialog',
     '$q',
-    function($scope, tickets, auth, $http, $mdDialog, $q) {
-	tickets.getAll().then(
-	    function(result) {
-		$scope.tickets = result;
-		$scope.tickets.sort(function(ticket1, ticket2) {
-		    return ticket1.date < ticket2.date;
-		});
-	    });
-
-
-
-	var promises = [];
-	promises.push($http.get("/all/items"));
-	promises.push($http.get("/all/transactions"));
-	$scope.transactions_by_bidder = {};
-
-	$q.all(promises).then(function(data) {
-	    data[1].data.forEach(function(transaction) {
-		if ( !$scope.transactions_by_bidder[transaction.bidnumber] )
-		    $scope.transactions_by_bidder[transaction.bidnumber] = [];
-		$scope.transactions_by_bidder[transaction.bidnumber].push(transaction);
-	    });
-	    $scope.items = {};
-	    data[0].data.forEach(function(item) {
-		$scope.items[item.id] = item;
-	    });
-	}, function(err) {
-	    console.log(error);
-	    $scope.error = error;
+    function($scope, tickets, auth, items, $mdDialog, $q) {
+	items.performSearch($scope.searchTerms).then(function(data) {
+	    $scope.tickets = data.tickets;
+	    $scope.items = data.items;
+	    $scope.transactions_by_bidnum = data.transactions_by_bidnum;
 	});
 
 	var delete_bidder = function(bidnum) {
@@ -545,6 +530,15 @@ app.controller('ViewRegisteredPeopleCtrl', [
 	    $mdDialog.show(confirm).then(function() {
 		delete_bidder(bidnum);
 	    }, function() {
+	    });
+	};
+
+	$scope.performSearch = function() {
+	    items.performSearch($scope.searchTerms).then(function(data) {
+		console.log(data.tickets);
+		$scope.tickets = data.tickets;
+		$scope.items = data.items;
+		$scope.transactions_by_bidnum = data.transactions_by_bidnum;
 	    });
 	};
     }]);
@@ -1029,12 +1023,19 @@ app.controller('InsertBidsCtrl', [
     '$q',
     function($scope, auth, items, $http, $mdDialog, $q) {
 
-	items.performSearch({
-	}).then(function(data) {
+	items.performSearch($scope.searchTerms).then(function(data) {
 	    $scope.tickets = data.tickets;
 	    $scope.items = data.items;
 	    $scope.transactions_by_item = data.transactions_by_item;
 	});
+
+	$scope.performSearch = function() {
+	    items.performSearch($scope.searchTerms).then(function(data) {
+		$scope.tickets = data.tickets;
+		$scope.items = data.items;
+		$scope.transactions_by_item = data.transactions_by_item;
+	    });
+	};
 
 	var addbidder = function(bidnumber, itemid, price) {
 	    var content = {

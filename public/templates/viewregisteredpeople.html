@@ -1,5 +1,39 @@
 <div class="container col-xs-12 col-sm-offset-1 col-sm-10">
   {{message}}
+  <div layout="row">
+    <md-input-container>
+      <label>Search Person Name</label>
+      <input
+	 type="text"
+	 ng-model="searchTerms.searchbuyername"
+	 >
+    </md-input-container>
+    <md-input-container>
+      <label>Search Age Group</label>
+      <md-select
+	 ng-model="searchTerms.agegroup"
+	 >
+	<md-option value="ADULT_TICKET">Adult</md-option>
+	<md-option value="HIGHSCHOOL_TICKET">High School Class</md-option>
+	<md-option value="JUNIORHIGH_TICKET">Junior High Class</md-option>
+	<md-option value="CHILD_TICKET">Elementary Classes</md-option>
+      </md-select>
+    </md-input-container>
+    <md-input-container>
+      <label>Search Dietary Restrictions</label>
+      <md-select
+	 ng-model="searchTerms.dietaryrestrictions"
+	 >
+	<md-option value="NONE_FOOD">No food restrictions</md-option>
+	<md-option value="VEGETARIAN_FOOD">Vegetarian</md-option>
+	<md-option value="GLUTENFREE_FOOD">Gluten-free</md-option>
+      </md-select>
+    </md-input-container>
+    <div>
+      <md-button class="md-primary md-raised" ng-click="performSearch()">Find People</md-button>
+    </div>
+
+  </div>
   <div ng-repeat="ticket in tickets">
     <viewperson person="ticket"></viewperson>
   </div>
