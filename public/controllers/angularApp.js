@@ -105,7 +105,7 @@ app.factory('items', ['$http', '$q', function($http, $q) {
 		    if ( transactions_by_item[item.id] ) {
 			item.buyer_emails = transactions_by_item[item.id].map(
 			    function(transaction) {
-                                return all_tickets[transaction.bidnumber].login;
+		                return all_tickets[transaction.bidnumber].login;
 			    });
 			item.concated_emails = item.buyer_emails.join(',');
 		    }
@@ -126,11 +126,33 @@ app.factory('items', ['$http', '$q', function($http, $q) {
 		}
 	    }
 	    items.sort(cmp);
+
+
+	    var tickets_arr_cmp;
+	    if ( !sortval || sortval == 'date' ) {
+		cmp = function(ticket1, ticket2) {
+		    return new Date(tickdt1.date) > new Date(ticket2.date);
+		};
+	    } else if ( sortval == 'bidnum' ) {
+		cmp = function(ticket1, ticket2) {
+		    return ticket1.bidnumber < ticket2.bidnumber;
+		};
+	    } else if ( sortval == 'agecategory' ) {
+		cmp = function(ticket1, ticket2) {
+		    return ticket1.agegroup < ticket2.agegroup;
+		};
+	    } else if ( sortval == 'food_restriction' ) {
+		cmp = function(ticket1, ticket2) {
+		    return ticket1.dietaryrestrictions < ticket2.dietaryrestrictions;
+		};
+	    }
+
 	    deferred.resolve({
 		items: items,
 		tickets: tickets,
 		transactions_by_item: transactions_by_item,
-		transactions_by_bidnum: transactions_by_bidnum
+		transactions_by_bidnum: transactions_by_bidnum,
+		tickets_arr: tickets_items
 	    });
 	}, function(err) {
 	    deferred.reject(err);
@@ -528,7 +550,7 @@ app.controller('ViewRegisteredPeopleCtrl', [
     '$q',
     function($scope, tickets, auth, items, $mdDialog, $http, $q) {
 	items.performSearch($scope.searchTerms).then(function(data) {
-	    $scope.tickets = data.tickets;
+	    $scope.tickets = data.tickets_arr;
 	    $scope.items = data.items;
 	    $scope.transactions_by_bidnum = data.transactions_by_bidnum;
             $scope.items_by_itemid = {};
@@ -542,8 +564,11 @@ app.controller('ViewRegisteredPeopleCtrl', [
                                          transactions: $scope.transactions_by_bidnum[bidnum]}, {headers: {
 		Authorization: "Bearer " + auth.getToken() } }).then(
 		    function(data) {
+			var idx = $scope.tickets.findIndex(function(ticket) {
+			    return ticket.bidnumber == bidnum;
+			});
 			$scope.message = "Bidder " + bidnum + " has been deleted.";
-			delete $scope.tickets[bidnum];
+			$scope.tickets.splice(idx,1);
 		    }, function(err) {
 			$scope.message = err;
 		    });
@@ -564,7 +589,7 @@ app.controller('ViewRegisteredPeopleCtrl', [
 	};
 
 	$scope.performSearch = function() {
-	    items.performSearch($scope.searchTerms).then(function(data) {
+	    items.performSearch($scope.searchTerms, $scope.sortval).then(function(data) {
 		$scope.tickets = data.tickets;
 		$scope.items = data.items;
 		$scope.transactions_by_bidnum = data.transactions_by_bidnum;
@@ -603,7 +628,6 @@ app.controller("MyTicketsCtrl", [
 		}).success(function(data) {
 		    $scope.items = {};
 		    data.forEach(function(item) {
-			console.log(item);
 			$scope.items[item.id] = item;
 		    });
 		});
@@ -851,8 +875,6 @@ app.controller('BuyTicketsCtrl', [
                 amount: $scope.calculateTotal()*100
             }).then(function(data) {
 		$scope.submitProgress = 10;
-
-		console.log(data.data.customer_id);
 
 		$scope.tickets.forEach(function(ticket) {
 		    ticket.customer_id = data.data.customer_id;

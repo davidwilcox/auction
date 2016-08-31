@@ -29,10 +29,20 @@
 	<md-option value="GLUTENFREE_FOOD">Gluten-free</md-option>
       </md-select>
     </md-input-container>
+    <md-input-container>
+      <label>Sort</label>
+      <md-select
+	 ng-model="sortval"
+	 >
+	<md-option value="date">Date Purchased</md-option>
+	<md-option value="bidnum">Bid Number</md-option>
+	<md-option value="agecategory">Age Category</md-option>
+	<md-option value="food_restriction">Dietary Restriction</md-option>
+      </md-select>
+    </md-input-container>
     <div>
       <md-button class="md-primary md-raised" ng-click="performSearch()">Find People</md-button>
     </div>
-
   </div>
   <div ng-repeat="ticket in tickets">
     <viewperson person="ticket"></viewperson>
