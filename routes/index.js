@@ -236,7 +236,6 @@ router.get('/allguests', function(req, res, next) {
 
 
 router.get("/all/:table", function(req, res, next) {
-    console.log("HERE");
     var params = {
 	TableName: req.params.table
     };
