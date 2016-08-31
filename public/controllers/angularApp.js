@@ -133,7 +133,7 @@ app.factory('items', ['$http', '$q', function($http, $q) {
 	    var tickets_arr_cmp;
 	    if ( !sortval || sortval == 'date' ) {
 		cmp = function(ticket1, ticket2) {
-		    return new Date(tickdt1.date) > new Date(ticket2.date);
+		    return new Date(ticket1.date) > new Date(ticket2.date);
 		};
 	    } else if ( sortval == 'bidnum' ) {
 		cmp = function(ticket1, ticket2) {
