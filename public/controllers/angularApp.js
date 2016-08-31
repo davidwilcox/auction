@@ -1077,6 +1077,7 @@ app.controller('ViewItemCtrl', [
     'post',
     'item_tickets',
     function($scope, $state, post, ticket_items) {
+	console.log("FOO");
         $scope.item = post.data[0];
 	$scope.tickets = {};
 	ticket_items.data.forEach(function(ticket) {

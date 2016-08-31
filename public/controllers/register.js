@@ -34,6 +34,8 @@ app.controller('RegisterCtrl', [
         });
 
 	$scope.register = function() {
+	    if ( $scope.password != $scope.confirmPassword )
+		return;
 	    picture = $scope.imageSrc;
 
 	    var register = function() {
