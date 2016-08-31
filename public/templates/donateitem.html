@@ -229,9 +229,9 @@ Enter the name (or names!) of the person or group donating this item (you can ch
 	</div>
       </div>
 
-      Choose one of these policies for kids.
       <br>
       <div ng-show="item.category == 'event'">
+	Choose one of these policies for kids.
         <md-radio-group ng-model="item.policy" required>
 	   <div ng-repeat="policy in policies">
 	     <md-radio-button
