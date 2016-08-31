@@ -62,6 +62,7 @@ app.factory('items', ['$http', '$q', function($http, $q) {
 	    var tickets_items = data[1].data;
 	    var tickets = {};
 	    var all_tickets = {};
+	    var tickets_arr = [];
             tickets_items.forEach(function(ticket) {
 		all_tickets[ticket.bidnumber] = ticket;
 		if ( searchterms.buyeremail
@@ -72,6 +73,7 @@ app.factory('items', ['$http', '$q', function($http, $q) {
 		    return;
 		}
 		tickets[ticket.bidnumber] = ticket;
+		tickets_arr.push(ticket);
 	    });
 
 
@@ -146,13 +148,14 @@ app.factory('items', ['$http', '$q', function($http, $q) {
 		    return ticket1.dietaryrestrictions < ticket2.dietaryrestrictions;
 		};
 	    }
+	    tickets_arr.sort(cmp);
 
 	    deferred.resolve({
 		items: items,
 		tickets: tickets,
 		transactions_by_item: transactions_by_item,
 		transactions_by_bidnum: transactions_by_bidnum,
-		tickets_arr: tickets_items
+		tickets_arr: tickets_arr
 	    });
 	}, function(err) {
 	    deferred.reject(err);
@@ -618,7 +621,23 @@ app.controller("MyTicketsCtrl", [
     '$scope',
     '$http',
     'auth',
-    function($scope, $http, auth) {
+    'items',
+    function($scope, $http, auth, items) {
+
+	items.performSearch({
+	    buyeremail: auth.currentUserEmail()
+	}).then(function(data) {
+	    console.log(data.tickets_arr);
+	    $scope.tickets = data.tickets_arr;
+	    $scope.items = data.items;
+	    $scope.transactions_by_bidnum = data.transactions_by_bidnum;
+            $scope.items_by_itemid = {};
+            $scope.items.forEach(function(item) {
+                $scope.items_by_itemid[item.id] = item;
+            });
+	});
+
+	/*
 	$http.get("/findtickets/" + auth.currentUser().email).success(function(data) {
 	    $scope.tickets = data;
 	    $http.get("/all/items").error(
@@ -635,6 +654,7 @@ app.controller("MyTicketsCtrl", [
 	}).error(function(error) {
 	    console.log(error);
 	});
+	*/
     }]);
 
 app.controller("MyInvoiceCtrl", [
