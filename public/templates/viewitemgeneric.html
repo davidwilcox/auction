@@ -143,10 +143,7 @@
               <span ng-hide="tickets[transaction.bidnumber].buyer.photoid">
                 {{transaction.bidnumber}}
               </span>
-                {{tickets[transaction.bidnumber].name}} <a href="mailto:{{tickets[transaction.bidnumber].buyer.email}}">{{tickets[transaction.bidnumber].buyer.email}}</a> {{tickets[transaction.bidnumber].buyer.phonenumber | tel}} {{transaction.sellprice | currency}}</div>
-	    <md-button class="md-icon-button" ng-click="removeBidderFromItem(item, transaction)" >
-	      <md-icon>clear</md-icon>
-	    </md-button>
+              {{tickets[transaction.bidnumber].name}} <a href="mailto:{{tickets[transaction.bidnumber].buyer.email}}">{{tickets[transaction.bidnumber].buyer.email}}</a> {{tickets[transaction.bidnumber].buyer.phonenumber | tel}} {{transaction.sellprice | currency}}</div>
 	  </div>
 	</div>
 	<div>
