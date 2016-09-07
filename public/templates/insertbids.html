@@ -27,23 +27,19 @@
 
   </div>
   <div ng-repeat="item in items">
-    <md-card layout-padding>
+    <md-card layout-padding class="viewitem-nomargin">
       <div layout="row">
 	<div flex>
-	  <md-card-title>
-            <md-card-title-text>
-              <span class="md-headline">
-		{{item.number}} &nbsp;--&nbsp; {{item.name}}
-              </span>
-            </md-card-title-text>
-	  </md-card-title>
-	  <div layout="row">
+          <span class="md-headline">
+	    {{item.number}} &nbsp;--&nbsp; {{item.name}}
+          </span>
+	  <div layout="row" layout-align="start end">
 	    <font size="2">Donor Name: &nbsp;</font> {{item.donor.name}}
 	  </div>
-	  <div layout="row">
+	  <div layout="row" layout-align="start end">
             <font size="2">Type: &nbsp;</font> {{item.type}}
 	  </div>
-	  <div layout="row">
+	  <div layout="row" layout-align="start end">
 	    <font size="2">Quantity: &nbsp;</font> {{item.quantity}}
 	  </div>
 	  <form ng-submit="addbidder">
