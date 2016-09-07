@@ -49,8 +49,21 @@
     <div>
       <md-button class="md-primary md-raised" ng-click="performSearch()">Search/Sort</md-button>
     </div>
+
   </div>
-  
+  <div>
+    <div>
+      <a ui-sref-active="active" ui-sref="admin.silent_bid_sheets" ng-show="isAdmin()">
+        <md-button class="md-primary md-raised">Silent Bid Sheets</md-button>
+      </a>
+      <a ui-sref-active="active" ui-sref="admin.live_catalog" ng-show="isAdmin()">
+        <md-button class="md-primary md-raised">Live Catalog</md-button>
+      </a>
+      <a ui-sref-active="active" ui-sref="admin.fixed_price_bid_sheet" ng-show="isAdmin()">
+        <md-button class="md-primary md-raised">Fixed Price Sheets</md-button>
+      </a>
+    </div>
+  </div>
 
   <div ng-repeat="item in items track by $index">
     <viewitemadmin item="{{item}}"></viewitemadmin>

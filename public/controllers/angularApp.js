@@ -114,38 +114,46 @@ app.factory('items', ['$http', '$q', function($http, $q) {
 		}
 	    });
 	    var cmp;
+            console.log(sortval);
 	    if ( !sortval || sortval == 'date' ) {
 		cmp = function(item1, item2) {
-		    return new Date(item1.date) > new Date(item2.date);
+		    return new Date(item2.date).getDate() - new Date(item1.date).getDate()
 		};
 	    } else if ( sortval == 'itemnumber' ) {
 		cmp = function(item1, item2) {
-		    return item1.number > item2.number;
+                    if ( !item1.number && !item2.number )
+                        return 0;
+                    if ( !item1.number )
+                        return 1;
+                    if ( !item2.number )
+                        return -1;
+                    return item1.number - item2.number;
 		};
 	    } else {
 		cmp = function(item1, item2) {
-		    return item1.type < item2.type;
+		    return item1.type - item2.type;
 		}
 	    }
 	    items.sort(cmp);
+            console.log(items);
 
 
 	    var tickets_arr_cmp;
 	    if ( !sortval || sortval == 'date' ) {
 		cmp = function(ticket1, ticket2) {
-		    return new Date(ticket1.date) > new Date(ticket2.date);
+		    return new Date(ticket2.date).getDate() - new Date(ticket2.date).getDate();
 		};
 	    } else if ( sortval == 'bidnum' ) {
 		cmp = function(ticket1, ticket2) {
-		    return ticket1.bidnumber < ticket2.bidnumber;
+		    return ticket1.bidnumber - ticket2.bidnumber;
 		};
 	    } else if ( sortval == 'agecategory' ) {
 		cmp = function(ticket1, ticket2) {
-		    return ticket1.agegroup < ticket2.agegroup;
+		    return ticket1.agegroup - ticket2.agegroup;
 		};
 	    } else if ( sortval == 'food_restriction' ) {
 		cmp = function(ticket1, ticket2) {
-		    return ticket1.dietaryrestrictions < ticket2.dietaryrestrictions;
+		    return ticket1.dietaryrestrictions - ticket2.dietaryrestrictions;
 		};
 	    }
 	    tickets_arr.sort(cmp);
@@ -1228,6 +1236,7 @@ app.controller( 'ModifyDonatedItemsCtrl', [
 		$scope.items = data.items;
 		$scope.tickets = data.tickets;
 		$scope.transactions_by_item = data.transactions_by_item;
+                console.log($scope.items);
 	    }, function(err) {
 		console.log(err);
 	    });

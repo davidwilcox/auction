@@ -89,6 +89,7 @@ app.controller('DonateItemCtrl', [
 		$window.localStorage['donor-info'] = $scope.donor;
 		$scope.item.donor = $scope.donor;
 		$scope.item.email = auth.currentUserEmail();
+                $scope.item.date = new Date();
 
 		$http.post('/submititem', $scope.item,{headers: {
 		    Authorization: "Bearer " + auth.getToken() } }).success(function(data) {

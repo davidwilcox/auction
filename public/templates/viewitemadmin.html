@@ -117,7 +117,7 @@
 	</div>
       </div>
     </md-card>
-    <md-card flex layout-pading>
+    <md-card flex="33" layout-pading>
       <md-card-title>
 	<md-card-title-text>
 	  <span class="md-headline">
@@ -153,6 +153,9 @@
 		   ng-blur="saveitem(item)"
 		   >
               </md-input-container>
+            </div>
+            <div>
+              {{item.date | date:'medium'}}
             </div>
 	  </span>
 	</md-card-title-text>
