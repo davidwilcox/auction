@@ -9,13 +9,23 @@
   <div style='height: 8in; width: 30.7cm;'>
     <div style='width: 14.85cm; float:left; word-wrap: normal;'>
       <div>
-        <h2>{{var[0].name}}</h2>
-        <div class='row' style='margin-left:0cm'>
-          <span>
-	    {{var[0].description}}
-          </span>
+        <div layout="row">
+          <div flex>
+            <h2>{{var[0].name}}</h2>
+          </div>
+          <div>
+            Silent
+          </div>
+          &nbsp;&nbsp;
+          <div>
+            {{var[0].number}}
+          </div>
+        </div>
+        <div class='row'>
+          <div>
+          </div>
           <span style='float:right'>
-	    <div class='silent-bid-sheet-image-container'>
+	    <div class='silent-bid-sheet-image-container' layout-align="middle end">
               <img ng-src="http://svuus-photos.s3.amazonaws.com/{{var[0].donor.photoid}}" ></img>
 	    </div>
             <p>
@@ -23,11 +33,12 @@
             </p>
           </span>
         </div>
-        <div>
-          <font size="5">Item Value:</font>${{var[0].value}}
-	</div>
-	<div>
-          <font size="5">Min Bid:</font>${{var[0].minvalue}}
+        <div layout-padding>
+          {{var[1].description}}
+          <div class='row' layout-padding>
+            <span style='float:left'><font size="5">Item Value:${{var[1].value}}</font></span>
+            <span style='float:right'>Min Bid:${{var[1].minvalue}}</span>
+          </div>
         </div>
         <table border="1" width='100%'>
           <tr>
@@ -46,24 +57,42 @@
     </div>
     <div style='margin-left:1cm; float:left; word-wrap: normal; width:14.85cm; '>
       <div>
-        <h2>{{var[1].name}}</h2>
-        <div class='row' style='margin-left:0cm'>
-          <span>
-	    {{var[1].description}}
-          </span>
-          <span style='float:right'>
-	    <div class="silent-bid-sheet-image-container">
-              <img ng-src="http://svuus-photos.s3.amazonaws.com/{{var[1].donor.photoid}}"></img>
+        <div layout="row">
+          <div flex>
+            <h2>{{var[1].name}}</h2>
+          </div>
+          <div>
+            Silent
+          </div>
+          &nbsp;&nbsp;
+          <div>
+            {{var[1].number}}
+          </div>
+        </div>
+        <div class='row'>
+
+          <div style='float:right'>
+	    <div class="silent-bid-sheet-image-container" layout-align="end end" style="background-color:red;">
+              <div layout="column" flex="1">
+                <div flex />
+              </div>
+              <div >
+                <img ng-src="http://svuus-photos.s3.amazonaws.com/{{var[1].donor.photoid}}" style="background-color:green;">
+              </div>
 	    </div>
             <p>
               <b>Donated By {{var[1].donor.name}}</b>
             </p>
-          </span>
+          </div>
         </div>
-        <div class='row' style='margin-left:0cm'>
-          <span style='float:left'><font size="5">Item Value:</font>${{var[1].value}}</span>
-          <span style='float:right'><font size="5">Min Bid:</font>${{var[1].minvalue}}</span>
+        <div layout-padding>
+          {{var[1].description}}
+          <div class='row' layout-padding>
+            <span style='float:left'><font size="5">Item Value:${{var[1].value}}</font></span>
+            <span style='float:right'>Min Bid:${{var[1].minvalue}}</span>
+          </div>
         </div>
+
         <table border="1" width='100%'>
           <tr>
             <td width='50%'><label>Name:</label></td>

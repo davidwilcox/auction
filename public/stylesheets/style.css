@@ -27,6 +27,10 @@
     margin: 0px
 }
 
+.viewitem-somemargin md-input-container {
+    margin: 9px
+}
+
 .live-catalog-image-container {
     width:180px;
     height:180px;
