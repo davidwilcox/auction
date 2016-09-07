@@ -1,4 +1,4 @@
-var app = angular.module('auction', ['ngMessages', 'ui.router', 'pascalprecht.translate', 'ngSanitize', 'stripe.checkout', 'ngMaterial'])
+var app = angular.module('auction', ['ngMessages', 'ui.router', 'pascalprecht.translate', 'ngSanitize', 'stripe.checkout', 'ngMaterial', 'duScroll'])
 
 
 app.config(['$translateProvider', function ($translateProvider) {
@@ -454,37 +454,14 @@ app.config([
 	$urlRouterProvider.otherwise('home');
     }]);
 
+app.controller('ViewPersonNoChangeCtrl', ['$scope',
+    function($scope) {
+	$scope.ticket.date = new Date($scope.ticket.date);
+    }]);
+
 app.controller('ViewPersonCtrl', ['$scope',
     function($scope) {
 	$scope.ticket.date = new Date($scope.ticket.date);
-
-
-        /*
-    $scope.removeBidderFromItem = function(event, item, transaction) {
-
-	// Appending dialog to document.body to cover sidenav in docs app
-	var confirm = $mdDialog.confirm()
-	    .title('Are you sure you want to delete this transaction?')
-	    .ariaLabel('Confirm Deletion')
-	    .targetEvent(event)
-	    .ok('Yes! Delete The transaction!')
-	    .cancel('No! Whoops!');
-	$mdDialog.show(confirm).then(function() {
-	    $http.post("/deletetransaction", {
-		transactionid: transaction.transactionid
-	    }, {headers: {
-		Authorization: "Bearer " + auth.getToken()
-	    } } ).success(function(data) {
-		var index = $scope.transactions_by_item[transaction.itemid].indexOf(transaction);
-		$scope.transactions_by_item[transaction.itemid].splice(index,1);
-		item.message = "Transaction deleted.";
-	    }).error(function(error) {
-		item.message = error;
-	    });
-	});
-    };
-        */
-
     }]);
 
 
@@ -517,6 +494,17 @@ app.controller(
 	    };
 	    
 	}]);
+
+app.directive('viewpersonNoChange', function() {
+    return {
+        templateUrl: '/templates/viewperson_nochange.html',
+        controller: 'ViewPersonNoChangeCtrl',
+        bindings: {
+            person: '=',
+	    items: '='
+        }
+    };
+});
 
 app.directive('viewperson', function() {
     return {
@@ -808,10 +796,11 @@ app.directive('datetimez', function() {
 app.controller('BuyTicketsCtrl', [
     '$scope',
     '$state',
+    '$document',
     'tickets',
     'charges',
     'auth',
-    function($scope, $state, tickets, charges, auth) {
+    function($scope, $state, $document, tickets, charges, auth) {
 	$scope.ticketTypes = ["ADULT_TICKET","HIGHSCHOOL_TICKET","JUNIORHIGH_TICKET","CHILD_TICKET"];
 	console.log($scope.ticketTypes);
 	$scope.tickets = [];
@@ -839,11 +828,16 @@ app.controller('BuyTicketsCtrl', [
 	}
 
 	initializeTickets();
-	
-	
+
 	$scope.addTicket = function() {
 	    $scope.tickets.push(createTicket());
 	    $scope.computeOrderDetails();
+
+            console.log();
+            var key = "bottom";
+            var elem = angular.element(document.getElementById(key));
+            $document.scrollToElementAnimated(elem, 0, 500).then(function() {
+            });
 	};
 
 	$scope.removeTicket = function(index) {

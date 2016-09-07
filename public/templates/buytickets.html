@@ -4,58 +4,65 @@
     <md-progress-linear md-mode="determinate" value="{{submitProgress}}"></md-progress-linear>
   </div>
   <div layout="column" layout-padding>
-    Enter info here for your FIRST ticket.  If you need more than one ticket, click the blue “Add” button below, and scroll down to enter the additional info.
     <div layout="row" >
       <div flex="66">
+        <md-toolbar class="md-warn" layout-padding>
+          <div class="md-toolbar-tools">
+            Enter info here for your FIRST ticket.  If you need more than one ticket, click the blue “Add” button below, and scroll down to enter the additional info.
+          </div>
+        </md-toolbar>
 	<div layout="column">
 	  <div ng-repeat="ticket in tickets track by $index">
-	    <md-card layout-padding>
-	      <div layout="row" flex>
-		<md-card-title>
-		  <md-input-container>
-		    <label>Name</label>
-		    <input ng-model="ticket.name" size="50">
-		  </md-input-container>
-		</md-card-title>
+            <div id="anchor{{$index}}">
+	      <md-card layout-padding>
+	        <div layout="row" flex>
+                  <div flex>
+		    <md-input-container>
+		      <label>Name</label>
+		      <input ng-model="ticket.name" size="50">
+		    </md-input-container>
+                  </div>
 
-                <md-card-actions layout="row" layout-align="end">
-                  <md-button class="md-icon-button" ng-click="removeTicket($index)" >
-                    <md-icon>clear</md-icon>
-                  </md-button>
-		</md-card-actions>
-	      </div>
+                  <md-card-actions>
+                    <md-button class="md-icon-button" ng-click="removeTicket($index)" >
+                      <md-icon>clear</md-icon>
+                    </md-button>
+		  </md-card-actions>
+	        </div>
 
-              <div>
-	        <label>Age Category</label>
-	        <md-radio-group ng-model="ticket.agegroup" ng-change="computeOrderDetails()" required>
-                  <md-radio-button value="ADULT_TICKET"><b>Adult</b>-Upstairs food, bid card, $16</md-radio-button>
-                  <md-radio-button value="HIGHSCHOOL_TICKET"><b>High School Class</b>-Upstairs food, no bid card, $12</md-radio-button>
-                  <md-radio-button value="JUNIORHIGH_TICKET"><b>Junior High Class</b>—Downstairs food, no bid card, $6</md-radio-button>
-                  <md-radio-button value="CHILD_TICKET"><b>Elementary Classes</b>—Age five through 5th grade, downstairs food, special activities, $6</md-radio-button>
-                </md-radio-group>
+                <div>
+	          <label>Age Category</label>
+	          <md-radio-group ng-model="ticket.agegroup" ng-change="computeOrderDetails()" required>
+                    <md-radio-button value="ADULT_TICKET"><b>Adult</b>-Upstairs food, bid card, $16</md-radio-button>
+                    <md-radio-button value="HIGHSCHOOL_TICKET"><b>High School Class</b>-Upstairs food, no bid card, $12</md-radio-button>
+                    <md-radio-button value="JUNIORHIGH_TICKET"><b>Junior High Class</b>—Downstairs food, no bid card, $6</md-radio-button>
+                    <md-radio-button value="CHILD_TICKET"><b>Elementary Classes</b>—Age five through 5th grade, downstairs food, special activities, $6</md-radio-button>
+                  </md-radio-group>
 
-                <label>Dietary Restrictions</label>
-                <md-radio-group ng-model="ticket.foodRes">
-                  <md-radio-button value="NONE_FOOD">No food restrictions</md-radio-button>
-                  <md-radio-button value="VEGETARIAN_FOOD">Vegetarian</md-radio-button>
-                  <md-radio-button value="GLUTENFREE_FOOD">Gluten-free</md-radio-button>
-                </md-radio-group>
-              </div>
-              <div>
-                <md-input-container>
-                  <label>Buyer Email</label>
-                  <input
-                     ng-model="ticket.buyer.email"
-                     >
-                </md-input-container>
-                <md-input-container>
-                  <label>Buyer Phone</label>
-                  <input
-                     ng-model="ticket.buyer.phonenumber"
-                     phone-input
-                     >
-                </md-input-container>
-              </div>
+                  <label>Dietary Restrictions</label>
+                  <md-radio-group ng-model="ticket.foodRes">
+                    <md-radio-button value="NONE_FOOD">No food restrictions</md-radio-button>
+                    <md-radio-button value="VEGETARIAN_FOOD">Vegetarian</md-radio-button>
+                    <md-radio-button value="GLUTENFREE_FOOD">Gluten-free</md-radio-button>
+                  </md-radio-group>
+                </div>
+                <div>
+                  <md-input-container>
+                    <label>Contact email for this ticket holder</label>
+                    <input
+                       ng-model="ticket.buyer.email"
+                       size="40"
+                       >
+                  </md-input-container>
+                  <md-input-container>
+                    <label>Contact phone</label>
+                    <input
+                       ng-model="ticket.buyer.phonenumber"
+                       phone-input
+                       >
+                  </md-input-container>
+                </div>
+            </div>
             </md-card> <!--panel-body-->
           </div> <!--ticket repeater-->
         </div>
@@ -112,6 +119,7 @@
         </md-card>
       </div>
     </div>
+    <div id="bottom"></div>
     <div layout-align="left" layout="row">
       <md-button ng-click="addTicket()" class="md-primary md-raised">Add additional ticket to order</md-button>
       <md-button stripe-checkout="doCheckout"
