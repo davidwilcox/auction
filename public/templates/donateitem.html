@@ -167,7 +167,7 @@ Enter the name (or names!) of the person or group donating this item (you can ch
 	</div>
       </md-input-container>
 
-      <div ng-show="item.category == 'object'">
+      <div ng-if="item.category == 'object'">
         How many items are you selling?
         <br>
         Example: Three quilts being sold separately would have "3" in this field. However, if you are selling a group of items together (a basket of jams, or a set of books, put "1").
@@ -187,7 +187,7 @@ Enter the name (or names!) of the person or group donating this item (you can ch
         </md-input-container>
       </div>
 
-      <div ng-show="item.category == 'event'">
+      <div ng-if="item.category == 'event'">
 	How many spots will your event have?
         <br>
         <md-input-container>
@@ -204,7 +204,7 @@ Enter the name (or names!) of the person or group donating this item (you can ch
 	</md-input-container>
       </div>
 
-      <div ng-show="item.category == 'event'">
+      <div ng-if="item.category == 'event'">
         What is the date of the event you will host?
         We highly recommend choosing and advertising a specific date.
         <br>
@@ -230,9 +230,9 @@ Enter the name (or names!) of the person or group donating this item (you can ch
       </div>
 
       <br>
-      <div ng-show="item.category == 'event'">
+      <div ng-if="item.category == 'event'">
 	Choose one of these policies for kids.
-        <md-radio-group ng-model="item.policy">
+        <md-radio-group ng-model="item.policy" required>
 	   <div ng-repeat="policy in policies">
 	     <md-radio-button
 	        name="policy"
@@ -246,21 +246,20 @@ Enter the name (or names!) of the person or group donating this item (you can ch
 	   </div>
         </md-radio-group>
       </div>
-      If your donated item does not sell, it will be donated to a charitable organization. If you prefer to keep it if it does not sell, you are responsible for taking it at the end of the auction. If you will not be attending the auction, please ask a friend to retrieve it for you.
-      <p ng-show="item.category == 'event'">
-	(Yes, we know this doesn’t really apply to your dinner party, but please click it anyway...!)
-      </p>
-      <md-radio-group ng-model="item.disclaimer" required >
-	<md-radio-button
-	   type="radio"
-	   name="disclaimer"
-	   value="yes"
-	   required
-	   >  I agree</md-radio-button>
-	<div ng-messages="donateItemForm.disclaimer.$error">
-	  <div ng-messages-include="/messages.html"></div>
-	</div>
-      </md-radio-group>
+      <div ng-if="item.category == 'object'">
+        If your donated item does not sell, it will be donated to a charitable organization. If you prefer to keep it if it does not sell, you are responsible for taking it at the end of the auction. If you will not be attending the auction, please ask a friend to retrieve it for you.
+        <md-radio-group ng-model="item.disclaimer" required >
+	  <md-radio-button
+	     type="radio"
+	     name="disclaimer"
+	     value="yes"
+	     required
+	     >  I agree</md-radio-button>
+	  <div ng-messages="donateItemForm.disclaimer.$error">
+	    <div ng-messages-include="/messages.html"></div>
+	  </div>
+        </md-radio-group>
+      </div>
     </md-card>
     <md-button class="md-raised md-primary" type="submit">Donate Item</md-button>
   </form>
