@@ -1,13 +1,9 @@
 <md-card layout-padding>
-  <div layout="row" flex>
-    <md-card-title>
-      <md-card-title-text>
-	<span class="md-headline">
-	  {{ticket.name}}
-	</span>
-	<span class="md-subhead">Bid Number {{ticket.bidnumber}}</span>
-      </md-card-title-text>
-    </md-card-title>
+  <div class="md-headline">
+    {{ticket.name}}
+  </div>
+  <div class="md-subhead">
+    Bid Number {{ticket.bidnumber}}
   </div>
   <div layout="row">
     <label>Age Category: </label><span translate="{{ticket.agegroup}}"></span>
