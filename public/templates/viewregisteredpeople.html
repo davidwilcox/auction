@@ -13,6 +13,7 @@
       <md-select
 	 ng-model="searchTerms.agegroup"
 	 >
+        <md-option value="">No Filter</md-option>
 	<md-option value="ADULT_TICKET">Adult</md-option>
 	<md-option value="HIGHSCHOOL_TICKET">High School Class</md-option>
 	<md-option value="JUNIORHIGH_TICKET">Junior High Class</md-option>
@@ -24,6 +25,7 @@
       <md-select
 	 ng-model="searchTerms.dietaryrestrictions"
 	 >
+        <md-option value="">No Filter</md-option>
 	<md-option value="NONE_FOOD">No food restrictions</md-option>
 	<md-option value="VEGETARIAN_FOOD">Vegetarian</md-option>
 	<md-option value="GLUTENFREE_FOOD">Gluten-free</md-option>
@@ -34,6 +36,7 @@
       <md-select
 	 ng-model="sortval"
 	 >
+        <md-option value="">No Filter</md-option>
 	<md-option value="date">Date Purchased</md-option>
 	<md-option value="bidnum">Bid Number</md-option>
 	<md-option value="agecategory">Age Category</md-option>
@@ -41,10 +44,10 @@
       </md-select>
     </md-input-container>
     <div>
-      <md-button class="md-primary md-raised" ng-click="performSearch()">Go!</md-button>
+      <md-button class="md-primary md-raised" ng-click="performSearch()">Search/Sort</md-button>
     </div>
   </div>
-  <div ng-repeat="ticket in tickets">
+  <div ng-repeat="ticket in tickets track by $index">
     <viewperson person="ticket"></viewperson>
   </div>
 </div>

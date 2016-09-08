@@ -114,10 +114,9 @@ app.factory('items', ['$http', '$q', function($http, $q) {
 		}
 	    });
 	    var cmp;
-            console.log(sortval);
-	    if ( !sortval || sortval == 'date' ) {
+            if ( !sortval || sortval == 'date' ) {
 		cmp = function(item1, item2) {
-		    return new Date(item2.date).getDate() - new Date(item1.date).getDate()
+		    return new Date(item1.date) - new Date(item2.date)
 		};
 	    } else if ( sortval == 'itemnumber' ) {
 		cmp = function(item1, item2) {
@@ -135,13 +134,13 @@ app.factory('items', ['$http', '$q', function($http, $q) {
 		}
 	    }
 	    items.sort(cmp);
-            console.log(items);
 
 
 	    var tickets_arr_cmp;
+            console.log(sortval);
 	    if ( !sortval || sortval == 'date' ) {
 		cmp = function(ticket1, ticket2) {
-		    return new Date(ticket2.date).getDate() - new Date(ticket2.date).getDate();
+                    return new Date(ticket2.date) - new Date(ticket1.date);
 		};
 	    } else if ( sortval == 'bidnum' ) {
 		cmp = function(ticket1, ticket2) {
@@ -149,11 +148,11 @@ app.factory('items', ['$http', '$q', function($http, $q) {
 		};
 	    } else if ( sortval == 'agecategory' ) {
 		cmp = function(ticket1, ticket2) {
-		    return ticket1.agegroup - ticket2.agegroup;
+                    return ticket1.agegroup.localeCompare(ticket2.agegroup);
 		};
 	    } else if ( sortval == 'food_restriction' ) {
 		cmp = function(ticket1, ticket2) {
-		    return ticket1.dietaryrestrictions - ticket2.dietaryrestrictions;
+		    return ticket1.foodRes.localeCompare(ticket2.foodRes);
 		};
 	    }
 	    tickets_arr.sort(cmp);
@@ -589,7 +588,7 @@ app.controller('ViewRegisteredPeopleCtrl', [
 
 	$scope.performSearch = function() {
 	    items.performSearch($scope.searchTerms, $scope.sortval).then(function(data) {
-		$scope.tickets = data.tickets;
+		$scope.tickets = data.tickets_arr;
 		$scope.items = data.items;
 		$scope.transactions_by_bidnum = data.transactions_by_bidnum;
 	    });
