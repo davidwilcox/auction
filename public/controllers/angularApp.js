@@ -130,14 +130,20 @@ app.factory('items', ['$http', '$q', function($http, $q) {
 		};
 	    } else {
 		cmp = function(item1, item2) {
-		    return item1.type - item2.type;
+                    console.log(item1);
+                    if ( !item1.type && !item2.type )
+                        return 0;
+                    if ( !item1.type )
+                        return -1;
+                    if ( !item2.type )
+                        return 1;
+		    return item1.type.localeCompare(item2.type);
 		}
 	    }
 	    items.sort(cmp);
 
 
 	    var tickets_arr_cmp;
-            console.log(sortval);
 	    if ( !sortval || sortval == 'date' ) {
 		cmp = function(ticket1, ticket2) {
                     return new Date(ticket2.date) - new Date(ticket1.date);

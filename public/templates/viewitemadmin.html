@@ -1,6 +1,6 @@
 <md-card layout-padding class="viewitem-nomargin">
   <div layout="row">
-    <md-card flex layout-padding >
+    <div layout-padding flex>
       <div layout="row" ng-show="isAdmin()">
 	<md-input-container>
 	  <label>Item Number</label>
@@ -23,24 +23,20 @@
 	  </md-select>
 	</md-input-container>
       </div>
-      <md-card-title>
-	<md-card-title-text>
 
-	  <span class="md-headline">
+      <span class="md-headline">
 
-	    <md-input-container>
-	      <label>Item Name</label>
-	      <textarea
-		 type="text"
-		 ng-model="item.name"
-		 md-maxlength="50"
-		 ng-blur="saveitem(item)"
-		 >
-	      </textarea>
-	  </md-input-container>
-	  </span>
-	</md-card-title-text>
-      </md-card-title>
+	<md-input-container>
+	  <label>Item Name</label>
+	  <textarea
+	     type="text"
+	     ng-model="item.name"
+	     md-maxlength="50"
+	     ng-blur="saveitem(item)"
+	     >
+	  </textarea>
+	</md-input-container>
+      </span>
 
       <div layout="row">
 	<md-input-container>
@@ -116,74 +112,66 @@
 	  <md-button class="md-primary md-raised" ng-click="deleteitem(item)">Delete Item</md-button>
 	</div>
       </div>
-    </md-card>
-    <md-card flex="33" layout-pading>
-      <md-card-title>
-	<md-card-title-text>
-	  <span class="md-headline">
+    </div>
+    <div flex="40" layout-pading>
+      <div layout="row">
+        <div>
+          <span class="md-headline">
             <md-input-container>
               <label>Donor Name</label>
               <input
-		 ng-model="item.donor.name"
-		 type="text"
-		 size="40"
-		 ng-blur="saveitem(item)"
-		 >
+	         ng-model="item.donor.name"
+	         type="text"
+	         size="40"
+	         ng-blur="saveitem(item)"
+	         >
             </md-input-container>
-	  </span>
-	  <span class="md-subhead">
-            <div layout="row">
-              <md-input-container>
-		<label>Donor Email</label>
-		<input
-		   ng-model="item.donor.email"
-		   type="text"
-		   size="60"
-		   ng-blur="saveitem(item)"
-		   >
-              </md-input-container>
-	    </div>
-	    <div>
-              <md-input-container>
-		<label>Donor Phone Number</label>
-		<input
-		   type="text"
-		   ng-model="item.donor.phonenumber"
-		   phone-input
-		   ng-blur="saveitem(item)"
-		   >
-              </md-input-container>
-            </div>
-            <div>
-              {{item.date | date:'medium'}}
-            </div>
-	  </span>
-	</md-card-title-text>
-	<md-card-title-media>
-	  <div class="md-media-lg card-media">
-	    <img ng-src="http://svuus-photos.s3.amazonaws.com/{{item.donor.photoid}}"  >
-	  </div>
-	</md-card-title-media>
-      </md-card-title>
-      <md-card layout-padding>
-	<md-card-title>
-	  <md-card-title-text>
-	    <span class="md-headline">
-	      Buyers
-	    </span>
-	  </md-card-title-text>
-	</md-card-title>
-	<div ng-repeat="transaction in transactions_by_item[item.id]" layout="row">
+          </span>
+          <div layout="row">
+            <md-input-container>
+	      <label>Donor Email</label>
+	      <input
+	         ng-model="item.donor.email"
+	         type="text"
+	         size="60"
+	         ng-blur="saveitem(item)"
+	         >
+            </md-input-container>
+          </div>
+          <div>
+            <md-input-container>
+	      <label>Donor Phone Number</label>
+	      <input
+	         type="text"
+	         ng-model="item.donor.phonenumber"
+	         phone-input
+	         ng-blur="saveitem(item)"
+	         >
+            </md-input-container>
+          </div>
+          <div>
+            {{item.date | date:'medium'}}
+          </div>
+        </div>
+        <div flex="100">
+	  <img ng-src="http://svuus-photos.s3.amazonaws.com/{{item.donor.photoid}}"  >
+        </div>
+      </div>
+      <div>
+        <span class="md-headline">
+	  Buyers
+        </span>
+        <div ng-repeat="transaction in transactions_by_item[item.id]" layout="row">
 	  <div >{{transaction.bidnumber}} {{tickets[transaction.bidnumber].name}} <a href="mailto:{{tickets[transaction.bidnumber].buyer.email}}">{{tickets[transaction.bidnumber].buyer.email}}</a> {{tickets[transaction.bidnumber].buyer.phonenumber | tel}} {{transaction.sellprice | currency}}</div>
 	  <md-button class="md-icon-button" ng-click="removeBidderFromItem($event, item, transaction)" >
 	    <md-icon>clear</md-icon>
 	  </md-button>
-	</div>
-	<div>
+        </div>
+        <div>
 	  <md-button class="md-primary md-raised" href="mailto:{{item.concated_emails}}">Email Buyers</md-button>
-	</div>
-      </md-card>
+        </div>
+      </div>
+    </div>
 
-    </md-card>
   </div>
 </md-card>
