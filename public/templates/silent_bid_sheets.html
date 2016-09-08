@@ -25,7 +25,7 @@
           <div>
           </div>
           <span style='float:right'>
-	    <div class='silent-bid-sheet-image-container' layout-align="middle end">
+	    <div class='silent-bid-sheet-image-container' style="background-color:#CCCCCC;">
               <img ng-src="http://svuus-photos.s3.amazonaws.com/{{var[0].donor.photoid}}" ></img>
 	    </div>
             <p>
@@ -36,8 +36,7 @@
         <div layout-padding>
           {{var[1].description}}
           <div class='row' layout-padding>
-            <span style='float:left'><font size="5">Item Value:${{var[1].value}}</font></span>
-            <span style='float:right'>Min Bid:${{var[1].minvalue}}</span>
+            <span style='float:left'><font size="5">Item Value:{{var[1].value | currency}}</font></span>
           </div>
         </div>
         <table border="1" width='100%'>
@@ -47,7 +46,12 @@
             <td><label>Bid Amount</label>
               <br><font size='2'>Please bid in at least $1 increments</font></td>
           </tr>
-          <tr ng-repeat="i in [1,2,3,4,5,6,7,8,9,10,11]" height='40'>
+          <tr height="36">
+            <td></td>
+            <td></td>
+            <td>{{var[1].minvalue | currency}}</td>
+          </tr>
+          <tr ng-repeat="i in [1,2,3,4,5,6,7,8,9,10,11]" height="36">
             <td></td>
             <td></td>
             <td></td>
@@ -72,13 +76,11 @@
         <div class='row'>
 
           <div style='float:right'>
-	    <div class="silent-bid-sheet-image-container" layout-align="end end" style="background-color:red;">
+	    <div class="silent-bid-sheet-image-container" layout-align="end end"  style="background-color:#CCCCCC;">
               <div layout="column" flex="1">
                 <div flex />
               </div>
-              <div >
-                <img ng-src="http://svuus-photos.s3.amazonaws.com/{{var[1].donor.photoid}}" style="background-color:green;">
-              </div>
+              <img ng-src="http://svuus-photos.s3.amazonaws.com/{{var[1].donor.photoid}}">
 	    </div>
             <p>
               <b>Donated By {{var[1].donor.name}}</b>
@@ -88,8 +90,7 @@
         <div layout-padding>
           {{var[1].description}}
           <div class='row' layout-padding>
-            <span style='float:left'><font size="5">Item Value:${{var[1].value}}</font></span>
-            <span style='float:right'>Min Bid:${{var[1].minvalue}}</span>
+            <span style='float:left'><font size="5">Item Value:{{var[1].value | currency}}</font></span>
           </div>
         </div>
 
@@ -100,7 +101,12 @@
             <td><label>Bid Amount</label>
               <br><font size='2'>Please bid in at least $1 increments</font></td>
           </tr>
-          <tr ng-repeat="i in [1,2,3,4,5,6,7,8,9,10,11]" height='40'>
+          <tr  height="36">
+            <td></td>
+            <td></td>
+            <td>{{var[1].minvalue | currency}}</td>
+          </tr>
+          <tr ng-repeat="i in [1,2,3,4,5,6,7,8,9,10,11]" height="36">
             <td></td>
             <td></td>
             <td></td>
