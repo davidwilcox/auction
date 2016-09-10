@@ -140,12 +140,13 @@
           <span class="md-headline">
             <md-input-container>
               <label>Donor Name</label>
-              <input
+              <textarea
 	         ng-model="item.donor.name"
 	         type="text"
-	         size="40"
+	         cols="40"
 	         ng-blur="saveitem(item)"
 	         >
+              </textarea>
             </md-input-container>
           </span>
           <div layout="row">
