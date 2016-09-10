@@ -46,6 +46,7 @@
     <div>
       <md-button class="md-primary md-raised" ng-click="performSearch()">Search/Sort</md-button>
     </div>
+    <div ng-show="tickets"><h3>{{tickets.length}} People</h3></div>
   </div>
   <div ng-repeat="ticket in tickets track by $index">
     <viewperson person="ticket"></viewperson>
