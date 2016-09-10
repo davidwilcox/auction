@@ -33,7 +33,9 @@
     </md-card>
   </div>
   <h1>
-    <label>Total</label>
-    {{totalInvoice | currency}}
+    <div ng-show="totalInvoice">
+      <label>Total</label>
+      {{totalInvoice | currency}}
+    </div>
   </h1>
 </div>

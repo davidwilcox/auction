@@ -1,9 +1,11 @@
 <div ng-repeat='item in items'>
   <div class="page-break-avoid">
     <div layout="row">
-      <div style="background-color:#CCCCCC;"><h2>{{item.number}}</h2></div>
+      <div style="min-width:30px;">
+        <div style="background-color:#CCCCCC;"><h3>{{item.number}}</h3></div>
+      </div>
       <div>
-        <h2>&nbsp;{{item.name}} ({{item.eventdate ? (item.eventdate | date) : item.eventtypedtime}})</h2>
+        <h3>{{item.name}} ({{item.eventtypedtime ? item.eventtypedtime : item.eventdate | date}})</h3>
       </div>
     </div>
     <div layout="row" >
