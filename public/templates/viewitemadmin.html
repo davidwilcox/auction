@@ -104,6 +104,27 @@
 	  </md-select>
 	</md-input-container>
       </div>
+      <div layout="row" ng-show="item.category == 'event'">
+        <div>
+          <md-datepicker
+             ng-model="item.eventdate"
+             md-placeholder="Event Date"
+             aria-label="Date Picker"
+	     md-min-date="eventMinDate"
+	     md-max-date="eventMaxDate"
+             >
+          </md-datepicker>
+        </div>
+        <div>
+          <md-input-container>
+            <label>Time Notes</label>
+            <input
+               type="text"
+               ng-model="item.eventtypedtime"
+               >
+          </md-input-container>
+	</div>
+      </div>
       <div>
 	<font color="red">{{item.message}}</font>
       </div>

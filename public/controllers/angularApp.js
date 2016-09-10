@@ -100,6 +100,7 @@ app.factory('items', ['$http', '$q', function($http, $q) {
 	    };
 
 	    data_items.forEach(function(item) {
+                item.eventdate = new Date(item.eventdate);
 		if ( (!searchterms.email || item.email == searchterms.email)
 		     && searchItemType(item.type, searchterms.searchitemtype)
 		     && (!searchterms.searchdonorname || item.donor.name.includes(searchterms.searchdonorname) ) ) {
@@ -162,6 +163,8 @@ app.factory('items', ['$http', '$q', function($http, $q) {
 		};
 	    }
 	    tickets_arr.sort(cmp);
+
+            console.log("resolving");
 
 	    deferred.resolve({
 		items: items,
