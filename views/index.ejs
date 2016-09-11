@@ -44,15 +44,20 @@
 	    Buy Tickets
 	  </md-button>
         </a>
-        <a ui-sref-active="active" ui-sref="donateitem" ng-show="ctrl.isLoggedIn()">
+        <a ui-sref-active="active" ui-sref="donateitem" ng-if="ctrl.isLoggedIn()">
 	  <md-button class="md-primary md-raised">Donate Item</md-button>
         </a>
-        <a ui-sref-active="active" ui-sref="myauction" ng-show="ctrl.isLoggedIn()" md-mode="right">
+        <a ui-sref-active="active" ui-sref="myauction" ng-if="ctrl.isLoggedIn()" md-mode="right">
 	  <md-button class="md-primary md-raised">MyAuction</md-button>
         </a>
-	<a ui-sref-active="active" ui-sref="admin" ng-show="ctrl.isAdmin()">
+	<a ui-sref-active="active" ui-sref="admin" ng-if="ctrl.isAdmin()">
 	  <md-button class="md-primary md-raised">Admin Home</md-button>
 	</a>
+        <a ui-sref-active="active" ui-sref="viewdonateditems" ng-if="ctrl.isLoggedIn()">
+          <md-button class="md-primary md-raised">
+            Preview Donations
+          </md-button>
+        </a>
         <a ui-sref-active="active" ng-click="ctrl.logOut()" ng-show="ctrl.isLoggedIn()">
           <md-button class="md-primary md-raised">Log Out</md-button>
         </a>

@@ -67,7 +67,7 @@ app.factory('items', ['$http', '$q', function($http, $q) {
 		all_tickets[ticket.bidnumber] = ticket;
 		if ( searchterms.buyeremail
 		     && searchterms.buyeremail != ticket.login
-		     || ( searchterms.searchbuyername && !ticket.name.includes(searchterms.searchbuyername) )
+		     || ( searchterms.searchbuyername && !ticket.name.includes.toLowerCase()(searchterms.searchbuyername.toLowerCase()) )
 		     || (searchterms.agegroup && ticket.agegroup != searchterms.agegroup )
 		     || (searchterms.dietaryrestrictions && ticket.foodRes != searchterms.dietaryrestrictions) ) {
 		    return;
@@ -103,7 +103,7 @@ app.factory('items', ['$http', '$q', function($http, $q) {
                 item.eventdate = new Date(item.eventdate);
 		if ( (!searchterms.email || item.email == searchterms.email)
 		     && searchItemType(item.type, searchterms.searchitemtype)
-		     && (!searchterms.searchdonorname || item.donor.name.includes(searchterms.searchdonorname) ) ) {
+		     && (!searchterms.searchdonorname || item.donor.name.toLowerCase().includes(searchterms.searchdonorname.toLowerCase()) ) ) {
 		    items.push(item);
 		    if ( transactions_by_item[item.id] ) {
 			item.buyer_emails = transactions_by_item[item.id].map(
@@ -138,7 +138,7 @@ app.factory('items', ['$http', '$q', function($http, $q) {
                         return -1;
                     if ( !item2.type )
                         return 1;
-		    return item1.type.localeCompare(item2.type);
+		    return item1.type.toLowerCase().localeCompare(item2.type.toLowerCase());
 		}
 	    }
 	    items.sort(cmp);

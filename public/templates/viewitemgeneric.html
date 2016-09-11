@@ -1,24 +1,42 @@
 <md-card layout-padding class="viewitem-nomargin">
   <div layout="row">
-    <md-card flex layout-padding>
-      <md-card-title>
-	<md-card-title-text>
+    <div layout-padding flex>
+      <div layout="row" ng-show="isAdmin()">
+	<md-input-container>
+	  <label>Item Number</label>
+	  <input
+	     type="number"
+	     ng-model="item.number"
+             readonly
+	     />
+	</md-input-container>
+	<md-input-container>
+	  <label>Item Type</label>
+	  <md-select
+	     ng-model="item.type"
+             readonly
+	     >
+	    <md-option value="live">Live</md-option>
+	    <md-option value="silent">Silent</md-option>
+	    <md-option value="fixed">Fixed</md-option>
+	    <md-option value="raffle">Raffle</md-option>
+	  </md-select>
+	</md-input-container>
+      </div>
 
-	  <span class="md-headline">
+      <span class="md-headline">
 
-	    <md-input-container>
-	      <label>Item Name</label>
-	      <textarea
-		 type="text"
-		 ng-model="item.name"
-		 size="50"
-		 readonly
-		 >
-	      </textarea>
-	  </md-input-container>
-	  </span>
-	</md-card-title-text>
-      </md-card-title>
+	<md-input-container>
+	  <label>Item Name</label>
+	  <textarea
+	     type="text"
+	     ng-model="item.name"
+	     md-maxlength="50"
+             readonly
+	     >
+	  </textarea>
+	</md-input-container>
+      </span>
 
       <div layout="row">
 	<md-input-container>
@@ -27,7 +45,7 @@
              ng-model="item.description"
 	     cols="70"
 	     md-maxlength="500"
-	     readonly
+             readonly
              >
 	  </textarea>
 	</md-input-container>
@@ -39,8 +57,8 @@
 	  <input
              type="text"
              ng-model="item.minvalue"
-	     format="currency"
-	     readonly
+	     format="currency-no-change"
+             readonly
              >
 	</md-input-container>
 	<md-input-container>
@@ -48,8 +66,8 @@
 	  <input
              type="text"
              ng-model="item.value"
-	     format="currency"
-	     readonly
+	     format="currency-no-change"
+             readonly
              >
 	</md-input-container>
       </div>
@@ -58,8 +76,9 @@
 	<md-input-container>
 	  <label>Item Category</label>
 	  <md-select
-	     readonly
-	     ng-model="item.category">
+	     ng-model="item.category"
+             readonly
+             >
 	    <md-option value="event">Event</md-option>
             <md-option value="object">Object or service</md-option>
 	  </md-select>
@@ -68,89 +87,73 @@
 	  <label>Item Quantity</label>
 	  <input
              type="text"
-	     readonly
              ng-model="item.quantity"
+             readonly
              >
 	</md-input-container>
       </div>
       <div layout="row" ng-show="item.policy">
 
-	<span translate="{{item.policy}}">
+	<md-input-container style="width:100%">
+	  <label>Event Policy</label>
+	  <md-select
+	     ng-model="item.policy"
+	      class="dropdown"
+             readonly
+             >
+            <div ng-repeat="policy in policies">
+	      <md-option value="{{policy}}">&nbsp;<span translate="{{policy}}"></span></md-option>
+            </div>
+	  </md-select>
+	</md-input-container>
       </div>
-      <div>
-	<font color="red">{{item.message}}</font>
+      <div layout="row" ng-show="item.category == 'event'">
+        <div>
+          <md-datepicker
+             ng-model="item.eventdate"
+             md-placeholder="Event Date"
+             aria-label="Date Picker"
+	     md-min-date="eventMinDate"
+	     md-max-date="eventMaxDate"
+             readonly
+             >
+          </md-datepicker>
+        </div>
+        <div>
+          <md-input-container>
+            <label>Time Notes</label>
+            <input
+               type="text"
+               ng-model="item.eventtypedtime"
+               readonly
+               >
+          </md-input-container>
+	</div>
       </div>
-    </md-card>
-    <md-card flex layout-pading>
-      <md-card-title>
-	<md-card-title-text>
-	  <span class="md-headline">
+    </div>
+    <div flex="40" layout-pading>
+      <div layout="row">
+        <div>
+          <span class="md-headline">
             <md-input-container>
               <label>Donor Name</label>
-              <input
-		 ng-model="item.donor.name"
-		 type="text"
-		 size="40"
-		 readonly
-		 >
+              <textarea
+	         ng-model="item.donor.name"
+	         type="text"
+	         cols="40"
+	         >
+              </textarea>
             </md-input-container>
-	  </span>
-	  <span class="md-subhead">
-            <div layout="row">
-              <md-input-container>
-		<label>Donor Email</label>
-		<input
-		   ng-model="item.donor.email"
-		   type="text"
-		   size="60"
-		   readonly
-		   >
-              </md-input-container>
-	    </div>
-	    <div>
-              <md-input-container>
-		<label>Donor Phone Number</label>
-		<input
-		   type="text"
-		   ng-model="item.donor.phonenumber"
-		   phone-input
-		   readonly
-		   >
-              </md-input-container>
-            </div>
-	  </span>
-	</md-card-title-text>
-	<md-card-title-media>
-	  <div class="md-media-lg card-media">
-	    <img ng-src="http://svuus-photos.s3.amazonaws.com/{{item.donor.photoid}}"  >
-	  </div>
-	</md-card-title-media>
-      </md-card-title>
-      <md-card layout-padding>
-	<md-card-title>
-	  <md-card-title-text>
-	    <span class="md-headline">
-	      Buyers
-	    </span>
-	  </md-card-title-text>
-	</md-card-title>
-	<div ng-repeat="transaction in transactions_by_item[item.id]">
-	  <div layout="row">
-	    <div >
-              <span ng-show="tickets[transaction.bidnumber].buyer.photoid">
-                <a ng-href="http://svuus-photos.s3.amazonaws.com/{{tickets[transaction.bidnumber].buyer.photoid}}">{{transaction.bidnumber}}</a>
-              </span>
-              <span ng-hide="tickets[transaction.bidnumber].buyer.photoid">
-                {{transaction.bidnumber}}
-              </span>
-              {{tickets[transaction.bidnumber].name}} <a href="mailto:{{tickets[transaction.bidnumber].buyer.email}}">{{tickets[transaction.bidnumber].buyer.email}}</a> {{tickets[transaction.bidnumber].buyer.phonenumber | tel}} {{transaction.sellprice | currency}}</div>
-	  </div>
-	</div>
-	<div>
-	  <md-button class="md-primary md-raised" href="mailto:{{item.concated_emails}}">Email Buyers</md-button>
-	</div>
-      </md-card>
+          </span>
+          <div>
+            <md-button class="md-primary md-raised" ng-href="mailto:{{item.donor.email}}">Email Donor</md-button>
+          </div>
+        </div>
+        <div flex="100">
+	  <img ng-src="http://svuus-photos.s3.amazonaws.com/{{item.donor.photoid}}"  >
+        </div>
+      </div>
+    </div>
 
-    </md-card>
   </div>
 </md-card>
