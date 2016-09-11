@@ -975,6 +975,10 @@ app.controller( 'FixedPriceBidSheetCtrl',[
     '$scope',
     'items',
     function($scope, items) {
+        $scope.range = function(num) {
+            return new Array(num);
+        };
+
 	items.performSearch({searchitemtype: "fixed"}).then(function(data) {
 	    $scope.tickets = data.tickets;
 	    $scope.items = data.items;

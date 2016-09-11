@@ -1,37 +1,47 @@
 <div ng-repeat="item in items">
-  <div>
-    <h2>
-      {{item.name}}
-    </h2>
+  <div layout="row">
+    <div flex>
+      <h2>
+        {{item.name}}
+      </h2>
+    </div>
+    <div>
+      Fixed
+    </div>
+    &nbsp;&nbsp;
+    <div>
+      {{item.number}}
+    </div>
   </div>
   <div layout="row">
     <div flex>
       {{item.description}}
     </div>
     <div class="live-catalog-image-container">
-      <img ng-src="http://svuus-photos.s3.amazonaws.com/{{item.donor.photoid}}" > 
+      <img ng-src="http://svuus-photos.s3.amazonaws.com/{{item.donor.photoid}}" >
     </div>
   </div>
-  <div>
+  <div layout="row">
+    <div flex></div>
     <b>Donated by {{item.donor.name}}</b>
   </div>
   <div layout="row">
     <div flex>
-      <table border="1" width='100%'>
+      <table border="1" width='99%'>
 	<tr>
-          <td width='70%'><label>Name:</label></td>
+          <td width='70%'><label>Name (Just sign up—no bidding):</label></td>
           <td><label>Bidder ID#</label></td>
 	  <td></td>
 	</tr>
-	<tr ng-repeat="i in [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17]" height='40'>
+	<tr ng-repeat="i in range(item.quantity) track by $index" height='36' class="page-break-avoid">
           <td></td>
           <td></td>
           <td>{{item.value | currency}}</td>
 	</tr>
       </table>
     </div>
-    <div flex="13" layout-padding>
-      <span translate="{{item.policy}}"></span>
+    <div flex="15" layout-padding style="background-color:#CCCCCC">
+      <span flex="100" translate="{{item.policy}}"></span>
     </div>
   </div>
   <div class="page-break"></div>

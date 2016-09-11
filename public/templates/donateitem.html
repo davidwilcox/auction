@@ -29,7 +29,9 @@
     <md-card layout-padding>
       <b>Who’s Donating This Item?</b>
 
-Enter the name (or names!) of the person or group donating this item (you can change it from the autofilled name):
+      <div>
+        Enter the name (or names!) of the person or group donating this item (you can change it from the autofilled name):
+      </div>
       <md-input-container>
 	<label>Donor Name</label>
 	<input
@@ -231,22 +233,36 @@ Enter the name (or names!) of the person or group donating this item (you can ch
 	</div>
       </div>
 
+      <!--
+      <div>
+        Extra Pricing Notes (Not required)
+        <md-input-container>
+          <label></label>
+        </md-input-container>
+      </div>
+      -->
+
       <br>
       <div ng-if="item.category == 'event'">
-	Choose one of these policies for kids.
-        <md-radio-group ng-model="item.policy" required>
-	   <div ng-repeat="policy in policies">
-	     <md-radio-button
-	        name="policy"
-	        value="{{policy}}"
-                aria-label="Decision"
-	        >&nbsp;<span translate="{{policy}}"></span>
-             </md-radio-button>
-	   </div>
-	   <div ng-messages="donateItemForm.itempolicy.$error">
-	     <div ng-messages-include="/messages.html"></div>
-	   </div>
-        </md-radio-group>
+        <div>
+	  Choose one of these policies for kids.
+        </div>
+        <br>
+        <div>
+          <md-radio-group ng-model="item.policy" required>
+	    <div ng-repeat="policy in policies">
+	      <md-radio-button
+	         name="policy"
+	         value="{{policy}}"
+                 aria-label="Decision"
+	         >&nbsp;<span translate="{{policy}}"></span>
+              </md-radio-button>
+	    </div>
+	    <div ng-messages="donateItemForm.itempolicy.$error">
+	      <div ng-messages-include="/messages.html"></div>
+	    </div>
+          </md-radio-group>
+        </div>
       </div>
       <div ng-if="item.category == 'object'">
         If your donated item does not sell, it will be donated to a charitable organization. If you prefer to keep it if it does not sell, you are responsible for taking it at the end of the auction. If you will not be attending the auction, please ask a friend to retrieve it for you.
