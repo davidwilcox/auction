@@ -695,7 +695,10 @@ app.controller("MyInvoiceCtrl", [
 	    for(var key in $scope.tickets) {
 		if ( $scope.tickets.hasOwnProperty(key) ) {
 		    $scope.transactions_by_bidnum[key].forEach(function(transaction) {
-			$scope.totalInvoice += Number(transaction.sellprice);
+			if ( typeof(transaction.sellprice) == "string" ) {
+			    $scope.totalInvoice += Number(transaction.sellprice.substring(1));
+			}
+			    $scope.totalInvoice += Number(transaction.sellprice);
 		    });
 		}
 	    }
