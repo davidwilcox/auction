@@ -75,6 +75,18 @@ table {
     display:table-column;
 }
 
+.modify-items-virtual-repeat {
+    height: calc(100vh - 150px);
+    overflow-y: auto;
+
+    > md-virtual-repeat-container {
+        @media (width: $layout-breakpoint-sm) {
+            width: 100%
+        }
+        height: calc(100vh - 100px);
+    }
+}
+
 @media print {
     .page-break {page-break-after: always;}
 }

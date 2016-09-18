@@ -58,6 +58,7 @@ app.factory('items', ['$http', '$q', function($http, $q) {
 	promises.push($http.get('/all/transactions' ));
 	var deferred = $q.defer();
 	$q.all(promises).then(function(data) {
+            console.log("calls done");
 	    var items = [];
 	    var tickets_items = data[1].data;
 	    var tickets = {};
@@ -495,10 +496,12 @@ app.controller('ViewPersonCtrl', ['$scope',
     }]);
 
 
-app.controller('AdminHomeCtrl', ['auth', '$scope',
-				 function(auth, $scope) {
-		       $scope.isAdmin = auth.isAdmin;
-		   }]);
+app.controller(
+    'AdminHomeCtrl',
+    ['auth', '$scope',
+     function(auth, $scope) {
+	 $scope.isAdmin = auth.isAdmin;
+     }]);
 
 app.controller(
     'AddAdminCtrl',
