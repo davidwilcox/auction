@@ -153,7 +153,30 @@
 	  <img ng-src="http://svuus-photos.s3.amazonaws.com/{{::item.donor.photoid}}"  >
         </div>
       </div>
+      <md-card layout-padding>
+	<md-card-title>
+          <md-card-title-text>
+            <span class="md-headline">
+	      Buyers
+	    </span>
+          </md-card-title-text>
+	</md-card-title>
+	<div ng-repeat="transaction in transactions_by_item[item.id]">
+          <div layout="row">
+            <div >
+	      <span ng-show="tickets[transaction.bidnumber].buyer.photoid">
+		<a ng-href="http://svuus-photos.s3.amazonaws.com/{{tickets[transaction.bidnumber].buyer.photoid}}">{{transaction.bidnumber}}</a>
+	      </span>
+	      <span ng-hide="tickets[transaction.bidnumber].buyer.photoid">
+		{{transaction.bidnumber}}
+	      </span>
+	      {{tickets[transaction.bidnumber].name}} <a href="mailto:{{tickets[transaction.bidnumber].buyer.email}}">{{tickets[transaction.bidnumber].buyer.email}}</a> {{tickets[transaction.bidnumber].buyer.phonenumber | tel}} {{transaction.sellprice | currency}}</div>
+          </div>
+	</div>
+	<div>
+          <md-button class="md-primary md-raised" href="mailto:{{item.concated_emails}}">Email Buyers</md-button>
+	</div>
+      </md-card>
     </div>
-
   </div>
 </md-card>
