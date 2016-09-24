@@ -8,6 +8,7 @@ var app = require('../app');
 var debug = require('debug')('auction:server');
 var http = require('http');
 
+
 /**
  * Get port from environment and store in Express.
  */
@@ -21,13 +22,30 @@ app.set('port', port);
 
 var server = http.createServer(app);
 
+if ( process.env.SSL_PORT ) {
+    var fs = require('fs');
+    var https = require('https');
+    var privateKey = fs.readFileSync('/etc/letsencrypt/live/auction.svuus.org/privkey.pem');
+    var certificate = fs.readFileSync('/etc/letsencrypt/live/auction.svuus.org/cert.pem');
+    var credentials = {key: privateKey, cert: certificate};
+    var httpsPort = normalizePort(process.env.SSL_PORT);
+    var httpsServer = https.createServer(credentials,app);
+
+console.log(httpsPort);
+    httpsServer.listen(httpsPort);
+    httpsServer.on('error', onError);
+    httpsServer.on('listening', onListening);
+}
+else {
+    server.on('error', onError);
+    server.on('listening', onListening);
+}
+
 /**
  * Listen on provided port, on all network interfaces.
  */
 
 server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
 
 /**
  * Normalize a port into a number, string, or false.

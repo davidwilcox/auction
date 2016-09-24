@@ -87,6 +87,10 @@ table {
     }
 }
 
+.parent-time-button {
+    font-size: large;
+}
+
 @media print {
     .page-break {page-break-after: always;}
 }
@@ -103,5 +107,8 @@ table {
 {
     .page-break-avoid {
 	page-break-inside: avoid;
+    }
+    .page-break-avoid-after {
+        page-break-after: avoid;
     }
 }
