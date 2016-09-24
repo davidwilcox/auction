@@ -6,14 +6,14 @@
 	  <label>Item Number</label>
 	  <input
 	     type="number"
-	     ng-model="item.number"
+	     ng-model="::item.number"
              readonly
 	     />
 	</md-input-container>
 	<md-input-container>
 	  <label>Item Type</label>
 	  <md-select
-	     ng-model="item.type"
+	     ng-model="::item.type"
              readonly
 	     >
 	    <md-option value="live">Live</md-option>
@@ -30,7 +30,7 @@
 	  <label>Item Name</label>
 	  <textarea
 	     type="text"
-	     ng-model="item.name"
+	     ng-model="::item.name"
 	     md-maxlength="50"
              readonly
 	     >
@@ -42,7 +42,7 @@
 	<md-input-container>
 	  <label>Item Description</label>
 	  <textarea
-             ng-model="item.description"
+             ng-model="::item.description"
 	     cols="70"
 	     md-maxlength="500"
              readonly
@@ -56,7 +56,7 @@
 	  <label>Item Starting Bid (USD)</label>
 	  <input
              type="text"
-             ng-model="item.minvalue"
+             ng-model="::item.minvalue"
 	     format="currency-no-change"
              readonly
              >
@@ -65,7 +65,7 @@
 	  <label>Item Value (USD)</label>
 	  <input
              type="text"
-             ng-model="item.value"
+             ng-model="::item.value"
 	     format="currency-no-change"
              readonly
              >
@@ -76,7 +76,7 @@
 	<md-input-container>
 	  <label>Item Category</label>
 	  <md-select
-	     ng-model="item.category"
+	     ng-model="::item.category"
              readonly
              >
 	    <md-option value="event">Event</md-option>
@@ -87,7 +87,7 @@
 	  <label>Item Quantity</label>
 	  <input
              type="text"
-             ng-model="item.quantity"
+             ng-model="::item.quantity"
              readonly
              >
 	</md-input-container>
@@ -97,12 +97,12 @@
 	<md-input-container style="width:100%">
 	  <label>Event Policy</label>
 	  <md-select
-	     ng-model="item.policy"
+	     ng-model="::item.policy"
 	      class="dropdown"
              readonly
              >
             <div ng-repeat="policy in policies">
-	      <md-option value="{{policy}}">&nbsp;<span translate="{{policy}}"></span></md-option>
+	      <md-option value="{{::policy}}">&nbsp;<span translate="{{::policy}}"></span></md-option>
             </div>
 	  </md-select>
 	</md-input-container>
@@ -110,7 +110,7 @@
       <div layout="row" ng-show="item.category == 'event'">
         <div>
           <md-datepicker
-             ng-model="item.eventdate"
+             ng-model="::item.eventdate"
              md-placeholder="Event Date"
              aria-label="Date Picker"
 	     md-min-date="eventMinDate"
@@ -124,7 +124,7 @@
             <label>Time Notes</label>
             <input
                type="text"
-               ng-model="item.eventtypedtime"
+               ng-model="::item.eventtypedtime"
                readonly
                >
           </md-input-container>
@@ -138,7 +138,7 @@
             <md-input-container>
               <label>Donor Name</label>
               <textarea
-	         ng-model="item.donor.name"
+	         ng-model="::item.donor.name"
 	         type="text"
 	         cols="40"
 	         >
@@ -146,11 +146,11 @@
             </md-input-container>
           </span>
           <div>
-            <md-button class="md-primary md-raised" ng-href="mailto:{{item.donor.email}}">Email Donor</md-button>
+            <md-button class="md-primary md-raised" ng-href="mailto:{{::item.donor.email}}">Email Donor</md-button>
           </div>
         </div>
         <div flex="100">
-	  <img ng-src="http://svuus-photos.s3.amazonaws.com/{{item.donor.photoid}}"  >
+	  <img ng-src="http://svuus-photos.s3.amazonaws.com/{{::item.donor.photoid}}"  >
         </div>
       </div>
     </div>
