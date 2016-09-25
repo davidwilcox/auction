@@ -15,21 +15,11 @@
             <div layout="row" flex>
               <font size="2">
                 {{item.description}}
+		<span flex="100" translate="{{::item.policy}}"></span>
+		Quantity: {{item.quantity}}.
+		Min Bid: {{item.minvalue | currency}}.
+		Value: {{item.value | currency}}.
               </font>
-            </div>
-          </div>
-          <div layout="row">
-            <div flex layout="row">
-              <div>
-                Min Bid: {{item.minvalue | currency}}
-              </div>
-              &nbsp;&nbsp;
-              <div>
-                Value: {{item.value | currency}}
-              </div>
-            </div>
-            <div>
-              <b><font size="2">Donated by: {{getFullName(item.donor)}}</font></b>
             </div>
           </div>
         </div>

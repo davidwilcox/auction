@@ -1063,6 +1063,8 @@ app.controller( 'FixedPriceBidSheetCtrl',[
 	    $scope.items.forEach(function(item) {
 		if ( item.eventdate )
 		    item.eventdate = new Date(item.eventdate);
+		if ( typeof item.quantity == "string" )
+		    item.quantity = parseInt(item.quantity);
 	    });
 	    $scope.transactions_by_item = data.transactions_by_item;
 	});
