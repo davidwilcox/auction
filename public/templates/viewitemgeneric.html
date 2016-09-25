@@ -138,9 +138,10 @@
             <md-input-container>
               <label>Donor Name</label>
               <textarea
-	         ng-model="::item.donor.name"
+	         ng-bind="::getFullName(item.donor)"
 	         type="text"
 	         cols="40"
+		 readonly
 	         >
               </textarea>
             </md-input-container>
@@ -170,7 +171,7 @@
 	      <span ng-hide="tickets[transaction.bidnumber].buyer.photoid">
 		{{transaction.bidnumber}}
 	      </span>
-	      {{tickets[transaction.bidnumber].name}} <a href="mailto:{{tickets[transaction.bidnumber].buyer.email}}">{{tickets[transaction.bidnumber].buyer.email}}</a> {{tickets[transaction.bidnumber].buyer.phonenumber | tel}} {{transaction.sellprice | currency}}</div>
+	      {{getFullName(tickets[transaction.bidnumber])}} <a href="mailto:{{tickets[transaction.bidnumber].buyer.email}}">{{tickets[transaction.bidnumber].buyer.email}}</a> {{tickets[transaction.bidnumber].buyer.phonenumber | tel}} {{transaction.sellprice | currency}}</div>
           </div>
 	</div>
 	<div>

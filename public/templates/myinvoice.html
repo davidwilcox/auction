@@ -4,7 +4,7 @@
     <md-card layout-padding>
       <md-card-title>
         <md-card-title-text>
-          <h3>{{ticket.name}}</h3>
+          <h3>{{getFullName(ticket)}}</h3>
         </md-card-title-text>
       </md-card-title>
       <table border="0" style="border:none; border-width:0; border-collapse:collapse;">
@@ -14,7 +14,7 @@
           </td>
           &nbsp;
           <td>
-            {{items_by_itemid[transaction.itemid].donor.name}}
+            {{getFullName(items_by_itemid[transaction.itemid].donor)}}
           </td>
           &nbsp;
           <td>

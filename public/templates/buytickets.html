@@ -22,10 +22,16 @@
             <div id="anchor{{$index}}">
 	      <md-card layout-padding>
 	        <div layout="row" flex>
-                  <div flex>
+                  <div>
 		    <md-input-container>
-		      <label>Name</label>
-		      <input ng-model="ticket.name" size="50">
+		      <label>First Name</label>
+		      <input ng-model="ticket.firstname" size="30" autofocus>
+		    </md-input-container>
+                  </div>
+		  <div flex>
+		    <md-input-container>
+		      <label>Last Name</label>
+		      <input ng-model="ticket.lastname" size="30">
 		    </md-input-container>
                   </div>
 

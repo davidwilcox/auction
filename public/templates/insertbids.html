@@ -31,16 +31,16 @@
       <div layout="row">
 	<div flex>
           <span class="md-headline">
-	    {{item.number}} &nbsp;--&nbsp; {{item.name}}
+	    {{::item.number}} &nbsp;--&nbsp; {{::item.name}}
           </span>
 	  <div layout="row" layout-align="start end">
-	    <font size="2">Donor Name: &nbsp;</font> {{item.donor.name}}
+	    <font size="2">Donor Name: &nbsp;</font> {{getFullName(item.donor)}}
 	  </div>
 	  <div layout="row" layout-align="start end">
-            <font size="2">Type: &nbsp;</font> {{item.type}}
+            <font size="2">Type: &nbsp;</font> {{::item.type}}
 	  </div>
 	  <div layout="row" layout-align="start end">
-	    <font size="2">Quantity: &nbsp;</font> {{item.quantity}}
+	    <font size="2">Quantity: &nbsp;</font> {{::item.quantity}}
 	  </div>
           <br>
 	  <form ng-submit="addbidder">
@@ -54,7 +54,7 @@
 	      </md-input-container>
 	      <div ng-show="item.bidder">
 		<div ng-repeat="biddername in findBidders(item) track by $index">
-		  {{biddername}}
+		  {{::biddername}}
 		</div>
 	      </div>
             </div>
@@ -69,7 +69,7 @@
               </md-input-container>
             </div>
 	    <div>
-	      {{item.message}}
+	      {{::item.message}}
 	    </div>
             <div>
               <md-button
@@ -91,7 +91,7 @@
 	  </md-card-title>
 	  <div ng-repeat="transaction in transactions_by_item[item.id]">
 	    <div layout="row">
-	      <div >{{transaction.bidnumber}} {{tickets[transaction.bidnumber].name}} {{transaction.sellprice | currency}}</div>
+	      <div >{{::transaction.bidnumber}} {{getFullName(tickets[transaction.bidnumber])}} {{::transaction.sellprice | currency}}</div>
 	      <md-button class="md-icon-button" ng-click="removeBidderFromItem($event, item, transaction)" >
 		<md-icon>clear</md-icon>
 	      </md-button>

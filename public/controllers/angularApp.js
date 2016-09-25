@@ -23,6 +23,13 @@ app.config(['$translateProvider', function ($translateProvider) {
     $translateProvider.useSanitizeValueStrategy('sanitize');
 }]);
 
+
+var getFullName = function(person) {
+    if ( person.firstname && person.lastname )
+	return person.firstname + " " + person.lastname;
+    return person.name;
+};
+
 app.factory('charges', ['$http', 'auth', function($http, auth) {
     var o = {
         charge: function(params)  {
@@ -68,7 +75,7 @@ app.factory('items', ['$http', '$q', function($http, $q) {
 		all_tickets[ticket.bidnumber] = ticket;
 		if ( searchterms.buyeremail
 		     && searchterms.buyeremail != ticket.login
-		     || ( searchterms.searchbuyername && !ticket.name.includes.toLowerCase()(searchterms.searchbuyername.toLowerCase()) )
+		     || ( searchterms.searchbuyername && !getFullName(ticket).includes.toLowerCase()(searchterms.searchbuyername.toLowerCase()) )
 		     || (searchterms.agegroup && ticket.agegroup != searchterms.agegroup )
 		     || (searchterms.dietaryrestrictions && ticket.foodRes != searchterms.dietaryrestrictions) ) {
 		    return;
@@ -104,7 +111,7 @@ app.factory('items', ['$http', '$q', function($http, $q) {
                 item.eventdate = new Date(item.eventdate);
 		if ( (!searchterms.email || item.email == searchterms.email)
 		     && searchItemType(item.type, searchterms.searchitemtype)
-		     && (!searchterms.searchdonorname || item.donor.name.toLowerCase().includes(searchterms.searchdonorname.toLowerCase()) ) ) {
+		     && (!searchterms.searchdonorname || getFullName(item.donor).toLowerCase().includes(searchterms.searchdonorname.toLowerCase()) ) ) {
 		    items.push(item);
 		    if ( transactions_by_item[item.id] ) {
 			item.buyer_emails = transactions_by_item[item.id].map(
@@ -485,13 +492,16 @@ app.config([
 	$urlRouterProvider.otherwise('home');
     }]);
 
-app.controller('ViewPersonNoChangeCtrl', ['$scope',
-    function($scope) {
+app.controller('ViewPersonNoChangeCtrl',
+	       ['$scope',
+		function($scope) {
+		    $scope.getFullName = getFullName;
 	$scope.ticket.date = new Date($scope.ticket.date);
     }]);
 
 app.controller('ViewPersonCtrl', ['$scope',
-    function($scope) {
+				  function($scope) {
+				      $scope.getFullName = getFullName;
 	$scope.ticket.date = new Date($scope.ticket.date);
     }]);
 
@@ -684,6 +694,7 @@ app.controller("MyInvoiceCtrl", [
     'items',
     function($scope, auth, items) {
 	$scope.totalInvoice = 0;
+	$scope.getFullName = getFullName;
 	items.performSearch({buyeremail: auth.currentUser().email}).then(function(data) {
 	    $scope.tickets = data.tickets;
 	    $scope.items = data.items;
@@ -974,6 +985,7 @@ app.controller( 'LiveCatalogCtrl',[
 		    item.eventdate = new Date(item.eventdate);
 	    });
 	    $scope.transactions_by_item = data.transactions_by_item;
+	    $scope.getFullName = getFullName;
 	});
     }]);
 
@@ -984,6 +996,8 @@ app.controller( 'FixedPriceBidSheetCtrl',[
         $scope.range = function(num) {
             return new Array(num);
         };
+
+	$scope.getFullName = getFullName;
 
 	items.performSearch({searchitemtype: "fixed"}).then(function(data) {
 	    $scope.tickets = data.tickets;
@@ -1036,10 +1050,12 @@ app.controller( 'SilentBidSheetsCtrl',[
 	    })
     }]);
 
-app.controller('ViewItemGenericCtrl', [function() {}]);
+app.controller('ViewItemGenericCtrl', ["$scope", function($scope) {
+    $scope.getFullName = getFullName;
+}]);
 
 app.controller('ViewItemAdminCtrl', ['$scope', 'auth', "$http", '$mdDialog', function($scope, auth, $http, $mdDialog) {
-
+    $scope.getFullName = getFullName;
     $scope.isAdmin = auth.isAdmin;
 
     $scope.saveitem = function(item) {
@@ -1134,6 +1150,8 @@ app.controller('InsertBidsCtrl', [
 	    $scope.transactions_by_item = data.transactions_by_item;
 	});
 
+	$scope.getFullName = getFullName;
+
 	$scope.performSearch = function() {
 	    items.performSearch($scope.searchTerms).then(function(data) {
 		$scope.tickets = data.tickets;
@@ -1189,7 +1207,7 @@ app.controller('InsertBidsCtrl', [
 
 	var findBidder = function(bidnumber) {
 	    if ( bidnumber in $scope.tickets )
-		return $scope.tickets[bidnumber].name;
+		return getFullName($scope.tickets[bidnumber]);
 	    return "Invalid Bidder";
 	};
 

@@ -2,7 +2,7 @@
   <div layout="row">
     <div flex>
       <h2>
-        {{item.name}}
+        {{::item.name}}
       </h2>
     </div>
     <div>
@@ -10,20 +10,20 @@
     </div>
     &nbsp;&nbsp;
     <div>
-      {{item.number}}
+      {{::item.number}}
     </div>
   </div>
   <div layout="row">
     <div flex>
-      {{item.description}}
+      {{::item.description}}
     </div>
     <div class="live-catalog-image-container">
-      <img ng-src="http://svuus-photos.s3.amazonaws.com/{{item.donor.photoid}}" >
+      <img ng-src="http://svuus-photos.s3.amazonaws.com/{{::item.donor.photoid}}" >
     </div>
   </div>
   <div layout="row">
     <div flex></div>
-    <b>Donated by {{item.donor.name}}</b>
+    <b>Donated by {{getFullName(item.donor)}}</b>
   </div>
   <div layout="row">
     <div flex>
@@ -36,12 +36,12 @@
 	<tr ng-repeat="i in range(item.quantity) track by $index" height='36' class="page-break-avoid">
           <td></td>
           <td></td>
-          <td>{{item.value | currency}}</td>
+          <td>{{::item.value | currency}}</td>
 	</tr>
       </table>
     </div>
     <div flex="15" layout-padding style="background-color:#CCCCCC">
-      <span flex="100" translate="{{item.policy}}"></span>
+      <span flex="100" translate="{{::item.policy}}"></span>
     </div>
   </div>
   <div class="page-break"></div>

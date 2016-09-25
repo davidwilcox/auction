@@ -27,13 +27,21 @@
         </div>
       </md-input-container>
     </div>
-    <div>
+    <div layout="row">
       <md-input-container>
-        <label>Full Name</label>
+        <label>Last Name</label>
         <input type="text"
 	       name="name"
-	       ng-model="user.name"
-               size="60"
+	       ng-model="user.firstname"
+               size="30"
+	       required>
+      </md-input-container>
+      <md-input-container>
+        <label>Last Name</label>
+        <input type="text"
+	       name="name"
+	       ng-model="user.lastname"
+               size="30"
 	       required>
       </md-input-container>
     </div>

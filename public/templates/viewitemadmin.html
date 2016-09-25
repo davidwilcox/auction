@@ -141,7 +141,7 @@
             <md-input-container>
               <label>Donor Name</label>
               <textarea
-	         ng-model="item.donor.name"
+	         ng-bind="getFullName(item.donor)"
 	         type="text"
 	         cols="40"
 	         ng-blur="saveitem(item)"
@@ -184,7 +184,7 @@
 	  Buyers
         </span>
         <div ng-repeat="transaction in transactions_by_item[item.id]" layout="row">
-	  <div >{{transaction.bidnumber}} {{tickets[transaction.bidnumber].name}} <a href="mailto:{{tickets[transaction.bidnumber].buyer.email}}">{{tickets[transaction.bidnumber].buyer.email}}</a> {{tickets[transaction.bidnumber].buyer.phonenumber | tel}} {{transaction.sellprice | currency}}</div>
+	  <div >{{transaction.bidnumber}} {{getFullName(tickets[transaction.bidnumber])}} <a href="mailto:{{tickets[transaction.bidnumber].buyer.email}}">{{tickets[transaction.bidnumber].buyer.email}}</a> {{tickets[transaction.bidnumber].buyer.phonenumber | tel}} {{transaction.sellprice | currency}}</div>
 	  <md-button class="md-icon-button" ng-click="removeBidderFromItem($event, item, transaction)" >
 	    <md-icon>clear</md-icon>
 	  </md-button>

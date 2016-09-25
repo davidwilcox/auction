@@ -33,14 +33,26 @@
         Enter the name (or names!) of the person or group donating this item (you can change it from the autofilled name):
       </div>
       <md-input-container>
-	<label>Donor Name</label>
+	<label>Donor First Name</label>
 	<input
 	   type="text"
-	   ng-model="donor.name"
-	   name="donorname"
+	   ng-model="donor.firstname"
+	   name="donorfirstname"
 	   required
 	   ></input>
-	<div ng-messages="donateItemForm.donorname.$error">
+	<div ng-messages="donateItemForm.donorfirstname.$error">
+	  <div ng-messages-include="/messages.html"></div>
+	</div>
+      </md-input-container>
+      <md-input-container>
+	<label>Donor Last Name</label>
+	<input
+	   type="text"
+	   ng-model="donor.lastname"
+	   name="donorlastname"
+	   required
+	   ></input>
+	<div ng-messages="donateItemForm.donorlastname.$error">
 	  <div ng-messages-include="/messages.html"></div>
 	</div>
       </md-input-container>
