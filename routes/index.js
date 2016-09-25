@@ -97,7 +97,8 @@ router.post('/createguest', function(req, res, next) {
 		    var params = {
 			TableName: "tickets",
 			Item: {
-			    name: guest.name,
+			    firstname: guest.firstname,
+			    lastname: guest.lastname,
 			    foodRes: guest.foodRes,
 			    agegroup: guest.agegroup,
 			    buyer: guest.buyer,
