@@ -374,6 +374,87 @@ router.post('/replace_user_photo_id', function(req, res, next) {
     });
 });
 
+
+router.post('/charge_all_users', function(req, res, next) {
+
+    var get_all = function(table) {
+	var p = new Promise(function(resolve, reject) {
+	    var params = {
+		TableName: table
+	    };
+	    docClient.scan(params, function(err, data) {
+		if (err) {
+		    reject(err);
+		    //console.error("Unable to scan the table. Error JSON:", JSON.stringify(err, null, 2));
+		} else {
+		    resolve(data.Items);
+		}
+	    });
+	});
+	return p;
+    };
+
+    var promises = [];
+    promises.push(get_all("tickets"));
+    promises.push(get_all("items"));
+    promises.push(get_all("transactions"));
+
+    Promise.all(promises).then(function(data) {
+	var m = new Map();
+	for(var idx in data[2]) {
+	    var transaction = data[2][idx];
+	    if ( transaction.sellprice ) {
+		if ( !(transaction.bidnumber in m) )
+		    m[transaction.bidnumber] = 0;
+		m[transaction.bidnumber] += parseInt(transaction.sellprice)*100;
+	    }
+	}
+
+	var customermap = new Map();
+	var chargemap = new Map();
+	for(var idx in data[0]) {
+	    var ticket = data[0][idx];
+	    console.log(ticket);
+	    if ( ticket.stripe_customer_id in m ) {
+		if ( !(ticket.stripe_customer_id in customermap) )
+		    chargemap[ticket.stripe_customer_id] = 0;
+		chargemap[ticket.stripe_customer_id] = m[ticket.bidnumber];
+		customermap[ticket.stripe_customer_id] += ticket.email;
+	    }
+	}
+
+	var charges = [];
+	for(var customerid in customermap) {
+	    console.log("charging");
+	    var charge = {
+		amount: chargemap[customerid],
+		currency: "usd",
+		customer: customerid,
+		description: "purchase auction items for " + customermap[customerid]
+	    };
+	    console.log(charge);
+	    charges.push(new Promise(function(resolve, reject) {
+		stripe.charges.create(charge, function(charge_err, charge) {
+		    if ( charge_err ) {
+			reject({err: charge_err});
+		    }
+		    else if ( cust_err ) {
+			reject({err: cust_err});
+		    } else {
+			resolve({charge_id: charge.id});
+		    }
+		});
+	    }));
+	}
+
+	Promise.all(charges).then(function(data) {
+	    res.status(200).json({success: true});
+	}, function(err) {
+	    console.log(err);
+	});
+    });
+});
+
 router.post('/addadmin', function(req, res, next) {
 
     var params = {

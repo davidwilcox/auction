@@ -435,6 +435,10 @@ app.config([
 			$state.go('home');
 		    }
 		}]
+ 	    }).state('admin.charge_for_items', {
+		     url: '/charge_for_items',
+		     templateUrl: "/templates/charge_for_items.html",
+		     controller: 'ChargeForAllItemsCtrl'
 	    })
 	    .state('admin.add_admin', {
 		url: '/add_admin',
@@ -765,7 +769,7 @@ app.controller("MyInvoiceCtrl", [
 			if ( typeof(transaction.sellprice) == "string" ) {
 			    $scope.totalInvoice += Number(transaction.sellprice.substring(1));
 			}
-			    $scope.totalInvoice += Number(transaction.sellprice);
+			$scope.totalInvoice += Number(transaction.sellprice);
 		    });
 		}
 	    }
@@ -829,13 +833,11 @@ app.factory('auth', ['$http', '$window', '$q', function($http, $window, $q) {
 	$window.localStorage['auction-user'] = JSON.stringify(user);
     };
     o.currentUserEmail = function(){
-	console.log(JSON.parse($window.localStorage['auction-user']));
 	if(o.isLoggedIn()) {
 	    return JSON.parse($window.localStorage['auction-user']).email;
 	}
     };
     o.currentUser = function() {
-	console.log(JSON.parse($window.localStorage['auction-user']).email);
 	if(o.isLoggedIn()) {
 	    return JSON.parse($window.localStorage['auction-user']);
 	}
@@ -1393,6 +1395,35 @@ app.controller( 'MyDonatedItemsCtrl',[
     }]);
 
 
+app.controller("ChargeForAllItemsCtrl",[
+    "$scope",
+    "$http",
+    "$mdDialog",
+    'auth',
+    function($scope, $http, $mdDialog, auth) {
+
+	$scope.charge = function(event, item, transaction) {
+
+	    // Appending dialog to document.body to cover sidenav in docs app
+	    var charge = $mdDialog.confirm()
+		.title('Are you sure you want to charge all users?')
+		.ariaLabel('Confirm Charge')
+		.targetEvent(event)
+		.ok('Yes! Charge all purchasers!')
+		.cancel('No! Whoops!');
+	    $mdDialog.show(charge).then(function() {
+		$http.post("/charge_all_users", {headers: {
+		    Authorization: "Bearer " + auth.getToken()
+		} } ).success(function(data) {
+		    $scope.message = "Success! Go check stripe now.";
+		}).error(function(error) {
+		    $scope.message = error;
+		});
+	    });
+	};
+    }]);
+
+
 app.controller('MyProfileCtrl',[
     '$scope',
     'fileReader',
@@ -1453,3 +1484,4 @@ app.controller('MyProfileCtrl',[
 	};
 
     }]);
+
