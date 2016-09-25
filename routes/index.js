@@ -347,6 +347,33 @@ var passport = require('passport');
 
 
 
+router.post('/replace_user_photo_id', function(req, res, next) {
+    var params = {
+	TableName: "users",
+	Key: {
+	    email: req.body.email
+	},
+	UpdateExpression: "SET #b = :v_photoid",
+	ExpressionAttributeNames: {
+	    "#b": "photoid"
+	},
+	ExpressionAttributeValues: {
+	    ":v_photoid": req.body.photoid
+	},
+	ReturnValues: "UPDATED_NEW"
+    };
+
+    console.log(params);
+
+    docClient.update(params, function(err, data) {
+	if ( err ) {
+	    res.status(401).json(err);
+	} else {
+	    res.status(200).json({ success: true });
+	}
+    });
+});
+
 router.post('/addadmin', function(req, res, next) {
 
     var params = {

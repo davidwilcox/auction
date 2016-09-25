@@ -460,7 +460,11 @@ app.config([
 			$state.go('home');
 		    }
 		}]
-            }).state('viewticket', {
+            }).state('myauction.myprofile', {
+		url: '/myprofile',
+		templateUrl: '/templates/myprofile.html',
+		controller: 'MyProfileCtrl'
+	    }).state('viewticket', {
                 url: '/viewticket/{bidnumber}',
                 templateUrl: '/templates/viewticket.html',
                 controller: 'ViewTicketCtrl',
@@ -756,7 +760,7 @@ app.controller("MyInvoiceCtrl", [
 	    });
 
 	    for(var key in $scope.tickets) {
-		if ( $scope.tickets.hasOwnProperty(key) ) {
+		if ( $scope.transactions_by_bidnum.hasOwnProperty(key) ) {
 		    $scope.transactions_by_bidnum[key].forEach(function(transaction) {
 			if ( typeof(transaction.sellprice) == "string" ) {
 			    $scope.totalInvoice += Number(transaction.sellprice.substring(1));
@@ -775,7 +779,7 @@ app.factory('auth', ['$http', '$window', '$q', function($http, $window, $q) {
     o.saveToken = function(token) {
 	$window.localStorage['auction-token'] = token;
     };
-    o.getToken = function(token) {
+    o.getToken = function() {
 	return $window.localStorage['auction-token'];
     };
     o.isLoggedIn = function() {
@@ -799,7 +803,10 @@ app.factory('auth', ['$http', '$window', '$q', function($http, $window, $q) {
 	if ( user.confirmPassword == user.password ) {
 	    return $http.post('/register', user).success(function(data) {
 		o.saveToken(data.token);
-		o.saveUser(data.user);
+
+		var payload = JSON.parse($window.atob(o.getToken().split('.')[1]));
+		console.log(payload.user);
+		o.saveUser(payload.user);
 	    }).error(function(data) {
 		delete user['confirmPassword'];
 	    });
@@ -809,27 +816,28 @@ app.factory('auth', ['$http', '$window', '$q', function($http, $window, $q) {
     o.logIn = function(user) {
 	return $http.post('/login', user).success(function(data) {
 	    o.saveToken(data.token);
-	    o.saveUser(data.user);
+	    var payload = JSON.parse($window.atob(o.getToken().split('.')[1]));
+	    console.log(payload.user);
+	    o.saveUser(payload.user);
 	});
     };
     o.logOut = function(user) {
 	$window.localStorage.removeItem('auction-token');
+	$window.localStorage.removeItem('auction-user');
     };
     o.saveUser = function(user) {
-	$window.localStorage['auction-user'] = user;
+	$window.localStorage['auction-user'] = JSON.stringify(user);
     };
     o.currentUserEmail = function(){
+	console.log(JSON.parse($window.localStorage['auction-user']));
 	if(o.isLoggedIn()) {
-	    var token = o.getToken();
-	    var payload = JSON.parse($window.atob(token.split('.')[1]));
-	    return payload.user.email;
+	    return JSON.parse($window.localStorage['auction-user']).email;
 	}
     };
     o.currentUser = function() {
+	console.log(JSON.parse($window.localStorage['auction-user']).email);
 	if(o.isLoggedIn()) {
-	    var token = o.getToken();
-	    var payload = JSON.parse($window.atob(token.split('.')[1]));
-	    return payload.user;
+	    return JSON.parse($window.localStorage['auction-user']);
 	}
     };
     return o;
@@ -1382,4 +1390,66 @@ app.controller( 'MyDonatedItemsCtrl',[
 	}, function(err) {
 	    console.log(err);
 	});
+    }]);
+
+
+app.controller('MyProfileCtrl',[
+    '$scope',
+    'fileReader',
+    'auth',
+    '$http',
+    function($scope, fileReader, auth, $http) {
+
+	
+        $scope.getFile = function () {
+	    console.log("HERE2");
+            $scope.progress = 0;
+            fileReader.readAsDataUrl($scope.file, $scope)
+                .then(function(result) {
+                    $scope.imageSrc = result;
+                });
+        };
+
+        $scope.$on("fileProgress", function(e, progress) {
+            $scope.progress = progress.loaded / progress.total;
+        });
+
+
+	$scope.submit = function() {
+	    var picture = $scope.imageSrc;
+
+	    if ( picture ) {
+		filename = $scope.file.name;
+                payload = {
+		    "photo": picture,
+		    "filename": filename
+	        };
+
+		console.log("HERE");
+
+
+		$http.post('/uploadphoto', payload).error(
+		    function(error) {
+			$scope.error = error;
+			$scope.submitted = false;
+		    }).then(function(data) {
+			console.log(data);
+			var photoid = data.data.photoid;
+			$scope.submitted = false;
+			$http.post('/replace_user_photo_id', {
+			    email: auth.currentUserEmail(),
+			    photoid: data.data.photoid
+			}).then(function(data) {
+			    console.log(data);
+			    var user = auth.currentUser();
+			    user.photoid = photoid;
+			    auth.saveUser(user);
+			    $scope.message = "Upload successful.";
+			}, function(err) {
+			    $scope.message = err;
+			});
+		    });
+	    }
+	};
+
     }]);

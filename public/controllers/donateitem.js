@@ -81,7 +81,7 @@ app.controller('DonateItemCtrl', [
 
 	$scope.donateitem = function() {
 
-	    picture = $scope.imageSrc;
+	    var picture = $scope.imageSrc;
 
 
 	    submit_item = function() {
