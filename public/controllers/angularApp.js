@@ -51,8 +51,6 @@ app.factory('items', ['$http', '$q', function($http, $q) {
 	var queryString = '';
 	if ( !searchterms )
 	    searchterms = {};
-	if ( searchterms.searchname )
-	    queryString += "?searchname=" + searchterms.searchname;
 	if ( searchterms.searchitemnumber ) {
 	    if ( queryString )
 		queryString += "&";
@@ -75,7 +73,7 @@ app.factory('items', ['$http', '$q', function($http, $q) {
 		all_tickets[ticket.bidnumber] = ticket;
 		if ( searchterms.buyeremail
 		     && searchterms.buyeremail != ticket.login
-		     || ( searchterms.searchbuyername && !getFullName(ticket).includes.toLowerCase()(searchterms.searchbuyername.toLowerCase()) )
+		     || ( searchterms.searchbuyername && !getFullName(ticket).toLowerCase().includes(searchterms.searchbuyername.toLowerCase()) )
 		     || (searchterms.agegroup && ticket.agegroup != searchterms.agegroup )
 		     || (searchterms.dietaryrestrictions && ticket.foodRes != searchterms.dietaryrestrictions) ) {
 		    return;
@@ -111,7 +109,8 @@ app.factory('items', ['$http', '$q', function($http, $q) {
                 item.eventdate = new Date(item.eventdate);
 		if ( (!searchterms.email || item.email == searchterms.email)
 		     && searchItemType(item.type, searchterms.searchitemtype)
-		     && (!searchterms.searchdonorname || getFullName(item.donor).toLowerCase().includes(searchterms.searchdonorname.toLowerCase()) ) ) {
+		     && (!searchterms.searchdonorname || getFullName(item.donor).toLowerCase().includes(searchterms.searchdonorname.toLowerCase()))
+		     && (!searchterms.searchname || item.name.toLowerCase().includes(searchterms.searchname.toLowerCase()))) {
 		    items.push(item);
 		    if ( transactions_by_item[item.id] ) {
 			item.buyer_emails = transactions_by_item[item.id].map(
@@ -457,7 +456,7 @@ app.config([
 	    })
 	    .state('myauction.mydonateditems', {
 		url: '/mydonateditems',
-		templateUrl: '/templates/viewdonateditems.html',
+		templateUrl: '/templates/mydonateditems.html',
 		controller: 'MyDonatedItemsCtrl',
 		onEnter: [ '$state', 'auth', function($state, auth) {
 		    if ( !auth.isLoggedIn() ) {
@@ -954,8 +953,8 @@ app.controller('BuyTicketsCtrl', [
         $scope.calculateTotal = function() {
             return $scope.numAdultTickets*16
                 +$scope.numHighSchoolTickets*12
-                +$scope.numJuniorHighTickets*6
-                +$scope.numChildTickets*6;
+                +$scope.numJuniorHighTickets*5
+                +$scope.numChildTickets*5;
         };
 
 	$scope.computeOrderDetails = function() {
@@ -1113,6 +1112,12 @@ app.controller('ViewItemGenericCtrl', ["$scope", function($scope) {
     $scope.getFullName = getFullName;
 }]);
 
+
+app.controller('ViewItemMyOwnCtrl', ["$scope", function($scope) {
+    $scope.getFullName = getFullName;
+}]);
+
+
 app.controller('ViewItemAdminCtrl', ['$scope', 'auth', "$http", '$mdDialog', function($scope, auth, $http, $mdDialog) {
     $scope.getFullName = getFullName;
     $scope.isAdmin = auth.isAdmin;
@@ -1160,6 +1165,17 @@ app.directive('viewitem', function() {
     return {
         templateUrl: '/templates/viewitemgeneric.html',
         controller: 'ViewItemGenericCtrl',
+        bindings: {
+            tickets: '=',
+            item: '='
+        }
+    };
+});
+
+app.directive('viewitemmyown', function() {
+    return {
+        templateUrl: '/templates/viewitemmyown.html',
+        controller: 'ViewItemMyOwnCtrl',
         bindings: {
             tickets: '=',
             item: '='
