@@ -486,11 +486,60 @@ app.config([
                         return $http.get('/all/tickets');
                     }]
                 }
-            });
+            }).state('forgot_password', {
+		url: '/forgot_password',
+		templateUrl: '/templates/forgot_password.html',
+		controller: 'ForgotPasswordCtrl'
+	    }).state('reset_password', {
+		url: '/reset_password/{email}/{token}',
+		templateUrl: '/templates/reset_password.html',
+		controller: 'ResetPasswordCtrl'
+	    });
 
 
 	$urlRouterProvider.otherwise('home');
     }]);
+
+
+
+app.controller(
+    'ResetPasswordCtrl',
+    ['$http', '$scope', '$stateParams', '$state',
+     function($http, $scope, $stateParams, $state) {
+	 $scope.password = '';
+	 $scope.confirmPassword = '';
+	 $scope.message = '';
+	 $scope.resetPassword = function() {
+	     $http.post('/reset_password', {
+		 email: $stateParams.email,
+		 lost: $stateParams.token,
+		 password: $scope.password
+	     }).then(function(data) {
+		 console.log(data);
+		 if ( data.data.changed ) {
+		     $scope.message = "Your password has been reset.";
+		 } else {
+		     $scope.error = "Token provided is incorrect.";
+		 }
+	     }, function(err) {
+		 $scope.error = error;
+	     });
+	 };
+     }]);
+
+app.controller(
+    'ForgotPasswordCtrl',
+    ['$scope', '$http',
+     function($scope, $http) {
+	 $scope.register = function() {
+	     $http.post('/lost_password', {email: $scope.email})
+		 .then(function(data) {
+		     $scope.message = "An email has been sent to you to reset your password."
+		 }, function(err) {
+		     $scope.message = err;
+		 });
+	 };
+     }]);
 
 app.controller('ViewPersonNoChangeCtrl',
 	       ['$scope',

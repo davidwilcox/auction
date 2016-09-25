@@ -57,8 +57,10 @@ app.controller('RegisterCtrl', [
 		$http.post('/uploadphoto', payload).error(
 		    function(error) {
 			$scope.error = error;
+			$scope.submitted = false;
 		    }).then(function(data) {
 			$scope.user.photoid = data.data.photoid
+			$scope.submitted = false;
 			register();
 		    });
 	    } else {

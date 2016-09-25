@@ -298,6 +298,9 @@ router.post('/register', function(req, res, next) {
 
     docClient.put(params, function(err, data) {
 
+	console.log(err);
+	console.log(data);
+
 	if ( err ) {
 	    console.log(err);
 	    return res.status(401).json({message: "username already used."});
@@ -383,6 +386,9 @@ router.post('/login', function(req, res, next) {
     req.body.username = req.body.email;
     passport.authenticate('local', function(err, user, info) {
 
+	console.log(err);
+	console.log(user);
+	console.log(info);
 	if ( err ) {
 	    return next(err);
 	}
@@ -689,6 +695,235 @@ router.post('/addbuyer', auth, function(req, res, next) {
 	}
     });
 });
+
+
+
+
+
+// Get reference to AWS clients
+var ses = new AWS.SES();
+
+function getUser(email, fn) {
+    dynamodb.getItem({
+	TableName: "users",
+	Key: {
+	    email: {
+		S: email
+	    }
+	}
+    }, function(err, data) {
+	if (err) return fn(err);
+	else {
+	    if ('Item' in data) {
+		fn(null, email);
+	    } else {
+		fn(null, null); // User not found
+	    }
+	}
+    });
+}
+
+function storeLostToken(email, fn) {
+    // Bytesize
+    var len = 128;
+    crypto.randomBytes(len, function(err, token) {
+	if (err) return fn(err);
+	token = token.toString('hex');
+	dynamodb.updateItem({
+	    TableName: "users",
+	    Key: {
+		email: {
+		    S: email
+		}
+	    },
+	    AttributeUpdates: {
+		lostToken: {
+		    Action: 'PUT',
+		    Value: {
+			S: token
+		    }
+		}
+	    }
+	},
+			    function(err, data) {
+				if (err) return fn(err);
+				else fn(null, token);
+			    });
+    });
+}
+
+function sendLostPasswordEmail(email, token, fn) {
+    var subject = 'Password Lost for SVUUS Auction';
+    var lostLink = ' https://auction.svuus.org/#/reset_password/' + encodeURIComponent(email) + '/' + token;
+
+    ses.sendEmail({
+	Source: "admin@auction.svuus.org",
+	Destination: {
+	    ToAddresses: [
+		email
+	    ]
+	},
+	Message: {
+	    Subject: {
+		Data: subject
+	    },
+	    Body: {
+		Html: {
+		    Data: '<html><head>'
+			+ '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />'
+			+ '<title>' + subject + '</title>'
+			+ '</head><body>'
+			+ 'Please <a href="' + lostLink + '">click here to reset your password</a> or copy & paste the following link in a browser:'
+			+ '<br><br>'
+			+ '<a href="' + lostLink + '">' + lostLink + '</a>'
+			+ '</body></html>'
+		}
+	    }
+	}
+    }, fn);
+}
+
+router.post('/lost_password', function(req, res, next) {
+    var email = req.body.email;
+
+    getUser(email, function(err, emailFound) {
+	if (err) {
+	    res.status(401).text('Error in getUserFromEmail: ' + err);
+	} else if (!emailFound) {
+	    console.log('User not found: ' + email);
+	    res.status(401).json({
+		sent: false
+	    });
+	} else {
+	    storeLostToken(email, function(err, token) {
+		if (err) {
+		    res.status(401).text('Error in storeLostToken: ' + err);
+		} else {
+		    sendLostPasswordEmail(email, token, function(err, data) {
+			if (err) {
+			    res.status(401).text('Error in sendLostPasswordEmail: ' + err);
+			} else {
+			    console.log('User found: ' + email);
+			    res.status(200).json({
+				sent: true
+			    });
+			}
+		    });
+		}
+	    });
+	}
+    });
+});
+
+
+
+
+
+function computeHash(password, salt, fn) {
+    crypto.pbkdf2(password, salt, 1000, 64, function(err, derivedKey) {
+	if (err) return fn(err);
+	else fn(null, salt, derivedKey.toString('hex'));
+    });
+}
+
+function getUserLost(email, fn) {
+    dynamodb.getItem({
+	TableName: "users",
+	Key: {
+	    email: {
+		S: email
+	    }
+	}
+    }, function(err, data) {
+	console.log(data);
+	if (err) return fn(err);
+	else {
+	    if (('Item' in data) && ('lostToken' in data.Item)) {
+		var lostToken = data.Item.lostToken.S;
+		fn(null, lostToken);
+	    } else {
+		fn(null, null); // User or token not found
+	    }
+	}
+    });
+}
+
+function updateUser(email, password, salt, fn) {
+    console.log(password);
+    dynamodb.updateItem({
+	TableName: "users",
+	Key: {
+	    email: {
+		S: email
+	    }
+	},
+	AttributeUpdates: {
+	    hash: {
+		Action: 'PUT',
+		Value: {
+		    S: password
+		}
+	    },
+	    salt: {
+		Action: 'PUT',
+		Value: {
+		    S: salt
+		}
+	    },
+	    lostToken: {
+		Action: 'DELETE'
+	    }
+	}
+    },
+			fn);
+}
+
+router.post('/reset_password', function(req, res, next) {
+    var event = req.body;
+    var email = event.email;
+    var lostToken = event.lost;
+    var newPassword = event.password;
+
+    getUserLost(email, function(err, correctToken) {
+	console.log(correctToken);
+	console.log(lostToken);
+	if (err) {
+	    res.status(401).text('Error in getUserLost: ' + err);
+	} else if (!correctToken) {
+	    console.log('No lostToken for user: ' + email);
+	    res.status(200).json({
+		changed: false
+	    });
+	} else if (lostToken != correctToken) {
+	    // Wrong token, no password lost
+	    console.log('Wrong lostToken for user: ' + email);
+	    res.status(200).json({
+		changed: false
+	    });
+	} else {
+	    console.log('User logged in: ' + email);
+	    var salt = crypto.randomBytes(16).toString('hex');
+	    computeHash(newPassword, salt, function(err, newSalt, newHash) {
+		if (err) {
+		    res.status(401).text('Error in computeHash: ' + err);
+		} else {
+		    updateUser(email, newHash, newSalt, function(err, data) {
+			if (err) {
+			    res.status(401).text('Error in updateUser: ' + err);
+			} else {
+			    console.log('User password changed: ' + email);
+			    res.status(200).json({
+				changed: true
+			    });
+			}
+		    });
+		}
+	    });
+	}
+    });
+});
+
+
 
 
 module.exports = router;
