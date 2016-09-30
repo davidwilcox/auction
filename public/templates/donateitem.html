@@ -287,6 +287,11 @@
 	</div>
       </div>
     </md-card>
+    <div ng-messages="donateItemForm.$error">
+      <div ng-message="required">
+	You missed a field on the form. Please finish completing the form before donating.
+      </div>
+    </div>
     <md-button class="md-raised md-primary" type="submit">Donate Item</md-button>
   </form>
 </div>
