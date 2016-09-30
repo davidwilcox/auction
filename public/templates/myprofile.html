@@ -1,0 +1,14 @@
+<div>
+  <h3>Replace Picture</h3>
+  <div>
+    <input class="ng-hide" id="input-file-id" type="file" ng-file-select="onFileSelect($files)" accept="image/*" >
+    <label for="input-file-id" class="md-button md-raised md-primary">Choose PICTURE</label>
+  </div>
+  <div>
+    <div><i ng-hide="imageSrc">No image chosen.</i></div>
+    <div><img ng-src="{{imageSrc}}" style="width:300px"></div>
+    <div>  <progress value="{{progress}}"></progress></div>
+  </div>
+  <md-button ng-click="submit()" class="md-primary md-raised">Change Picture</md-button>
+  {{message}}
+</div>
