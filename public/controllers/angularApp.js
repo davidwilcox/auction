@@ -15,7 +15,7 @@ app.config(['$translateProvider', function ($translateProvider) {
 	HIGHSCHOOL_TICKET: "High School",
 	JUNIORHIGH_TICKET: "Junior High School",
 	CHILD_TICKET: "Child",
-	NONE_FOOD: "No food restrictions",
+	NONE_FOOD: "Regular",
 	VEGETARIAN_FOOD: "Vegetarian",
 	VEGAN: "Vegetarian",
 	GLUTENFREE_FOOD: "Gluten-free"
