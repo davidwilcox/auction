@@ -17,6 +17,7 @@ app.config(['$translateProvider', function ($translateProvider) {
 	CHILD_TICKET: "Child",
 	NONE_FOOD: "No food restrictions",
 	VEGETARIAN_FOOD: "Vegetarian",
+	VEGAN: "Vegetarian",
 	GLUTENFREE_FOOD: "Gluten-free"
     });
     $translateProvider.preferredLanguage('en');
@@ -921,7 +922,7 @@ app.controller('BuyTicketsCtrl', [
 		foodRes: "NONE_FOOD",
 		buyer: auth.currentUser(),
 		date: Date(),
-		gluten: "Gluten OK"
+		gluten: false
 	    };
 	    return ticket;
 	};
