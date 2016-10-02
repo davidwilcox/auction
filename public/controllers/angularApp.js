@@ -920,7 +920,8 @@ app.controller('BuyTicketsCtrl', [
 		agegroup: "ADULT_TICKET",
 		foodRes: "NONE_FOOD",
 		buyer: auth.currentUser(),
-		date: Date()
+		date: Date(),
+		gluten: "Gluten OK"
 	    };
 	    return ticket;
 	};

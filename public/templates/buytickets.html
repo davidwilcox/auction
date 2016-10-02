@@ -55,8 +55,18 @@
                   <md-radio-group ng-model="ticket.foodRes">
                     <md-radio-button value="NONE_FOOD">No food restrictions</md-radio-button>
                     <md-radio-button value="VEGETARIAN_FOOD">Vegetarian</md-radio-button>
-                    <md-radio-button value="GLUTENFREE_FOOD">Gluten-free</md-radio-button>
+		    <!--
+		    <md-radio-button value="GLUTENFREE_FOOD">Gluten-free</md-radio-button>
+		    -->
                   </md-radio-group>
+		  <md-checkbox
+		    ng-model="ticket.gluten"
+		    ng-true-value="'Gluten Free'"
+		    ng-false-value="'Gluten OK'"
+		    class="md-warn md-align-top-left"
+		    flex>
+		    {{ ticket.gluten }}
+		  </md-checkbox>
                 </div>
                 <div>
                   <md-input-container>
