@@ -6,12 +6,6 @@
   <div layout="column" layout-padding>
     <div layout="row" >
       <div flex="66">
-	<md-toolbar class="md-warn md-hue-1" layout-padding>
-          <div class="md-toolbar-tools">
-	    A few days after the auction completes, we will charge the card you enter here for the items bought.
-          </div>
-        </md-toolbar>
-
         <md-toolbar class="md-warn" layout-padding>
           <div class="md-toolbar-tools">
             Enter info here for your FIRST ticket.  If you need more than one ticket, click the blue “Add” button below, and scroll down to enter the additional info.
@@ -138,7 +132,13 @@
             </md-button>
             <md-button ng-click="addTicket()" class="md-primary md-raised">Add additional ticket to order</md-button>
           </div>
+
         </md-card>
+	<md-toolbar class="md-warn" layout-padding>
+          <div class="md-toolbar-tools">
+	    A few days after the auction completes, we will charge the card you enter here for the items bought.
+          </div>
+	</md-toolbar>
       </div>
     </div>
     <div id="bottom"></div>
