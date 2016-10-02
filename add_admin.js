@@ -11,7 +11,7 @@ var docClient = new AWS.DynamoDB.DocumentClient();
 var params = {
     TableName: "users",
     Key: {
-	email: "a@a.a"
+	email: "davidlukewilcox@gmail.com"
     },
     UpdateExpression: "SET #b = :v_isadmin",
     Item: {},

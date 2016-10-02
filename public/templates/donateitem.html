@@ -274,6 +274,20 @@
           </md-radio-group>
         </div>
       </div>
+      <div>
+	Is there anything else we should know about how we should price this?
+      </div>
+      <div>
+	<md-input-container>
+          <label>Pricing Notes</label>
+          <textarea
+            type="text"
+            ng-model="item.pricingnotes"
+	    cols="150"
+            ></textarea>
+        </md-input-container>
+      </div>
+
       <div ng-if="item.category == 'object'">
         If your donated item does not sell, it will be donated to a charitable organization. If you prefer to keep it if it does not sell, you are responsible for taking it at the end of the auction. If you will not be attending the auction, please ask a friend to retrieve it for you.
         <md-radio-group ng-model="item.disclaimer" name="disclaimer" required>
