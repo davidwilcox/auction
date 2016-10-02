@@ -1451,6 +1451,8 @@ app.controller('MyProfileCtrl',[
     '$http',
     function($scope, fileReader, auth, $http) {
 
+	$scope.user = auth.currentUser();
+
 	
         $scope.getFile = function () {
 	    console.log("HERE2");
@@ -1479,11 +1481,13 @@ app.controller('MyProfileCtrl',[
 		console.log("HERE");
 
 
+		$scope.submitted = true;
 		$http.post('/uploadphoto', payload).error(
 		    function(error) {
 			$scope.error = error;
 			$scope.submitted = false;
 		    }).then(function(data) {
+			$scope.submitted = false;
 			console.log(data);
 			var photoid = data.data.photoid;
 			$scope.submitted = false;
@@ -1499,6 +1503,9 @@ app.controller('MyProfileCtrl',[
 			}, function(err) {
 			    $scope.message = err;
 			});
+		    }, function(err) {
+			$scope.message = err;
+			$scope.submitted = false;
 		    });
 	    }
 	};
