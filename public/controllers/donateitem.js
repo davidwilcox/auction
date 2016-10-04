@@ -46,9 +46,20 @@ app.controller('DonateItemCtrl', [
     '$state',
     '$http',
     '$window',
+    "$mdDialog",
     'auth',
     'fileReader',
-    function($scope, $state, $http, $window, auth, fileReader) {
+    function($scope, $state, $http, $window, $mdDialog, auth, fileReader) {
+
+	$scope.showIdeas = function(ev) {
+	    $mdDialog.show({
+		clickOutsideToClose: true,
+		templateUrl: '/templates/donation_ideas.html',
+		ariaLabel: 'Alert Dialog Demo',
+		targetEvent: ev,
+		fullscreen: true
+	    });
+	};
 
 	$scope.eventMinDate = new Date(2016, 10, 13);
 	$scope.eventMaxDate = new Date(2017, 11, 31);
