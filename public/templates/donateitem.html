@@ -143,7 +143,7 @@
 	     ng-model="item.value"
 	     name="itemvalue"
 	     min="0"
-	     format="currency"
+	     format="currency-no-change"
 	     required
 	     ></input>
 	  <div ng-messages="donateItemForm.itemvalue.$error">
@@ -156,9 +156,10 @@
         <md-input-container>
 	  <label>Minimum Value</label>
 	  <input
+             type="string"
 	     ng-model="item.minvalue"
 	     name="itemminvalue"
-	     format="currency"
+	     format="currency-no-change"
 	     min="0"
 	     required
 	     ></input>
