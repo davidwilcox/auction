@@ -168,7 +168,7 @@
             {{item.date | date:'medium'}}
           </div>
           <div flex="100">
-	    <img ng-src="http://svuus-photos.s3.amazonaws.com/{{::item.donor.photoid}}"  >
+	    <img ng-src="https://svuus-photos.s3.amazonaws.com/{{::item.donor.photoid}}"  >
           </div>
         </div>
       </div>
@@ -184,7 +184,7 @@
           <div layout="row">
             <div >
 	      <span ng-show="tickets[transaction.bidnumber].buyer.photoid">
-		<a ng-href="http://svuus-photos.s3.amazonaws.com/{{tickets[transaction.bidnumber].buyer.photoid}}">{{transaction.bidnumber}}</a>
+		<a ng-href="https://svuus-photos.s3.amazonaws.com/{{tickets[transaction.bidnumber].buyer.photoid}}">{{transaction.bidnumber}}</a>
 	      </span>
 	      <span ng-hide="tickets[transaction.bidnumber].buyer.photoid">
 		{{transaction.bidnumber}}
