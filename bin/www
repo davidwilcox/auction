@@ -27,7 +27,12 @@ if ( process.env.SSL_PORT ) {
     var https = require('https');
     var privateKey = fs.readFileSync('/etc/letsencrypt/live/auction.svuus.org/privkey.pem');
     var certificate = fs.readFileSync('/etc/letsencrypt/live/auction.svuus.org/cert.pem');
-    var credentials = {key: privateKey, cert: certificate};
+
+    var ca = [
+        fs.readFileSync('/etc/letsencrypt/live/auction.svuus.org/fullchain.pem'),
+        fs.readFileSync('/etc/letsencrypt/live/auction.svuus.org/chain.pem')
+    ];
+    var credentials = {key: privateKey, cert: certificate, ca: ca};
     var httpsPort = normalizePort(process.env.SSL_PORT);
     var httpsServer = https.createServer(credentials,app);
 
