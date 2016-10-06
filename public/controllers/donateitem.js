@@ -49,7 +49,8 @@ app.controller('DonateItemCtrl', [
     "$mdDialog",
     'auth',
     'fileReader',
-    function($scope, $state, $http, $window, $mdDialog, auth, fileReader) {
+    "Upload",
+    function($scope, $state, $http, $window, $mdDialog, auth, Upload) {
 
 	$scope.showIdeas = function(ev) {
 	    $mdDialog.show({
@@ -63,14 +64,6 @@ app.controller('DonateItemCtrl', [
 
 	$scope.eventMinDate = new Date(2016, 10, 13);
 	$scope.eventMaxDate = new Date(2017, 11, 31);
-
-        $scope.getFile = function () {
-            $scope.progress = 0;
-            fileReader.readAsDataUrl($scope.file, $scope)
-                .then(function(result) {
-                    $scope.imageSrc = result;
-                });
-        };
 
         $scope.$on("fileProgress", function(e, progress) {
             $scope.progress = progress.loaded / progress.total;
@@ -90,10 +83,34 @@ app.controller('DonateItemCtrl', [
 	    $scope.donor = $window.localStorage['donor-info'];
 	}
 
+        $scope.upload = function(files) {
+            var file = files[0];
+            file.upload = Upload.upload({
+                url: '/uploadphoto',
+                method: "POST",
+                headers: {
+                    'Content-Type': file.type
+                },
+                data: {filename: file.name, photo: file}
+            });
+
+            file.upload.then(function (response) {
+                console.log(response);
+                file.result = response.data;
+                $scope.donor.photoid = file.result.photoid;
+            }, function (err) {
+                console.log(err);
+                if (err.status > 0)
+                    $scope.errorMsg = response.status + ': ' + response.data;
+            }, function (evt) {
+                // Math.min is to fix IE which reports 200% sometimes
+                file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+            });
+        };
+
+
+
 	$scope.donateitem = function() {
-
-	    var picture = $scope.imageSrc;
-
 
 	    submit_item = function() {
 		// persist user info.
@@ -110,24 +127,6 @@ app.controller('DonateItemCtrl', [
 			$scope.error = error;
 		    });
 	    };
-
-	    $scope.donor.photoid = $scope.imageurl;
-
-	    if ( picture ) {
-		filename = $scope.file.name;
-                payload = {
-		    "photo": picture,
-		    "filename": filename
-	        };
-		$http.post('/uploadphoto', payload).error(
-		    function(error) {
-			$scope.error = error;
-		    }).then(function(data) {
-			$scope.donor.photoid = data.data.photoid
-			submit_item();
-		    });
-	    } else {
-		submit_item();
-	    }
+	    submit_item();
 	};
     }]);

@@ -1450,65 +1450,49 @@ app.controller('MyProfileCtrl',[
     'fileReader',
     'auth',
     '$http',
-    function($scope, fileReader, auth, $http) {
+    "Upload",
+    function($scope, fileReader, auth, $http, Upload) {
 
 	$scope.user = auth.currentUser();
 
-	
-        $scope.getFile = function () {
-	    console.log("HERE2");
-            $scope.progress = 0;
-            fileReader.readAsDataUrl($scope.file, $scope)
-                .then(function(result) {
-                    $scope.imageSrc = result;
-                });
+
+        $scope.upload = function(files) {
+            var file = files[0];
+            file.upload = Upload.upload({
+                url: '/uploadphoto',
+                method: "POST",
+                headers: {
+                    'Content-Type': file.type
+                },
+                data: {filename: file.name, photo: file}
+            });
+
+            file.upload.then(function (response) {
+                console.log(response);
+                file.result = response.data;
+                var photoid = file.result.photoid;
+
+                $http.post('/replace_user_photo_id', {
+		    email: auth.currentUserEmail(),
+		    photoid: file.result.photoid
+		}).then(function(data) {
+		    var user = auth.currentUser();
+		    user.photoid = photoid;
+                    $scope.user.photoid = photoid;
+		    auth.saveUser(user);
+		    $scope.message = "Upload successful.";
+		}, function(err) {
+		    $scope.message = err;
+		});
+
+            }, function (err) {
+                console.log(err);
+                if (err.status > 0)
+                    $scope.errorMsg = response.status + ': ' + response.data;
+            }, function (evt) {
+                // Math.min is to fix IE which reports 200% sometimes
+                file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+            });
         };
-
-        $scope.$on("fileProgress", function(e, progress) {
-            $scope.progress = progress.loaded / progress.total;
-        });
-
-
-	$scope.submit = function() {
-	    var picture = $scope.imageSrc;
-
-	    if ( picture ) {
-		filename = $scope.file.name;
-                payload = {
-		    "photo": picture,
-		    "filename": filename
-	        };
-
-		console.log("HERE");
-
-
-		$scope.submitted = true;
-		$http.post('/uploadphoto', payload).error(
-		    function(error) {
-			$scope.error = error;
-			$scope.submitted = false;
-		    }).then(function(data) {
-			$scope.submitted = false;
-			console.log(data);
-			var photoid = data.data.photoid;
-			$scope.submitted = false;
-			$http.post('/replace_user_photo_id', {
-			    email: auth.currentUserEmail(),
-			    photoid: data.data.photoid
-			}).then(function(data) {
-			    console.log(data);
-			    var user = auth.currentUser();
-			    user.photoid = photoid;
-			    auth.saveUser(user);
-			    $scope.message = "Upload successful.";
-			}, function(err) {
-			    $scope.message = err;
-			});
-		    }, function(err) {
-			$scope.message = err;
-			$scope.submitted = false;
-		    });
-	    }
-	};
 
     }]);

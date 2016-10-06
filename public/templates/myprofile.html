@@ -1,9 +1,6 @@
 <div>
   <h3>Replace Picture</h3>
-  <div>
-    <input class="ng-hide" id="input-file-id" type="file" ng-file-select="onFileSelect($files)" accept="image/*" >
-    <label for="input-file-id" class="md-button md-raised md-primary">Change Picture</label>
-  </div>
+
   <div>
     <div ng-hide="imageSrc">
       <div ng-show="user.photoid">
@@ -13,17 +10,12 @@
 	No image chosen.
       </div>
     </div>
-    <div><img ng-src="{{imageSrc}}" style="width:300px"></div>
     <div>  <progress value="{{progress}}"></progress></div>
   </div>
-  <div ng-show="imageSrc">
-    You have not replaced your picture yet. Click Finalize to do so!
-    <div>
-      <md-button ng-click="submit()" class="md-primary md-raised">Finalize Change</md-button>
-      <div ng-show="submitted">
-	<md-progress-linear md-mode="indeterminate"></md-progress-linear>
-      </div>
-    </div>
-  </div>
+
+  <input id="uploadfileid" class="ng-hide" type="file" ngf-select="upload($files)" ngf-change="upload($files)" ng-model="picFile" name="file" ngf-accept="'image/*'"
+         ngf-resize="{width: 500, height: 500}">
+  <label class="md-button md-primary md-raised" for="uploadfileid">Choose Picture</label>
+
   {{message}}
 </div>

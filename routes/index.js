@@ -478,6 +478,7 @@ router.post('/addadmin', function(req, res, next) {
 	ExpressionAttributeValues: {
 	    ":v_isadmin": true
 	},
+        ConditionExpression: "(attribute_exists(email))",
 	ReturnValues: "UPDATED_NEW"
     };
 

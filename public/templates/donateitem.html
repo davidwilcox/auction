@@ -88,18 +88,16 @@
       </md-input-container>
 
       Give us a photo of you, or the donating group!  (Again, you can change it from the image from your original registration.)
-      <input class="ng-hide" id="input-file-id" type="file" ng-file-select="onFileSelect($files)" accept="image/*" />
-      <label for="input-file-id" class="md-button md-raised md-primary">click to upload a photo</label>
-      <div>
-        <div ng-hide="imageSrc">
-	  <div ng-show="donor.photoid">
-	    <img ng-src="https://svuus-photos.s3.amazonaws.com/{{donor.photoid}}" style="width:100px"></img>
-	  </div>
-        </div>
-        <div ng-show="imageSrc">
-          <img ng-src="{{imageSrc}}" style="width:100px" ></img>
-        </div>
 
+
+      <input id="uploadfileid" class="ng-hide" type="file" ngf-select="upload($files)" ngf-change="upload($files)" ng-model="picFile" name="file" ngf-accept="'image/*'"
+             ngf-resize="{width: 500, height: 500}">
+      <label class="md-button md-primary md-raised" for="uploadfileid">Choose Picture</label>
+
+      <div>
+	<div ng-show="donor.photoid">
+	  <img ng-src="https://svuus-photos.s3.amazonaws.com/{{donor.photoid}}" style="width:200px"></img>
+	</div>
       </div>
     </md-card>
 

@@ -25,17 +25,13 @@ app.controller('RegisterCtrl', [
 
         $scope.upload = function(files) {
             var file = files[0];
-            console.log(file.$ngfName);
-            console.log("HERE");
-            console.log(file);
             file.upload = Upload.upload({
                 url: '/uploadphoto',
                 method: "POST",
                 headers: {
                     'Content-Type': file.type
                 },
-                data: {filename: file.name, photo: file},
-                file: file
+                data: {filename: file.name, photo: file}
             });
 
             file.upload.then(function (response) {
@@ -49,13 +45,6 @@ app.controller('RegisterCtrl', [
                 // Math.min is to fix IE which reports 200% sometimes
                 file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
             });
-
-            /*
-              file.upload.xhr(function (xhr) {
-              // xhr.upload.addEventListener('abort', function(){console.log('abort complete')}, false);
-              });
-            */
-
         };
 
 
