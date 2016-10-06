@@ -77,5 +77,5 @@ app.controller('RegisterCtrl', [
                 $scope.user.photoid = $scope.picFile.result.photoid;
 
 	    register();
-x	};
+	};
     }]);
