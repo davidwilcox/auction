@@ -57,72 +57,88 @@ router.post('/createguest', function(req, res, next) {
 
     var cnt = 0;
     var put_user = function() {
-	cnt++;
+
+
+        var purchase_ticket = function(bidnum) {
+	    var params = {
+		TableName: "tickets",
+		Item: {
+		    firstname: guest.firstname,
+		    lastname: guest.lastname,
+		    foodRes: guest.foodRes,
+		    agegroup: guest.agegroup,
+		    buyer: guest.buyer,
+		    date: guest.date,
+		    login: guest.login,
+		    bidnumber: bidnum,
+		    stripe_customer_id: guest.customer_id,
+		    boughtitems: {}
+		}
+	    };
+            console.log(params);
+
+	    docClient.put(params, function(err, data) {
+		if (err) {
+		    console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
+		    res.status(400).json({error: "Unable to add item. Error JSON:" + err});
+		} else {
+		    console.log("Added item:", JSON.stringify(data, null, 2));
+		    res.status(200).json(data);
+		}
+	    });
+	};
+
+
+
+
+        cnt++;
         if ( cnt == 5 ) {
             res.status(400).json("error","unstable bid number");
 	    return;
 	}
-        var params = {
-            TableName: "bidnumber",
-            Key: {
-                "id": "key"
-	    }
-	};
-	docClient.get(params, function(err, data) {
-            if ( err ) {
-		console.log(err);
-	    }
-            console.log(data);
-	    var mybidnumber = data.Item.number;
-	    var params = {
-		TableName: "bidnumber",
-		Item: {
-		    "id": "key",
-		    "number": data.Item.number+1
-		},
-		ConditionExpression: "(#numname = :num)",
-		ExpressionAttributeValues: {
-		    ":num": data.Item.number
-		},
-		ExpressionAttributeNames: {
-		    "#numname": "number"
-		}
+
+        if ( guest.agegroup != 'ADULT_TICKET' ) {
+            var t = Math.round(Math.random(1000,10000000)*1000000+1000);
+            purchase_ticket(t);
+        }
+        else {
+            var params = {
+                TableName: "bidnumber",
+                Key: {
+                    "id": "key"
+	        }
 	    };
-            console.log(params);
-	    docClient.put(params, function(err, data) {
-		if ( err ) {
+	    docClient.get(params, function(err, data) {
+                if ( err ) {
 		    console.log(err);
-		    put_user();
-		} else {
-		    var params = {
-			TableName: "tickets",
-			Item: {
-			    firstname: guest.firstname,
-			    lastname: guest.lastname,
-			    foodRes: guest.foodRes,
-			    agegroup: guest.agegroup,
-			    buyer: guest.buyer,
-			    date: guest.date,
-			    login: guest.login,
-			    bidnumber: mybidnumber,
-			    stripe_customer_id: guest.customer_id,
-			    boughtitems: {}
-			}
-		    };
-
-		    docClient.put(params, function(err, data) {
-			if (err) {
-			    console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
-			    res.status(400).json({error: "Unable to add item. Error JSON:" + err});
-			} else {
-			    console.log("Added item:", JSON.stringify(data, null, 2));
-			    res.status(200).json(data);
-			}
-		    });
-
-		}
-	    });
-	});
+	        }
+                console.log(data);
+	        var mybidnumber = data.Item.number;
+	        var params = {
+		    TableName: "bidnumber",
+		    Item: {
+		        "id": "key",
+		        "number": data.Item.number+1
+		    },
+		    ConditionExpression: "(#numname = :num)",
+		    ExpressionAttributeValues: {
+		        ":num": data.Item.number
+		    },
+		    ExpressionAttributeNames: {
+		        "#numname": "number"
+		    }
+	        };
+                console.log(params);
+                docClient.put(params, function(err, data) {
+		    if ( err ) {
+		        console.log(err);
+		        put_user();
+		    } else {
+                        purchase_ticket(mybidnumber);
+                    }
+	        });
+            });
+        }
     };
     put_user();
 });

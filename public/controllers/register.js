@@ -73,7 +73,7 @@ app.controller('RegisterCtrl', [
 		    $state.go('home');
 		});
 	    };
-            if ( $scope.picFile.result.photoid )
+            if ( $scope.picFile && $scope.picFile.result && $scope.picFile.result.photoid )
                 $scope.user.photoid = $scope.picFile.result.photoid;
 
 	    register();

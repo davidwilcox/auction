@@ -574,27 +574,27 @@ app.controller(
 app.controller(
     'AddAdminCtrl',
     ['$http', '$scope', 'auth', '$mdDialog', function($http, $scope, auth, $mdDialog) {
-	    $scope.addAdmin = function(email) {
-		$http.post('/addadmin', {email: email}, {headers: {
-			    Authorization: "Bearer " + auth.getToken() } }).then(function(res) {
-				    $mdDialog.show(
-						   $mdDialog.alert()
-						   .parent(angular.element(document.querySelector('#popupContainer')))
-						   .clickOutsideToClose(true)
-						   .title('Admin user added.')
-						   .ok('Got it!'));
-				}, function(err) {
-				    $mdDialog.show(
-						   $mdDialog.alert()
-						   .parent(angular.element(document.querySelector('#popupContainer')))
-						   .clickOutsideToClose(true)
-						   .title('Error encountered')
-						   .textContent(err)
-						   .ok('Got it!'));
-				});
-	    };
-	    
-	}]);
+	$scope.addAdmin = function(email) {
+	    $http.post('/addadmin', {email: email}, {headers: {
+		Authorization: "Bearer " + auth.getToken() } }).then(function(res) {
+		    $mdDialog.show(
+			$mdDialog.alert()
+			    .parent(angular.element(document.querySelector('#popupContainer')))
+			    .clickOutsideToClose(true)
+			    .title('Admin user added.')
+			    .ok('Got it!'));
+		}, function(err) {
+		    $mdDialog.show(
+			$mdDialog.alert()
+			    .parent(angular.element(document.querySelector('#popupContainer')))
+			    .clickOutsideToClose(true)
+			    .title('Error encountered')
+			    .textContent(err)
+			    .ok('Got it!'));
+		});
+	};
+	
+    }]);
 
 app.directive('viewpersonNoChange', function() {
     return {

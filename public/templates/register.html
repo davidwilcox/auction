@@ -57,10 +57,11 @@
       </md-input-container>
     </div>
     <b>Picture of You or Your Family (So people can see who’s donating)</b>
-
-    <input id="uploadfileid" class="ng-hide" type="file" ngf-select="upload($files)" ngf-change="upload($files)" ng-model="picFile" name="file" ngf-accept="'image/*'"
-           ngf-resize="{width: 500, height: 500}">
-    <label class="md-button md-primary md-raised" for="uploadfileid">Choose Picture</label>
+    <div>
+      <input id="uploadfileid" class="ng-hide" type="file" ngf-select="upload($files)" ngf-change="upload($files)" ng-model="picFile" name="file" ngf-accept="'image/*'"
+             ngf-resize="{width: 500, height: 500}">
+      <label class="md-button md-primary md-raised" for="uploadfileid">Choose Picture</label>
+    </div>
 
 
     <div>
