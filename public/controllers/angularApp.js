@@ -1,4 +1,5 @@
-var app = angular.module('auction', ['ngMessages', 'ui.router', 'pascalprecht.translate', 'ngSanitize', 'stripe.checkout', 'ngMaterial', 'duScroll'])
+var app = angular.module('auction', ['ngMessages', 'ui.router', 'pascalprecht.translate', 'ngSanitize', 'stripe.checkout', 'ngMaterial', 'duScroll', 'ngFileUpload'])
+
 
 
 app.config(['$translateProvider', function ($translateProvider) {
@@ -1511,4 +1512,3 @@ app.controller('MyProfileCtrl',[
 	};
 
     }]);
-

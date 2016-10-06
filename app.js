@@ -14,6 +14,12 @@ require('./config/passport');
 
 var app = express();
 
+var multipart = require('connect-multiparty');
+
+app.use(multipart({
+    uploadDir: "/tmp"
+}));
+
 
 function ensureSecure(req, res, next){
   if(req.secure){

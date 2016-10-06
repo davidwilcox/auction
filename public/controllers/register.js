@@ -18,8 +18,46 @@ app.controller('RegisterCtrl', [
     '$http',
     'auth',
     'fileReader',
-    function($scope, $state, $http, auth, fileReader) {
+    "Upload",
+    function($scope, $state, $http, auth, fileReader, Upload) {
 	$scope.user = {};
+
+
+        $scope.upload = function(files) {
+            var file = files[0];
+            console.log(file.$ngfName);
+            console.log("HERE");
+            console.log(file);
+            file.upload = Upload.upload({
+                url: '/uploadphoto',
+                method: "POST",
+                headers: {
+                    'Content-Type': file.type
+                },
+                data: {filename: file.name, photo: file},
+                file: file
+            });
+
+            file.upload.then(function (response) {
+                console.log(response);
+                file.result = response.data;
+            }, function (err) {
+                console.log(err);
+                if (err.status > 0)
+                    $scope.errorMsg = response.status + ': ' + response.data;
+            }, function (evt) {
+                // Math.min is to fix IE which reports 200% sometimes
+                file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+            });
+
+            /*
+              file.upload.xhr(function (xhr) {
+              // xhr.upload.addEventListener('abort', function(){console.log('abort complete')}, false);
+              });
+            */
+
+        };
+
 
         $scope.getFile = function () {
             $scope.progress = 0;
@@ -46,25 +84,9 @@ app.controller('RegisterCtrl', [
 		    $state.go('home');
 		});
 	    };
+            if ( $scope.picFile.result.photoid )
+                $scope.user.photoid = $scope.picFile.result.photoid;
 
-	    if ( picture ) {
-		filename = $scope.file.name;
-		payload = {
-		    "photo": picture,
-		    "filename": filename
-		};
-		$scope.submitted = true;
-		$http.post('/uploadphoto', payload).error(
-		    function(error) {
-			$scope.error = error;
-			$scope.submitted = false;
-		    }).then(function(data) {
-			$scope.user.photoid = data.data.photoid
-			$scope.submitted = false;
-			register();
-		    });
-	    } else {
-		register();
-	    }
-	};
+	    register();
+x	};
     }]);

@@ -253,27 +253,35 @@ router.get("/all/:table", function(req, res, next) {
 
 var jwtsign = require('jsonwebtoken');
 
+var multiparty = require('connect-multiparty');
+var multipartyMiddleware = multiparty();
+const fs = require('fs');
 
-router.post('/uploadphoto', function(req, res, next) {
-    if ( !req.body.photo ) {
+router.post('/uploadphoto', multipartyMiddleware, function(req, res, next) {
+
+    if ( !req.files.photo ) {
 	res.status(400).json({message : "Please fill in a photo"});
     }
     if ( !req.body.filename ) {
-	req.status(400).json({message: "Please fill in a filename"});
+	res.status(400).json({message: "Please fill in a filename"});
     }
 
     var extension = req.body.filename.split('.').pop();
     var new_filename = guid() + '.' + extension;
     var AWS2 = require("aws-sdk");
     var s3bucket = new AWS2.S3({params: {Bucket: 'svuus-photos'}});
-    var buf = new Buffer(req.body.photo.split(',')[1], 'base64');
-    var params = {Key: new_filename, Body: buf};
-    s3bucket.upload(params, function(err, data) {
-	if ( err ) {
-	    res.status(400).json({message: err});
-	} else {
-	    res.json({photoid : params.Key});
-	}
+    fs.readFile(req.files.photo.path, function(err, buf) {
+        if ( err )
+            res.status(400).json({message: "could not read file."});
+        //var buf = new Buffer(req.body.photo.split(',')[1], 'base64');
+        var params = {Key: new_filename, Body: buf};
+        s3bucket.upload(params, function(err, data) {
+	    if ( err ) {
+	        res.status(400).json({message: err});
+	    } else {
+	        res.json({photoid : params.Key});
+	    }
+        });
     });
 });
 
