@@ -72,6 +72,7 @@ router.post('/createguest', function(req, res, next) {
 		    login: guest.login,
 		    bidnumber: bidnum,
 		    stripe_customer_id: guest.customer_id,
+		    gluten: guest.gluten,
 		    boughtitems: {}
 		}
 	    };
