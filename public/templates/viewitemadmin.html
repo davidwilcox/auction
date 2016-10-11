@@ -91,6 +91,13 @@
              ng-model="item.quantity"
              >
 	</md-input-container>
+	<md-input-container>
+	  <label>Pricing Notes</label>
+	  <textarea
+	    ng-model="item.pricingnotes"
+	    ng-blug="saveitem(item)"
+	    ></textarea>
+	</md-input-container>
       </div>
       <div layout="row" ng-show="item.policy">
 
@@ -140,6 +147,7 @@
       <div layout="row">
         <div>
           <span class="md-headline">
+	    <font size="1"><br></font>
             <md-input-container>
               <label>Donor Name</label>
               <textarea

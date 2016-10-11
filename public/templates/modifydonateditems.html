@@ -51,9 +51,10 @@
     <div>
       <md-button class="md-primary md-raised" ng-click="performSearch()">Search/Sort</md-button>
     </div>
+    <div ng-show="items"><h3>{{items.length}} Items</h3></div>
   </div>
   <md-virtual-repeat-container style="height:calc(100vh - 265px); overflow-y: auto;" >
-    <div md-virtual-repeat="item in items" style="height:800px;">
+    <div md-virtual-repeat="item in items" style="height:600px;">
       <viewitemadmin item="{{item}}"></viewitemadmin>
       <br>
     </div>
