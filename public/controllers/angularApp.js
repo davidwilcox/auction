@@ -923,7 +923,8 @@ app.controller('BuyTicketsCtrl', [
 		foodRes: "NONE_FOOD",
 		buyer: auth.currentUser(),
 		date: Date(),
-		gluten: false
+		gluten: false,
+		login: auth.currentUser().email
 	    };
 	    return ticket;
 	};
@@ -994,31 +995,11 @@ app.controller('BuyTicketsCtrl', [
             charges.charge({
                 purchaser: auth.currentUser().email,
                 stripe_token: token.id,
-                amount: $scope.calculateTotal()*100
+                amount: $scope.calculateTotal()*100,
+		tickets: $scope.tickets
             }).then(function(data) {
-		$scope.submitProgress = 10;
-
-		$scope.tickets.forEach(function(ticket) {
-		    ticket.customer_id = data.data.customer_id;
-		    ticket.charge_id = data.data.charge_id;
-		    if ( auth.isLoggedIn() )
-		        ticket.login = auth.currentUser().email;
-		    else
-		        ticket.login = "a@a.a";
-	        });
-
-		var purchase_ticket = function(num) {
-		    tickets.purchase($scope.tickets[num]).then(function(data) {
-			if ( num == $scope.tickets.length - 1 ) {
-			    $state.go('buyticketsconfirmation');
-			} else {
-			    purchase_ticket(num+1);
-			}
-		    }, function(err) {
-			console.log(err);
-		    });
-		};
-		purchase_ticket(0);
+		console.log(data);
+		$state.go('buyticketsconfirmation');
             }, function(err) {
                 console.log(err);
             });

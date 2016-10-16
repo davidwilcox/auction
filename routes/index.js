@@ -643,7 +643,128 @@ router.post('/items', function(req, res, next) {
     });
 });
 
+
+
 router.post('/chargecustomer', auth, function(req, res, next) {
+
+
+
+
+    var add_ticket = function(guest) {
+
+	var deferred = new Promise(function(resolve, reject) {
+
+	    if ( !('name' in guest) ) {
+		reject({Message:"'name' attribute not defined."});
+		return;
+	    } else if ( !('foodRes' in guest) ) {
+		reject({Message:"'foodRes' attribute not defined."});
+		return;
+	    } else if ( !('agegroup' in guest) ) {
+		reject({Message:"'agegroup' attribute not defined."});
+		return;
+	    } else if ( guest.agegroup != 'ADULT_TICKET' && guest.agegroup != 'HIGHSCHOOL_TICKET' && guest.agegroup != 'CHILD_TICKET' && guest.agegroup != "JUNIORHIGH_TICKET" ) {
+		reject({Message:"'agegroup' should be set to 'ADULT_TICKET', 'HIGHSCHOOL_TICKET', 'HIGHSCHOOL_TICKET' or 'CHILD_TICKET'"});
+		return;
+	    } else if ( guest.foodRes != 'NONE_FOOD' && guest.foodRes != 'VEGETARIAN_FOOD' && guest.foodRes != 'VEGAN' && guest.foodRes != 'GLUTENFREE_FOOD' ) {
+		reject({Message:"'foodRes' should be set to 'VEGETARIAN_FOOD', 'NONE_FOOD' or 'GLUTENFREE_FOOD'"});
+		return;
+	    }
+
+	    var cnt = 0;
+	    var put_user = function() {
+
+		var purchase_ticket = function(bidnum) {
+		    var params = {
+			TableName: "tickets",
+			Item: {
+			    firstname: guest.firstname,
+			    lastname: guest.lastname,
+			    foodRes: guest.foodRes,
+			    agegroup: guest.agegroup,
+			    buyer: guest.buyer,
+			    date: guest.date,
+			    login: guest.login,
+			    bidnumber: bidnum,
+			    stripe_customer_id: guest.customer_id,
+			    gluten: guest.gluten,
+			    boughtitems: {}
+			}
+		    };
+
+		    docClient.put(params, function(err, data) {
+			if (err) {
+			    console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
+			    reject({error: "Unable to add item. Error JSON:" + err});
+			} else {
+			    console.log("Added item:", JSON.stringify(data, null, 2));
+			    resolve(data);
+			}
+		    });
+		};
+
+
+
+
+		cnt++;
+		if ( cnt == 5 ) {
+		    reject({"error":"unstable bid number"});
+		    return;
+		}
+
+		if ( guest.agegroup != 'ADULT_TICKET' ) {
+		    var t = Math.round(Math.random(1000,10000000)*1000000+1000);
+		    purchase_ticket(t);
+		}
+		else {
+		    var params = {
+			TableName: "bidnumber",
+			Key: {
+			    "id": "key"
+			}
+		    };
+		    docClient.get(params, function(err, data) {
+			if ( err ) {
+			    console.log(err);
+			}
+			console.log(data);
+			var mybidnumber = data.Item.number;
+			var params = {
+			    TableName: "bidnumber",
+			    Item: {
+				"id": "key",
+				"number": data.Item.number+1
+			    },
+			    ConditionExpression: "(#numname = :num)",
+			    ExpressionAttributeValues: {
+				":num": data.Item.number
+			    },
+			    ExpressionAttributeNames: {
+				"#numname": "number"
+			    }
+			};
+			console.log(params);
+			docClient.put(params, function(err, data) {
+			    if ( err ) {
+				console.log(err);
+				put_user();
+			    } else {
+				purchase_ticket(mybidnumber);
+			    }
+			});
+		    });
+		}
+	    };
+	    put_user();
+	});
+	return deferred;
+    };
+
+
+
+
+
+
     var purchaser = req.body.purchaser;
     var stripe_token = req.body.stripe_token;
     var amount = req.body.amount;
@@ -660,14 +781,31 @@ router.post('/chargecustomer', auth, function(req, res, next) {
             customer: customer.id,
             description: "purchase auction tickets for " + purchaser
         }, function(charge_err, charge) {
-            if ( charge_err ) {
+	    
+	    if ( charge_err ) {
                 res.status(401).json({err: charge_err});
             }
             else if ( cust_err ) {
                 res.status(401).json({err: cust_err});
             } else {
-                res.status(200).json({charge_id: charge.id,
-                                      customer_id: customer.id});
+
+		var tickets = req.body.tickets;
+		var purch = function(num) {
+		    var ticket = tickets[num];
+		    ticket.charge_id = charge.id;
+		    ticket.customer_id = customer.id;
+
+		    var p = add_ticket(ticket);
+		    p.then(function(data) {
+			if ( num == tickets.length - 1 )
+			    return res.status(200).json({added: true});
+			else
+			    purch(num+1);
+		    }, function(err) {
+			res.status(400).json(err);
+		    });
+		};
+		purch(0);
             }
         } );
     });
