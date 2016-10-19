@@ -1329,6 +1329,7 @@ app.controller( 'ModifyDonatedItemsCtrl', [
 		.cancel('No! Whoops!');
 	    $mdDialog.show(confirm).then(function() {
 
+		console.log(item);
 		item.transactions = $scope.transactions_by_item[item.id];
 		if ( !item.transactions )
 		    item.transactions = [];

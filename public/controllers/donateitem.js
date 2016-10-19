@@ -48,7 +48,6 @@ app.controller('DonateItemCtrl', [
     '$window',
     "$mdDialog",
     'auth',
-    'fileReader',
     "Upload",
     function($scope, $state, $http, $window, $mdDialog, auth, Upload) {
 
