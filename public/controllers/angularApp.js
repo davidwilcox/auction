@@ -934,6 +934,8 @@ app.controller('BuyTicketsCtrl', [
 	var initializeTickets = function() {
 	    $scope.tickets = [];
 	    $scope.tickets[0] = createTicket();
+	    $scope.tickets[0].firstname = auth.currentUser().firstname;
+	    $scope.tickets[0].lastname = auth.currentUser().lastname;
 	}
 
 	initializeTickets();
