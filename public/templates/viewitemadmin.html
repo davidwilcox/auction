@@ -29,11 +29,12 @@
 	<md-input-container>
 	  <label>Item Name</label>
 	  <textarea
-	     type="text"
-	     ng-model="item.name"
-	     md-maxlength="50"
-	     ng-blur="saveitem(item)"
-	     cols="70"
+	    type="text"
+	    ng-model="item.name"
+	    md-maxlength="50"
+	    ng-blur="saveitem(item)"
+	    cols="70"
+	    max-rows="1"
 	     >
 	  </textarea>
 	</md-input-container>
@@ -43,10 +44,11 @@
 	<md-input-container>
 	  <label>Item Description</label>
 	  <textarea
-             ng-model="item.description"
-	     cols="70"
-	     md-maxlength="500"
-	     ng-blur="saveitem(item)"
+            ng-model="item.description"
+	    cols="70"
+	    md-maxlength="500"
+	    ng-blur="saveitem(item)"
+	    max-rows="3"
              >
 	  </textarea>
 	</md-input-container>
@@ -96,6 +98,7 @@
 	  <textarea
 	    ng-model="item.pricingnotes"
 	    ng-blur="saveitem(item)"
+	    max-rows="1"
 	    ></textarea>
 	</md-input-container>
       </div>
