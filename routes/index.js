@@ -579,6 +579,9 @@ router.post('/submititem', auth, function(req, res, next) {
         item.id = guid();
     item.date = new Date();
 
+    if ( item.pricingnotes == '' )
+	delete item.pricingnotes;
+
     var params = {
 	TableName: "items",
 	Item: item
