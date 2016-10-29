@@ -1106,7 +1106,7 @@ app.controller('ViewItemMyOwnCtrl', ["$scope", function($scope) {
 }]);
 
 
-app.controller('ViewItemAdminCtrl', ['$scope', 'auth', "$http", '$mdDialog', function($scope, auth, $http, $mdDialog) {
+app.controller('ViewItemAdminCtrl', ['$scope', 'auth', "$http", '$mdDialog', "Upload", function($scope, auth, $http, $mdDialog, Upload) {
     $scope.getFullName = getFullName;
     $scope.isAdmin = auth.isAdmin;
 
@@ -1120,6 +1120,35 @@ app.controller('ViewItemAdminCtrl', ['$scope', 'auth', "$http", '$mdDialog', fun
             item.message = error;
         });
     };
+
+    
+    $scope.upload = function(files,item) {
+        var file = files[0];
+        file.upload = Upload.upload({
+            url: '/uploadphoto',
+            method: "POST",
+            headers: {
+                'Content-Type': file.type
+            },
+            data: {filename: file.name, photo: file}
+        });
+
+        file.upload.then(function (response) {
+            console.log(response);
+            file.result = response.data;
+            var photoid = file.result.photoid;
+	    item.donor.photoid = photoid;
+	    return $scope.saveitem(item);
+        }, function (err) {
+            console.log(err);
+            if (err.status > 0)
+                $scope.errorMsg = response.status + ': ' + response.data;
+        }, function (evt) {
+            // Math.min is to fix IE which reports 200% sometimes
+            file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+        });
+    };
+
 
     $scope.removeBidderFromItem = function(event, item, transaction) {
 
