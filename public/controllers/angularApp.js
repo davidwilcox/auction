@@ -77,7 +77,8 @@ app.factory('items', ['$http', '$q', function($http, $q) {
 		     && searchterms.buyeremail != ticket.login
 		     || ( searchterms.searchbuyername && !getFullName(ticket).toLowerCase().includes(searchterms.searchbuyername.toLowerCase()) )
 		     || (searchterms.agegroup && ticket.agegroup != searchterms.agegroup )
-		     || (searchterms.dietaryrestrictions && ticket.foodRes != searchterms.dietaryrestrictions) ) {
+		     || (searchterms.dietaryrestrictions && ticket.foodRes != searchterms.dietaryrestrictions)
+		     || searchterms.maxBidNumber && ticket.bidnumber > searchterms.maxBidNumber ) {
 		    return;
 		}
 		tickets[ticket.bidnumber] = ticket;
@@ -641,6 +642,15 @@ app.controller('ViewTicketCtrl', [
 	    $scope.items[item.id] = item;
 	});
     }]);
+
+app.controller(
+    "BidCardsCtrl",
+    function($scope, items) {
+	items.performSearch({maxBidNumber: 1000}).then(function(data) {
+	    $scope.tickets = data.tickets_arr;
+	});
+	$scope.getFullName = getFullName;
+    });
 
 app.controller('ViewRegisteredPeopleCtrl', [
     '$scope',

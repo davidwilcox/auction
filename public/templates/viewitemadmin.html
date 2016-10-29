@@ -188,9 +188,9 @@
 	  </div>
 	  <div>
 	    
-	    <input id="uploadfileid-{{itemid}}" class="ng-hide" type="file" ngf-select="upload($files,item)" ngf-change="upload($files,item)" ng-model="picFile" name="file" ngf-accept="'image/*'"
+	    <input id="uploadfileid-{{item.id}}" class="ng-hide" type="file" ngf-select="upload($files,item)" ngf-change="upload($files,item)" ng-model="picFile" name="file" ngf-accept="'image/*'"
 		   ngf-resize="{width: 500, height: 500}">
-	    <label class="md-button md-primary md-raised" for="uploadfileid-{{itemid}}">Replace Photo</label>
+	    <label class="md-button md-primary md-raised" for="uploadfileid-{{item.id}}">Replace Photo</label>
 	  </div>
         </div>
       </div>
