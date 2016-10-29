@@ -1,28 +1,31 @@
 <div>
   <div class="no-print">
-    <a ui-sref-active="active" ui-sref=".viewregisteredpeople" ng-show="isAdmin()">
+    <a ui-sref-active="active" ui-sref="viewregisteredpeople" ng-show="isAdmin()">
       <md-button class="md-primary md-raised">View Registered People</md-button>
     </a>
-    <a ui-sref-active="active" ui-sref=".modifydonateditems" ng-show="isAdmin()">
+    <a ui-sref-active="active" ui-sref="modifydonateditems" ng-show="isAdmin()">
       <md-button class="md-primary md-raised">Modify Donated Items</md-button>
     </a>
-    <a  ui-sref-active="active" ui-sref=".insertbids" ng-show="isAdmin()">
+    <a  ui-sref-active="active" ui-sref="insertbids" ng-show="isAdmin()">
       <md-button class="md-primary md-raised">Insert Bids</md-button>
     </a>
-    <a ui-sref-active="active" ui-sref=".add_admin" ng-show="isAdmin()">
+    <a ui-sref-active="active" ui-sref="add_admin" ng-show="isAdmin()">
       <md-button class="md-primary md-raised">Add Admin</md-button>
     </a>
-    <a ui-sref-active="active" ui-sref="admin.silent_bid_sheets" ng-show="isAdmin()">
+    <a ui-sref-active="active" ui-sref="silent_bid_sheets" ng-show="isAdmin()">
       <md-button class="md-primary md-raised">Silent Bid Sheets</md-button>
     </a>
-    <a ui-sref-active="active" ui-sref="admin.live_catalog" ng-show="isAdmin()">
+    <a ui-sref-active="active" ui-sref="live_catalog" ng-show="isAdmin()">
       <md-button class="md-primary md-raised">Live Catalog</md-button>
     </a>
-    <a ui-sref-active="active" ui-sref="admin.fixed_price_bid_sheet" ng-show="isAdmin()">
+    <a ui-sref-active="active" ui-sref="fixed_price_bid_sheet" ng-show="isAdmin()">
       <md-button class="md-primary md-raised">Fixed Price Sheets</md-button>
     </a>
-    <a ui-sref-active="active" ui-sref="admin.charge_for_items" >
+    <a ui-sref-active="active" ui-sref="charge_for_items" >
       <md-button class="md-primary md-raised">Charge For Items</md-button>
+    </a>
+    <a ui-sref-active="active" ui-sref="bid_cards" >
+      <md-button class="md-primary md-raised">Bid Cards</md-button>
     </a>
   </div>
 

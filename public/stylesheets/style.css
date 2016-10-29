@@ -15,6 +15,10 @@
 	color: red;
 }
 
+.viewitems > md-input-container {
+    margin-bottom: 1px!important;
+}
+
 
 .active > button {
 	background-color: #FF4081!important

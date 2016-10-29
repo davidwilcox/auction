@@ -327,17 +327,17 @@ app.config([
 		templateUrl: '/templates/home.html',
 		controller: 'HomeCtrl'
 	    })
-	    .state('admin.viewregisteredpeople', {
+	    .state('viewregisteredpeople', {
 		url: '/viewregisteredpeople',
 		templateUrl: '/templates/viewregisteredpeople.html',
 		controller: 'ViewRegisteredPeopleCtrl'
 	    })
-	    .state('admin.modifydonateditems', {
+	    .state('modifydonateditems', {
 		url: '/modifydonateditems',
 		templateUrl: '/templates/modifydonateditems.html',
 		controller: 'ModifyDonatedItemsCtrl'
 	    })
-	    .state('admin.fixed_price_bid_sheet', {
+	    .state('fixed_price_bid_sheet', {
 		url: '/fixed_price_bid_sheet',
 		templateUrl: '/templates/fixed_price_bid_sheet.html',
 		controller: 'FixedPriceBidSheetCtrl',
@@ -347,7 +347,7 @@ app.config([
 		    }
 		}]
 	    })
-	    .state('admin.silent_bid_sheets', {
+	    .state('silent_bid_sheets', {
 		url: '/silent_bid_sheets',
 		templateUrl: '/templates/silent_bid_sheets.html',
 		controller: 'SilentBidSheetsCtrl',
@@ -357,7 +357,17 @@ app.config([
 		    }
 		}]
 	    })
-	    .state('admin.live_catalog', {
+	    .state('bid_cards', {
+		url: '/bid_cards',
+		templateUrl: '/templates/bid_cards.html',
+		controller: 'BidCardsCtrl',
+		onEnter: [ '$state', 'auth', function($state, auth) {
+		    if ( !auth.isLoggedIn() ) {
+			$state.go('home');
+		    }
+		}]
+	    })
+	    .state('live_catalog', {
 		url: '/live_catalog',
 		templateUrl: '/templates/live_catalog.html',
 		controller: 'LiveCatalogCtrl',
@@ -402,7 +412,7 @@ app.config([
 		    }
 		}]
 	    })
-	    .state('admin.insertbids', {
+	    .state('insertbids', {
 		url: '/insertbids',
 		templateUrl: '/templates/insertbids.html',
 		controller: 'InsertBidsCtrl',
@@ -436,14 +446,14 @@ app.config([
 			$state.go('home');
 		    }
 		}]
- 	    }).state('admin.charge_for_items', {
+ 	    }).state('charge_for_items', {
 		     url: '/charge_for_items',
 		     templateUrl: "/templates/charge_for_items.html",
 		     controller: 'ChargeForAllItemsCtrl'
 	    })
-	    .state('admin.add_admin', {
+	    .state('add_admin', {
 		url: '/add_admin',
-		templateUrl: '/templates/add_admin.html',
+		templateUrl: '/templates/add_html',
 		controller: 'AddAdminCtrl',
 		onEnter: [ '$state', 'auth', function($state, auth) {
 		    if ( !auth.isAdmin() ) {

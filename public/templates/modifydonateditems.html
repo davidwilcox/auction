@@ -2,7 +2,7 @@
   <div ng-show="error">
     <span>{{ error.message }}</span>
   </div>
-  <div layout="row">
+  <div layout="row" class="viewitems">
     <md-input-container>
       <label>Search Item Name</label>
       <input
@@ -53,7 +53,7 @@
     </div>
     <div ng-show="items"><h3>{{items.length}} Items</h3></div>
   </div>
-  <md-virtual-repeat-container style="height:calc(100vh - 215px); overflow-y: auto;" >
+  <md-virtual-repeat-container style="height:calc(100vh - 150px); overflow-y: auto;" >
     <div md-virtual-repeat="item in items" style="height:600px;">
       <viewitemadmin item="{{item}}"></viewitemadmin>
       <br>
