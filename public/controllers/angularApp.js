@@ -110,6 +110,8 @@ app.factory('items', ['$http', '$q', function($http, $q) {
 
 	    data_items.forEach(function(item) {
                 item.eventdate = new Date(item.eventdate);
+		if ( item.date )
+		    item.date = new Date(item.date);
 		if ( (!searchterms.email || item.email == searchterms.email)
 		     && searchItemType(item.type, searchterms.searchitemtype)
 		     && (!searchterms.searchdonorname || getFullName(item.donor).toLowerCase().includes(searchterms.searchdonorname.toLowerCase()))
@@ -125,9 +127,15 @@ app.factory('items', ['$http', '$q', function($http, $q) {
 		}
 	    });
 	    var cmp;
-            if ( !sortval || sortval == 'date' ) {
+	    if ( !sortval || sortval == 'date' ) {
 		cmp = function(item1, item2) {
-		    return new Date(item1.date) - new Date(item2.date)
+		    if ( !item1.date && !item2.date )
+			return 0;
+		    if ( !item1.date )
+			return 1;
+		    if ( !item2.date )
+			return -1;
+		    return item1.date.getTime() - item2.date.getTime()
 		};
 	    } else if ( sortval == 'itemnumber' ) {
 		cmp = function(item1, item2) {
@@ -141,7 +149,6 @@ app.factory('items', ['$http', '$q', function($http, $q) {
 		};
 	    } else {
 		cmp = function(item1, item2) {
-                    console.log(item1);
                     if ( !item1.type && !item2.type )
                         return 0;
                     if ( !item1.type )
