@@ -1,17 +1,16 @@
 <div>
   <div ng-repeat="ticket in tickets">
     <div class="page-break-avoid">
-      <div style="font-size:70%;">
-	<div style="font-decoration:underline">{{getFullName(ticket)}}</div>
-	<div>
-	  {{ticket.buyer.phonenumber | tel}}
-	</div>
-	<div>
-	  {{ticket.buyer.email}}
-	</div>
-      </div>
       <div layout="row">
-	<div flex />
+	<div flex>
+	  <div style="font-decoration:underline">{{getFullName(ticket)}}</div>
+	  <div>
+	    {{ticket.buyer.phonenumber | tel}}
+	  </div>
+	  <div>
+	    {{ticket.buyer.email}}
+	  </div>
+	</div>
 	<div style="font-size:2000%; font-weight:800;color:#555555">{{ticket.bidnumber}}</div>
 	<div flex />
       </div>
