@@ -822,7 +822,7 @@ router.post('/chargecustomer', auth, function(req, res, next) {
 						+ '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />'
 						+ '<title>' + subject + '</title>'
 						+ '</head><body>'
-						+ 'This email confirms your purchase of tickets for the SVUUS auction. You bought tickets for: ' + tickets.reduce(function(prevValue,curValue) {
+						+ 'This email confirms your purchase of tickets for the SVUUS auction. Your credit card has been charged for ' + amount/100 + '. You bought tickets for: ' + tickets.reduce(function(prevValue,curValue) {
 						    return prevValue + "," + curValue.firstname
 							+ " " + curValue.lastname;
 						}, '').substring(1)
