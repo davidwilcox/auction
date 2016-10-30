@@ -577,7 +577,6 @@ router.post('/submititem', auth, function(req, res, next) {
     var item = req.body;
     if ( !item.id )
         item.id = guid();
-    item.date = (new Date()).toJson();
 
     if ( item.pricingnotes == '' )
 	delete item.pricingnotes;
