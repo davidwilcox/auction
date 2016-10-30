@@ -109,6 +109,10 @@ table {
     font-size: large;
 }
 
+.small-option {
+    height: 30px!important;
+}
+
 @media print {
     .page-break {page-break-after: always;}
 }

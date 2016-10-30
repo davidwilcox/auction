@@ -178,6 +178,19 @@ app.factory('items', ['$http', '$q', function($http, $q) {
 		cmp = function(ticket1, ticket2) {
 		    return ticket1.foodRes.localeCompare(ticket2.foodRes);
 		};
+	    } else if ( sortval == "lastname" ) {
+		console.log(sortval);
+		cmp = function(ticket1, ticket2) {
+		    // these checks should not be necessary, but for some reason people
+		    // get tickets in without names.
+		    if ( !ticket1.lastname && !ticket2.lastname )
+			return 0;
+		    if ( !ticket1.lastname )
+			return 1;
+		    if ( !ticket2.lastname )
+			return -1;
+		    return ticket1.lastname.toLowerCase().localeCompare(ticket2.lastname.toLowerCase());
+		};
 	    }
 	    tickets_arr.sort(cmp);
 
