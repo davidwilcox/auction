@@ -825,8 +825,8 @@ router.post('/chargecustomer', auth, function(req, res, next) {
 						+ 'This email confirms your purchase of tickets for the SVUUS auction. You bought tickets for: ' + tickets.reduce(function(prevValue,curValue) {
 						    return prevValue + "," + curValue.firstname
 							+ " " + curValue.lastname;
-						}, '').substring()
-						+ "<br>Cya at the auction!";
+						}, '').substring(1)
+						+ "<br>Cya at the auction!"
 						+ '</body></html>'
 					}
 				    }
