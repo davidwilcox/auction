@@ -1,7 +1,7 @@
 <div ng-repeat="item in items">
   <div layout="row">
     <div flex>
-      <h2>
+      <h2> 
         {{::item.name}}
       </h2>
     </div>
@@ -14,11 +14,19 @@
     </div>
   </div>
   <div layout="row">
-    <div flex>
-      {{::item.description}}
+    <div flex layout="column">
+      <div>
+	{{::item.description}}
+      </div>
+      <div flex />
+      <div style="background-color:#CCCCCC">
+	<span flex="100" translate="{{::item.policy}}"></span>
+      </div>
     </div>
-    <div class="live-catalog-image-container">
-      <img ng-src="https://svuus-photos.s3.amazonaws.com/{{::item.donor.photoid}}" >
+    <div>
+      <div class="fixed-price-bid-sheet-img-container">
+	<img ng-src="https://svuus-photos.s3.amazonaws.com/{{::item.donor.photoid}}" >
+      </div>
     </div>
   </div>
   <div layout="row">
@@ -39,9 +47,6 @@
           <td>{{::item.value | currency}}</td>
 	</tr>
       </table>
-    </div>
-    <div flex="15" layout-padding style="background-color:#CCCCCC">
-      <span flex="100" translate="{{::item.policy}}"></span>
     </div>
   </div>
   <div class="page-break"></div>
