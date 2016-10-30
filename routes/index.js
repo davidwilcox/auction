@@ -15,6 +15,10 @@ var docClient = new AWS.DynamoDB.DocumentClient();
 var Q = require('q');
 
 
+// Get reference to AWS clients
+var ses = new AWS.SES();
+
+
 function guid() {
     function s4() {
 	return Math.floor((1 + Math.random()) * 0x10000)
@@ -799,10 +803,43 @@ router.post('/chargecustomer', auth, function(req, res, next) {
 
 		    var p = add_ticket(ticket);
 		    p.then(function(data) {
-			if ( num == tickets.length - 1 )
-			    return res.status(200).json({added: true});
-			else
+			if ( num == tickets.length - 1 ) {
+			    var subject = "Tickets Bought";
+			    ses.sendEmail({
+				Source: "admin@auction.svuus.org",
+				Destination: {
+				    ToAddresses: [
+					purchaser
+				    ]
+				},
+				Message: {
+				    Subject: {
+					Data: subject
+				    },
+				    Body: {
+					Html: {
+					    Data: '<html><head>'
+						+ '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />'
+						+ '<title>' + subject + '</title>'
+						+ '</head><body>'
+						+ 'This email confirms your purchase of tickets for the SVUUS auction. You bought tickets for: ' + tickets.reduce(function(prevValue,curValue) {
+						    return prevValue + "," + curValue.firstname
+							+ " " + curValue.lastname;
+						}, '').substring()
+						+ "<br>Cya at the auction!";
+						+ '</body></html>'
+					}
+				    }
+				}
+			    }, function(err, data) {
+				if ( err )
+				    console.log(err);
+				return res.status(200).json({added: true});
+			    });
+
+			} else {
 			    purch(num+1);
+			}
 		    }, function(err) {
 			res.status(400).json(err);
 		    });
@@ -973,9 +1010,6 @@ router.post('/addbuyer', auth, function(req, res, next) {
 
 
 
-
-// Get reference to AWS clients
-var ses = new AWS.SES();
 
 function getUser(email, fn) {
     dynamodb.getItem({
