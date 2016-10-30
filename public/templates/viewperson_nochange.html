@@ -16,4 +16,10 @@
     <label>Date Created:</label>
     {{ticket.date | date:'medium'}}
   </div>
+  <div layout="row">
+    <label>Gluten Free?</label>
+    <span>
+      {{ticket.gluten}}
+    </span>
+  </div>
 </md-card>
