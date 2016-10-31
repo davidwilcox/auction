@@ -588,11 +588,23 @@ app.controller('ViewPersonNoChangeCtrl',
 	$scope.ticket.date = new Date($scope.ticket.date);
     }]);
 
-app.controller('ViewPersonCtrl', ['$scope',
-				  function($scope) {
-				      $scope.getFullName = getFullName;
+app.controller(
+    'ViewPersonCtrl',
+    function($scope, $http, auth) {
+	$scope.getFullName = getFullName;
 	$scope.ticket.date = new Date($scope.ticket.date);
-    }]);
+	$scope.ageCategories = ["ADULT_TICKET", "HIGHSCHOOL_TICKET", "JUNIORHIGH_TICKET", "CHILD_TICKET"];
+	$scope.allFoodRestrictions = ["NONE_FOOD","VEGETARIAN_FOOD","VEGAN"];
+	$scope.saveticket = function(ticket) {
+	    $http.post("/modify_ticket", {ticket: ticket}, {headers: {
+		Authorization: "Bearer " + auth.getToken()
+	    } }).then(function(data) {
+		$scope.message = "Item Saved";
+	    }, function(err) {
+		$scope.message = err;
+	    });
+	};
+    });
 
 
 app.controller(

@@ -851,6 +851,29 @@ router.post('/chargecustomer', auth, function(req, res, next) {
 });
 
 
+router.post('/modify_ticket', auth, function(req, res, next) {
+
+    var ticket = req.body.ticket;
+    var params = {
+	TableName: "tickets",
+	Item: ticket
+    };
+
+    console.log(params);
+
+    docClient.put(params, function(err, data) {
+	if ( err ) {
+            console.log("err");
+            console.log(err);
+	    res.status(401).json({error: err});
+	} else {
+            res.status(200).json({message: "ticket added"});
+	}
+    });
+
+});
+
+
 
 router.post('/deletebidder', auth, function(req, res, next) {
     var bidnum = req.body.bidnumber;

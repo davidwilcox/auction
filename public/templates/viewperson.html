@@ -1,9 +1,33 @@
 <md-card layout-padding>
   <div layout="row" flex>
-    <div flex>
+    <div flex layout="row">
       <span class="md-headline">
-        {{getFullName(ticket)}}
+	<md-input-container>
+	  <label>First Name</label>
+	  <textarea
+	    type="text"
+	    ng-model="ticket.firstname"
+	    ng-blur="saveticket(ticket)"
+	    max-rows="1"
+	    >
+	  </textarea>
+	</md-input-container>
       </span>
+
+
+      <span class="md-headline">
+	<md-input-container>
+	  <label>Last Name</label>
+	  <textarea
+	    type="text"
+	    ng-model="ticket.lastname"
+	    ng-blur="saveticket(ticket)"
+	    max-rows="1"
+	    >
+	  </textarea>
+	</md-input-container>
+      </span>
+
     </div>
     <md-card-actions layout="row" layout-align="end">
       <md-button class="md-icon-button" ng-click="confirm_delete($event,ticket.bidnumber)" >
@@ -11,15 +35,14 @@
       </md-button>
     </md-card-actions>
   </div>
+  <div ng-if="message" style="color:red;">
+    {{message}}
+  </div>
   <div layout="row">
     <div>
-      <span class="md-subhead">Bid Number: {{ticket.bidnumber}}</span>
       <div layout="row">
-	<label>Age Category: </label><span translate="{{ticket.agegroup}}"></span>
-      </div>
-      <div layout="row">
-	<label>Dietary Restrictions:&nbsp;</label>
-	<span translate="{{ticket.foodRes}}"></span>
+	<label>Bid Number:</label>
+	<span>{{ticket.bidnumber}}</span>
       </div>
       <div layout="row">
 	<label>Date Created:</label>
@@ -28,12 +51,50 @@
 	</span>
       </div>
       <div layout="row">
-	<label>Gluten Free?</label>
-	<span>
-	  {{ticket.gluten}}
-	</span>
+	<md-checkbox
+	  ng-model="ticket.gluten"
+	  flex
+	  class="md-warn md-align-top-left"
+	  ng-change="saveticket(ticket)"
+	  >
+	  Gluten Free?
+	</md-checkbox>
+      </div>
+
+      <div layout="row">
+	<div>
+	  <md-input-container>
+	    <md-select
+	      ng-model="ticket.agegroup"
+	      ng-change="saveticket(ticket)"
+	      aria-label="agegroup"
+	      >
+	      <div ng-repeat="cat in ageCategories">
+		<md-option value="{{cat}}">
+		  <span translate="{{cat}}"></span>
+		</md-option>
+	      </div>
+	    </md-select>
+	  </md-input-container>
+	</div>
+	<div>
+	  <md-input-container>
+	    <md-select
+	      ng-model="ticket.foodRes"
+	      ng-change="saveticket(ticket)"
+	      aria-label="food restrictions"
+	      >
+	      <div ng-repeat="res in allFoodRestrictions">
+		<md-option value="{{res}}">
+		  <span translate="{{res}}"></span>
+		</md-option>
+	      </div>
+	    </md-select>
+	  </md-input-container>
+	</div>
       </div>
     </div>
+    <div flex />
     <div>
       <div layout="row">
 	<label>
@@ -54,18 +115,19 @@
 	{{ticket.buyer.phonenumber | tel}}
       </div>
     </div>
-    <div flex />
-    <md-card layout-padding>
-      <md-card-title>
-	<md-card-title-text>
-          <span class="md-subhead">Bought Items</span>
-	</md-card-title-text>
-      </md-card-title>
-      <div ng-repeat="transaction in transactions_by_bidnum[ticket.bidnumber]">
-	<div layout="row">
-	  <a ui-sref="viewitem({ itemid: transaction.itemid })">{{items_by_itemid[transaction.itemid].name}}</a>&nbsp;{{transaction.sellprice | currency}}
+    <div ng-if="transactions_by_bidnum[ticket.bidnumber].length > 0">
+      <md-card layout-padding>
+	<md-card-title>
+	  <md-card-title-text>
+            <span class="md-subhead">Bought Items</span>
+	  </md-card-title-text>
+	</md-card-title>
+	<div ng-repeat="transaction in transactions_by_bidnum[ticket.bidnumber]">
+	  <div layout="row">
+	    <a ui-sref="viewitem({ itemid: transaction.itemid })">{{items_by_itemid[transaction.itemid].name}}</a>&nbsp;{{transaction.sellprice | currency}}
+	  </div>
 	</div>
-      </div>
-    </md-card>    
+      </md-card>
+    </div>
   </div>
 </md-card>

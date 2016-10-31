@@ -1,6 +1,6 @@
 <div class="container col-xs-12 col-sm-offset-1 col-sm-10">
   {{message}}
-  <div layout="row">
+  <div layout="row" class="viewitems">
     <md-input-container>
       <label>Search Person Name</label>
       <input
@@ -26,7 +26,7 @@
 	 ng-model="searchTerms.dietaryrestrictions"
 	 >
         <md-option value="">No Filter</md-option>
-	<md-option value="NONE_FOOD">No food restrictions</md-option>
+	<md-option value="NONE_FOOD">Regular</md-option>
 	<md-option value="VEGETARIAN_FOOD">Vegetarian</md-option>
 	<md-option value="VEGAN">Vegan</md-option>
       </md-select>
@@ -49,7 +49,9 @@
     </div>
     <div ng-show="tickets"><h3>{{tickets.length}} People</h3></div>
   </div>
-  <div ng-repeat="ticket in tickets track by $index">
-    <viewperson person="ticket"></viewperson>
-  </div>
+  <md-virtual-repeat-container style="height:calc(100vh - 150px); overflow-y: auto;" >
+    <div md-virtual-repeat="ticket in tickets" style="height:300px;">
+      <viewperson person="ticket"></viewperson>
+    </div>
+  </md-virtual-repeat-container>
 </div>
