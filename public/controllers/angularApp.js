@@ -135,7 +135,7 @@ app.factory('items', ['$http', '$q', function($http, $q) {
 			return 1;
 		    if ( !item2.date )
 			return -1;
-		    return item1.date.getTime() - item2.date.getTime()
+		    return item2.date.getTime() - item1.date.getTime()
 		};
 	    } else if ( sortval == 'itemnumber' ) {
 		cmp = function(item1, item2) {
