@@ -609,10 +609,9 @@ app.controller(
 
 app.controller(
     'AdminHomeCtrl',
-    ['auth', '$scope',
-     function(auth, $scope) {
-	 $scope.isAdmin = auth.isAdmin;
-     }]);
+    function(auth, $scope) {
+	$scope.isAdmin = auth.isAdmin;
+     });
 
 app.controller(
     'AddAdminCtrl',
@@ -746,9 +745,22 @@ app.controller('HomeCtrl', [
     '$scope',
     '$state',
     'auth',
-    function($scope, $state, auth) {
+    "$mdDialog",
+    function($scope, $state, auth, $mdDialog) {
 	$scope.isLoggedIn = auth.isLoggedIn;
 	this.isLoggedIn = auth.isLoggedIn;
+
+	
+	 
+	$scope.showIdeas = function(ev) {
+	    $mdDialog.show({
+		clickOutsideToClose: true,
+		templateUrl: '/templates/donation_ideas.html',
+		ariaLabel: 'Alert Dialog Demo',
+		targetEvent: ev,
+		fullscreen: true
+	    });
+	};
     }]);
 
 

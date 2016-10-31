@@ -161,6 +161,9 @@
           <div>
             <md-button class="md-primary md-raised" ng-href="mailto:{{::item.donor.email}}">Email Donor</md-button>
           </div>
+	  <div>
+            {{item.date | date:'medium'}}
+          </div>
         </div>
         <div flex="100">
 	  <div ng-if="item.donor.photoid">
