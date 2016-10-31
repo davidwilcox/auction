@@ -152,9 +152,22 @@
           <span class="md-headline">
 	    <font size="1"><br></font>
             <md-input-container>
-              <label>Donor Name</label>
+              <label>Donor First Name</label>
               <textarea
-	         ng-bind="getFullName(item.donor)"
+	         ng-model="item.donor.firstname"
+	         type="text"
+	         cols="40"
+	         ng-blur="saveitem(item)"
+	         >
+              </textarea>
+            </md-input-container>
+          </span>
+	  <span class="md-headline">
+	    <font size="1"><br></font>
+            <md-input-container>
+              <label>Donor Last Name</label>
+              <textarea
+	         ng-model="item.donor.lastname"
 	         type="text"
 	         cols="40"
 	         ng-blur="saveitem(item)"
