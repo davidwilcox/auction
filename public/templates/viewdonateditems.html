@@ -1,6 +1,8 @@
 <div>
-  <div ng-repeat="item in items">
-    <viewitem item="{{item}}"></viewitem>
-    <br>
-  </div>
+  <md-virtual-repeat-container style="height:100vh; overflow-y:auto;">
+    <div md-virtual-repeat="item in items" style="height:430px;">
+      <viewitem item="{{item}}"></viewitem>
+      <br>
+    </div>
+  </md-virtual-repeat-container>
 </div>
