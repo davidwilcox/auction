@@ -163,7 +163,9 @@
           </div>
         </div>
         <div flex="100">
-	  <img ng-src="https://svuus-photos.s3.amazonaws.com/{{::item.donor.photoid}}"  >
+	  <div ng-if="item.donor.photoid">
+	    <img ng-src="https://svuus-photos.s3.amazonaws.com/{{::item.donor.photoid}}"  >
+	  </div>
         </div>
       </div>
     </div>
