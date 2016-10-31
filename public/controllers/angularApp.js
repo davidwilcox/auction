@@ -70,10 +70,11 @@ app.factory('items', ['$http', '$q', function($http, $q) {
 	    var tickets = {};
 	    var all_tickets = {};
 	    var tickets_arr = [];
-            tickets_items.forEach(function(ticket) {
+	    tickets_items.forEach(function(ticket) {
 		all_tickets[ticket.bidnumber] = ticket;
 		if ( searchterms.buyeremail
 		     && searchterms.buyeremail != ticket.login
+		     || ( searchterms.searchbuyername && !getFullName(ticket) )
 		     || ( searchterms.searchbuyername && !getFullName(ticket).toLowerCase().includes(searchterms.searchbuyername.toLowerCase()) )
 		     || (searchterms.agegroup && ticket.agegroup != searchterms.agegroup )
 		     || (searchterms.dietaryrestrictions && ticket.foodRes != searchterms.dietaryrestrictions)
