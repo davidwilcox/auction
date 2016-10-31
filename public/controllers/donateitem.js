@@ -111,21 +111,19 @@ app.controller('DonateItemCtrl', [
 
 	$scope.donateitem = function() {
 
-	    submit_item = function() {
-		// persist user info.
-		$window.localStorage['donor-info'] = $scope.donor;
-		$scope.item.donor = $scope.donor;
-		$scope.item.email = auth.currentUserEmail();
-                $scope.item.date = new Date();
+	    // persist user info.
+	    $window.localStorage['donor-info'] = $scope.donor;
+	    $scope.item.donor = $scope.donor;
+	    $scope.item.email = auth.currentUserEmail();
+            $scope.item.date = new Date();
+	    console.log(item);
 
-		$http.post('/submititem', $scope.item,{headers: {
-		    Authorization: "Bearer " + auth.getToken() } }).success(function(data) {
-			$state.go('home');
-		    }).error(function(error) {
-			console.log('error');
-			$scope.error = error;
-		    });
-	    };
-	    submit_item();
+	    $http.post('/submititem', $scope.item,{headers: {
+		Authorization: "Bearer " + auth.getToken() } }).success(function(data) {
+		    $state.go('home');
+		}).error(function(error) {
+		    console.log('error');
+		    $scope.error = error;
+		});
 	};
     }]);
