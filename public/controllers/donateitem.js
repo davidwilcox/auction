@@ -116,7 +116,9 @@ app.controller('DonateItemCtrl', [
 	    $scope.item.donor = $scope.donor;
 	    $scope.item.email = auth.currentUserEmail();
             $scope.item.date = new Date();
-	    console.log(item);
+
+	    if ( !$scope.item.eventdate )
+		delete $scope.item.evendate;
 
 	    $http.post('/submititem', $scope.item,{headers: {
 		Authorization: "Bearer " + auth.getToken() } }).success(function(data) {

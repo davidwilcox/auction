@@ -65,7 +65,6 @@ app.factory('items', ['$http', '$q', function($http, $q) {
 	promises.push($http.get('/all/transactions' ));
 	var deferred = $q.defer();
 	$q.all(promises).then(function(data) {
-            console.log("calls done");
 	    var items = [];
 	    var tickets_items = data[1].data;
 	    var tickets = {};
@@ -109,7 +108,8 @@ app.factory('items', ['$http', '$q', function($http, $q) {
 	    };
 
 	    data_items.forEach(function(item) {
-                item.eventdate = new Date(item.eventdate);
+		if ( item.eventdate )
+		    item.eventdate = new Date(item.eventdate);
 		if ( item.date )
 		    item.date = new Date(item.date);
 		if ( (!searchterms.email || item.email == searchterms.email)
@@ -1431,7 +1431,6 @@ app.controller( 'ModifyDonatedItemsCtrl', [
 		$scope.items = data.items;
 		$scope.tickets = data.tickets;
 		$scope.transactions_by_item = data.transactions_by_item;
-                console.log($scope.items);
 	    }, function(err) {
 		console.log(err);
 	    });
