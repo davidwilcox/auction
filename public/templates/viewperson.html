@@ -11,36 +11,61 @@
       </md-button>
     </md-card-actions>
   </div>
-  <span class="md-subhead">Bid Number: {{ticket.bidnumber}}</span>
   <div layout="row">
-    <label>Age Category: </label><span translate="{{ticket.agegroup}}"></span>
-  </div>
-  <div layout="row">
-    <label>Dietary Restrictions:&nbsp;</label>
-    <span translate="{{ticket.foodRes}}"></span>
-  </div>
-  <div layout="row">
-    <label>Date Created:</label>
-    <span>
-      {{ticket.date | date:'medium'}}
-    </span>
-  </div>
-  <div layout="row">
-    <label>Gluten Free?</label>
-    <span>
-      {{ticket.gluten}}
-    </span>
-  </div>
-  <md-card layout-padding>
-    <md-card-title>
-      <md-card-title-text>
-        <span class="md-subhead">Bought Items</span>
-      </md-card-title-text>
-    </md-card-title>
-    <div ng-repeat="transaction in transactions_by_bidnum[ticket.bidnumber]">
+    <div>
+      <span class="md-subhead">Bid Number: {{ticket.bidnumber}}</span>
       <div layout="row">
-	<a ui-sref="viewitem({ itemid: transaction.itemid })">{{items_by_itemid[transaction.itemid].name}}</a>&nbsp;{{transaction.sellprice | currency}}
+	<label>Age Category: </label><span translate="{{ticket.agegroup}}"></span>
+      </div>
+      <div layout="row">
+	<label>Dietary Restrictions:&nbsp;</label>
+	<span translate="{{ticket.foodRes}}"></span>
+      </div>
+      <div layout="row">
+	<label>Date Created:</label>
+	<span>
+	  {{ticket.date | date:'medium'}}
+	</span>
+      </div>
+      <div layout="row">
+	<label>Gluten Free?</label>
+	<span>
+	  {{ticket.gluten}}
+	</span>
       </div>
     </div>
-  </md-card>
+    <div>
+      <div layout="row">
+	<label>
+	  Buyer Name:
+	</label>
+	{{ticket.buyer.firstname}} {{ticket.buyer.lastname}}
+      </div>
+      <div layout="row">
+	<label>
+	  Buyer Email:
+	</label>
+	{{ticket.buyer.email}}
+      </div>
+      <div layout="row">
+	<label>
+	  Buyer Phone:
+	</label>
+	{{ticket.buyer.phonenumber | tel}}
+      </div>
+    </div>
+    <div flex />
+    <md-card layout-padding>
+      <md-card-title>
+	<md-card-title-text>
+          <span class="md-subhead">Bought Items</span>
+	</md-card-title-text>
+      </md-card-title>
+      <div ng-repeat="transaction in transactions_by_bidnum[ticket.bidnumber]">
+	<div layout="row">
+	  <a ui-sref="viewitem({ itemid: transaction.itemid })">{{items_by_itemid[transaction.itemid].name}}</a>&nbsp;{{transaction.sellprice | currency}}
+	</div>
+      </div>
+    </md-card>    
+  </div>
 </md-card>
