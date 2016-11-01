@@ -18,7 +18,7 @@ app.config(['$translateProvider', function ($translateProvider) {
 	CHILD_TICKET: "Child",
 	NONE_FOOD: "Regular",
 	VEGETARIAN_FOOD: "Vegetarian",
-	VEGAN: "Vegetarian",
+	VEGAN: "Vegan",
 	GLUTENFREE_FOOD: "Gluten-free"
     });
     $translateProvider.preferredLanguage('en');
