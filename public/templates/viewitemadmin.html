@@ -123,7 +123,8 @@
              md-placeholder="Event Date"
              aria-label="Date Picker"
 	     md-min-date="eventMinDate"
-	     md-max-date="eventMaxDate"
+	    md-max-date="eventMaxDate"
+	    ng-blur="saveitem(item)"
              >
           </md-datepicker>
         </div>
@@ -132,7 +133,8 @@
             <label>Time Notes</label>
             <input
                type="text"
-               ng-model="item.eventtypedtime"
+              ng-model="item.eventtypedtime"
+	      ng-blur="saveitem(item)"
 	       size="70"
                >
           </md-input-container>
