@@ -22,6 +22,9 @@
         If you have questions, contact Marilyn Smith at smith3390@comcast.net.
 	<br>
 	<br>
+	<b>NOTE</b>--If any of the input fields turn red, it might be too long or empty! Make sure to fix it, otherwise the form won't let you submit.
+	<br>
+	<br>
         <b>Thank you for making this year’s auction GREAT!</b>
 	<br>
 	<br>
@@ -42,9 +45,9 @@
 	   ng-model="donor.firstname"
 	   name="donorfirstname"
 	   required
-	   ></input>
+	  ></input>
 	<div ng-messages="donateItemForm.donorfirstname.$error">
-	  <div ng-messages-include="/messages.html"></div>
+          <div ng-messages-include="/messages.html"></div>
 	</div>
       </md-input-container>
       <md-input-container>
@@ -107,6 +110,10 @@
       <br>
       <div id="itemnamecharacters">
         Please keep this succinct.
+	<br>
+	<div ng-messages="donateItemForm.itemname.$error" class="error">
+	  <div ng-messages-include="/messages.html"></div>
+	</div>
       </div>
       <md-input-container>
         <label>Item Name</label>
@@ -122,7 +129,10 @@
 	</div>
       </md-input-container>
       Here's a little more information about it.
+      <br>
       What is great about this item? What would make someone want to buy it? Write like you're trying to sell it!
+      <br>
+      Maximum {{descriptionMaxLength}} characters.
       <md-input-container>
 	<label>Description</label>
 	<textarea
