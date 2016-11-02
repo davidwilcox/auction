@@ -584,6 +584,8 @@ router.post('/submititem', auth, function(req, res, next) {
 
     if ( item.pricingnotes == '' )
 	delete item.pricingnotes;
+    if ( item.eventtypedtime == '' )
+	delete item.eventtypedtime;
 
     var params = {
 	TableName: "items",
