@@ -404,9 +404,9 @@ app.config([
 		templateUrl: '/templates/buyticketsconfirmation.html',
 		controller: 'BuyticketsconfirmationCtrl'
 	    })
-	    .state('donateitemsconfirmation', {
-		url: '/donateitemsconfirmation',
-		templateUrl: '/templates/donateitemsconfirmation.html',
+	    .state('donateitemconfirmation', {
+		url: '/donateitemconfirmation',
+		templateUrl: '/templates/donateitemconfirmation.html',
 		controller: 'DonateItemsConfirmationCtrl'
 	    })
 	    .state('login', {
