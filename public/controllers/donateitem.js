@@ -122,7 +122,7 @@ app.controller('DonateItemCtrl', [
 
 	    $http.post('/submititem', $scope.item,{headers: {
 		Authorization: "Bearer " + auth.getToken() } }).success(function(data) {
-		    $state.go('home');
+		    $state.go('donateitemsconfirmation');
 		}).error(function(error) {
 		    console.log('error');
 		    $scope.error = error;

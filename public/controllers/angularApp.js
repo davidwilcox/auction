@@ -404,6 +404,11 @@ app.config([
 		templateUrl: '/templates/buyticketsconfirmation.html',
 		controller: 'BuyticketsconfirmationCtrl'
 	    })
+	    .state('donateitemsconfirmation', {
+		url: '/donateitemsconfirmation',
+		templateUrl: '/templates/donateitemsconfirmation.html',
+		controller: 'DonateItemsConfirmationCtrl'
+	    })
 	    .state('login', {
 		url: '/login',
 		templateUrl: '/templates/login.html',
@@ -764,6 +769,12 @@ app.controller('HomeCtrl', [
 	};
     }]);
 
+
+app.controller("DonateItemsConfirmationCtrl", [
+    '$scope',
+    function($scope) {
+	
+    }]);
 
 app.controller("BuyticketsconfirmationCtrl", [
     '$scope',
