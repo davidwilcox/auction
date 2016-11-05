@@ -430,33 +430,49 @@ router.post('/charge_all_users', function(req, res, next) {
 
     Promise.all(promises).then(function(data) {
 	var m = new Map();
+
+	var items = data[1];
+	var bidder_to_items = new Map();
+	var indexed_items = new Map();
+	for(var idx in items) {
+	    var item = items[idx];
+	    indexed_items[item.id] = item;
+	}
+
 	for(var idx in data[2]) {
 	    var transaction = data[2][idx];
-	    console.log(transaction);
 	    if ( transaction.sellprice ) {
 		if ( !(transaction.bidnumber in m) )
 		    m[transaction.bidnumber] = 0;
 		m[transaction.bidnumber] += parseInt(transaction.sellprice)*100;
-		console.log(transaction.bidnumber);
+
+		if ( !(transaction.bidnumber in bidder_to_items) )
+		    bidder_to_items[transaction.bidnumber] = []
+		var transitem = JSON.parse(JSON.stringify(indexed_items[transaction.itemid]));
+		transitem.sellprice = transaction.sellprice;
+		bidder_to_items[transaction.bidnumber].push(transitem);
 	    }
 	}
 
 	var customermap = new Map();
 	var chargemap = new Map();
+	var customer_to_bidnums = new Map();
 	for(var idx in data[0]) {
 	    var ticket = data[0][idx];
-	    //console.log(ticket);
+	    var name = ticket.firstname + " " + ticket.lastname;
 	    if ( ticket.bidnumber in m && ticket.stripe_customer_id ) {
-		if ( !(ticket.stripe_customer_id in customermap) )
+		if ( !(ticket.stripe_customer_id in customermap) ) {
 		    chargemap[ticket.stripe_customer_id] = 0;
+		    customer_to_bidnums[ticket.stripe_customer_id] = [];
+		}
 		chargemap[ticket.stripe_customer_id] += m[ticket.bidnumber];
-		customermap[ticket.stripe_customer_id] += ticket.email;
-	    }
+		customermap[ticket.stripe_customer_id] = ticket.buyer.email;
+		customer_to_bidnums[ticket.stripe_customer_id].push(ticket.bidnumber);
+ 	    }
 	}
 
 	var charges = [];
 	for(var customerid in customermap) {
-	    console.log("charging");
 	    var charge = {
 		amount: chargemap[customerid],
 		currency: "usd",
@@ -465,13 +481,23 @@ router.post('/charge_all_users', function(req, res, next) {
 	    };
 
 
-	    charges.push(new Promise(resolve, reject) {
+	    charges.push(new Promise(function(resolve, reject) {
 		var subject = "Tickets Bought";
+
+		var message = '';
+		for(var idx in customer_to_bidnums[customerid]) {
+		    var bidnum = customer_to_bidnums[customerid][idx];
+		    for(var idx in bidder_to_items[bidnum]) {
+			var item = bidder_to_items[bidnum][idx];
+			message += "<tr><td>" + item.name + "</td><td>$" + item.sellprice + "</td></tr>";
+		    }
+		}
+		
 		ses.sendEmail({
 		    Source: "admin@auction.svuus.org",
 		    Destination: {
 			ToAddresses: [
-			    purchaser
+			    customermap[customerid]
 			]
 		    },
 		    Message: {
@@ -484,11 +510,10 @@ router.post('/charge_all_users', function(req, res, next) {
 				    + '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />'
 				    + '<title>' + subject + '</title>'
 				    + '</head><body>'
-				    + 'This email confirms your purchase of tickets for the SVUUS auction. Your credit card has been charged for ' + amount/100 + '. You bought tickets for: ' + tickets.reduce(function(prevValue,curValue) {
-					return prevValue + "," + curValue.firstname
-					    + " " + curValue.lastname;
-				    }, '').substring(1)
-				    + "<br>Cya at the auction!"
+				    + 'This email confirms your purchase of items for the SVUUS auction. Your credit card has been charged for $' + chargemap[customerid]/100 + '. Here is an itemized list of what you bought:'
+				    + '<table>'
+				    + message
+				    + "</table>"
 				    + '</body></html>'
 			    }
 			}
@@ -501,12 +526,11 @@ router.post('/charge_all_users', function(req, res, next) {
 		    if ( data )
 			resolve(data);
 		});
-	    });
+	    }));
 
 
 
 
-	    console.log(charge);
 	    /*
 	    charges.push(new Promise(function(resolve, reject) {
 		stripe.charges.create(charge, function(charge_err, charge) {
@@ -871,7 +895,7 @@ router.post('/chargecustomer', auth, function(req, res, next) {
 						+ '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />'
 						+ '<title>' + subject + '</title>'
 						+ '</head><body>'
-						+ 'This email confirms your purchase of tickets for the SVUUS auction. Your credit card has been charged for ' + amount/100 + '. You bought tickets for: ' + tickets.reduce(function(prevValue,curValue) {
+						+ 'This email confirms your purchase of tickets for the SVUUS auction. Your credit card has been charged for $' + amount/100 + '. You bought tickets for: ' + tickets.reduce(function(prevValue,curValue) {
 						    return prevValue + "," + curValue.firstname
 							+ " " + curValue.lastname;
 						}, '').substring(1)
