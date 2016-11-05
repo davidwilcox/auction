@@ -438,6 +438,11 @@ function send_invoice(req, res, msg, do_charge) {
 	    var item = items[idx];
 	    indexed_items[item.id] = item;
 	}
+	var indexed_bidders = new Map();
+	for(var idx in data[0]) {
+	    var ticket = data[0][idx];
+	    indexed_bidders[ticket.bidnumber] = ticket;
+	}
 
 	for(var idx in data[2]) {
 	    var transaction = data[2][idx];
@@ -449,6 +454,7 @@ function send_invoice(req, res, msg, do_charge) {
 		if ( !(transaction.bidnumber in bidder_to_items) )
 		    bidder_to_items[transaction.bidnumber] = []
 		var transitem = JSON.parse(JSON.stringify(indexed_items[transaction.itemid]));
+		transitem.buyername = indexed_bidders[transaction.bidnumber].firstname + " " + indexed_bidders[transaction.bidnumber].lastname;
 		transitem.sellprice = transaction.sellprice;
 		bidder_to_items[transaction.bidnumber].push(transitem);
 	    }
@@ -489,7 +495,7 @@ function send_invoice(req, res, msg, do_charge) {
 		    var bidnum = customer_to_bidnums[customerid][idx];
 		    for(var idx in bidder_to_items[bidnum]) {
 			var item = bidder_to_items[bidnum][idx];
-			message += "<tr><td>" + item.name + "</td><td>$" + item.sellprice + "</td></tr>";
+			message += "<tr><td>" + item.buyername + "</td><td>" + item.name + "</td><td>$" + item.sellprice + "</td></tr>";
 		    }
 		}
 		
