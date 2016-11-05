@@ -1202,7 +1202,7 @@ router.post('/lost_password', function(req, res, next) {
 
     getUser(email, function(err, emailFound) {
 	if (err) {
-	    res.status(401).text('Error in getUserFromEmail: ' + err);
+	    res.status(401).json({err:'Error in getUserFromEmail: ' + err});
 	} else if (!emailFound) {
 	    console.log('User not found: ' + email);
 	    res.status(401).json({
@@ -1211,11 +1211,11 @@ router.post('/lost_password', function(req, res, next) {
 	} else {
 	    storeLostToken(email, function(err, token) {
 		if (err) {
-		    res.status(401).text('Error in storeLostToken: ' + err);
+		    res.status(401).json({err:'Error in storeLostToken: ' + err});
 		} else {
 		    sendLostPasswordEmail(email, token, function(err, data) {
 			if (err) {
-			    res.status(401).text('Error in sendLostPasswordEmail: ' + err);
+			    res.status(401).err({err:'Error in sendLostPasswordEmail: ' + err});
 			} else {
 			    console.log('User found: ' + email);
 			    res.status(200).json({
@@ -1302,7 +1302,7 @@ router.post('/reset_password', function(req, res, next) {
 	console.log(correctToken);
 	console.log(lostToken);
 	if (err) {
-	    res.status(401).text('Error in getUserLost: ' + err);
+	    res.status(401).json({err:'Error in getUserLost: ' + err});
 	} else if (!correctToken) {
 	    console.log('No lostToken for user: ' + email);
 	    res.status(200).json({
@@ -1319,11 +1319,11 @@ router.post('/reset_password', function(req, res, next) {
 	    var salt = crypto.randomBytes(16).toString('hex');
 	    computeHash(newPassword, salt, function(err, newSalt, newHash) {
 		if (err) {
-		    res.status(401).text('Error in computeHash: ' + err);
+		    res.status(401).json({err:'Error in computeHash: ' + err});
 		} else {
 		    updateUser(email, newHash, newSalt, function(err, data) {
 			if (err) {
-			    res.status(401).text('Error in updateUser: ' + err);
+			    res.status(401).json({err:'Error in updateUser: ' + err});
 			} else {
 			    console.log('User password changed: ' + email);
 			    res.status(200).json({
