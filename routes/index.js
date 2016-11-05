@@ -405,7 +405,7 @@ router.post('/replace_user_photo_id', function(req, res, next) {
 
 
 
-function send_invoice(req, res, msg, do_charge) {
+function send_invoice(req, res, msg, subject, do_charge) {
     var get_all = function(table) {
 	var p = new Promise(function(resolve, reject) {
 	    var params = {
@@ -488,7 +488,6 @@ function send_invoice(req, res, msg, do_charge) {
 
 
 	    charges.push(new Promise(function(resolve, reject) {
-		var subject = "Tickets Bought";
 
 		var message = '';
 		for(var idx in customer_to_bidnums[customerid]) {
@@ -563,11 +562,11 @@ function send_invoice(req, res, msg, do_charge) {
 
 
 router.post('/charge_all_users', function(req, res, next) {
-    send_invoice(req,res,'This email confirms your purchase of items for the SVUUS auction. Your credit card has been charged for $',true);
+    send_invoice(req,res,'This email confirms your purchase of items for the SVUUS auction. Your credit card has been charged for $',"SVUUS Auction Items Purchased.",true);
 });
 
 router.post('/send_invoice', function(req, res, next) {
-    send_invoice(req,res,'This email details items that you bid on at the SVUUS auction. Please let us know if there are any problems with this invoice. Your credit card will be charged for $',false);
+    send_invoice(req,res,'This email details items that you bid on at the SVUUS auction. Please let us know if there are any problems with this invoice. Your credit card will be charged for $',"SVUUS Auction Invoice", false);
 });
 
 
