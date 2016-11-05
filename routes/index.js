@@ -463,6 +463,49 @@ router.post('/charge_all_users', function(req, res, next) {
 		customer: customerid,
 		description: "purchase auction items for " + customermap[customerid]
 	    };
+
+
+	    charges.push(new Promise(resolve, reject) {
+		var subject = "Tickets Bought";
+		ses.sendEmail({
+		    Source: "admin@auction.svuus.org",
+		    Destination: {
+			ToAddresses: [
+			    purchaser
+			]
+		    },
+		    Message: {
+			Subject: {
+			    Data: subject
+			},
+			Body: {
+			    Html: {
+				Data: '<html><head>'
+				    + '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />'
+				    + '<title>' + subject + '</title>'
+				    + '</head><body>'
+				    + 'This email confirms your purchase of tickets for the SVUUS auction. Your credit card has been charged for ' + amount/100 + '. You bought tickets for: ' + tickets.reduce(function(prevValue,curValue) {
+					return prevValue + "," + curValue.firstname
+					    + " " + curValue.lastname;
+				    }, '').substring(1)
+				    + "<br>Cya at the auction!"
+				    + '</body></html>'
+			    }
+			}
+		    }
+		}, function(err, data) {
+		    if ( err ) {
+			console.log(err);
+			reject(err);
+		    }
+		    if ( data )
+			resolve(data);
+		});
+	    });
+
+
+
+
 	    console.log(charge);
 	    /*
 	    charges.push(new Promise(function(resolve, reject) {
