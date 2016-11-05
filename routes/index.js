@@ -449,7 +449,7 @@ function send_invoice(req, res, msg, subject, do_charge) {
 	    if ( transaction.sellprice ) {
 		if ( !(transaction.bidnumber in m) )
 		    m[transaction.bidnumber] = 0;
-		m[transaction.bidnumber] += parseInt(transaction.sellprice)*100;
+		m[transaction.bidnumber] += parseFloat(transaction.sellprice)*100;
 
 		if ( !(transaction.bidnumber in bidder_to_items) )
 		    bidder_to_items[transaction.bidnumber] = []
