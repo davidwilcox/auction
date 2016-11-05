@@ -432,10 +432,12 @@ router.post('/charge_all_users', function(req, res, next) {
 	var m = new Map();
 	for(var idx in data[2]) {
 	    var transaction = data[2][idx];
+	    console.log(transaction);
 	    if ( transaction.sellprice ) {
 		if ( !(transaction.bidnumber in m) )
 		    m[transaction.bidnumber] = 0;
 		m[transaction.bidnumber] += parseInt(transaction.sellprice)*100;
+		console.log(transaction.bidnumber);
 	    }
 	}
 
@@ -443,11 +445,11 @@ router.post('/charge_all_users', function(req, res, next) {
 	var chargemap = new Map();
 	for(var idx in data[0]) {
 	    var ticket = data[0][idx];
-	    console.log(ticket);
-	    if ( ticket.stripe_customer_id in m ) {
+	    //console.log(ticket);
+	    if ( ticket.bidnumber in m && ticket.stripe_customer_id ) {
 		if ( !(ticket.stripe_customer_id in customermap) )
 		    chargemap[ticket.stripe_customer_id] = 0;
-		chargemap[ticket.stripe_customer_id] = m[ticket.bidnumber];
+		chargemap[ticket.stripe_customer_id] += m[ticket.bidnumber];
 		customermap[ticket.stripe_customer_id] += ticket.email;
 	    }
 	}
@@ -462,6 +464,7 @@ router.post('/charge_all_users', function(req, res, next) {
 		description: "purchase auction items for " + customermap[customerid]
 	    };
 	    console.log(charge);
+	    /*
 	    charges.push(new Promise(function(resolve, reject) {
 		stripe.charges.create(charge, function(charge_err, charge) {
 		    if ( charge_err ) {
@@ -474,6 +477,7 @@ router.post('/charge_all_users', function(req, res, next) {
 		    }
 		});
 	    }));
+	    */
 	}
 
 	Promise.all(charges).then(function(data) {
