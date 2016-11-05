@@ -480,7 +480,7 @@ app.config([
 	    })
 	    .state('add_admin', {
 		url: '/add_admin',
-		templateUrl: '/templates/add_html',
+		templateUrl: '/templates/add_admin.html',
 		controller: 'AddAdminCtrl',
 		onEnter: [ '$state', 'auth', function($state, auth) {
 		    if ( !auth.isAdmin() ) {
