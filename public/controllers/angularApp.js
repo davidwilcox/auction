@@ -1511,7 +1511,7 @@ app.controller("ChargeForAllItemsCtrl",[
     'auth',
     function($scope, $http, $mdDialog, auth) {
 
-	$scope.charge = function(event, item, transaction) {
+	$scope.charge = function(event) {
 
 	    // Appending dialog to document.body to cover sidenav in docs app
 	    var charge = $mdDialog.confirm()
@@ -1530,6 +1530,27 @@ app.controller("ChargeForAllItemsCtrl",[
 		});
 	    });
 	};
+
+	$scope.send_invoice = function(event) {
+
+	    // Appending dialog to document.body to cover sidenav in docs app
+	    var charge = $mdDialog.confirm()
+		.title('Are you sure you want to send an invoice to all users?')
+		.ariaLabel('Confirm Send')
+		.targetEvent(event)
+		.ok('Yes! Send the invoice!')
+		.cancel('No! Whoops!');
+	    $mdDialog.show(charge).then(function() {
+		$http.post("/send_invoice", {headers: {
+		    Authorization: "Bearer " + auth.getToken()
+		} } ).success(function(data) {
+		    $scope.message = "Success!";
+		}).error(function(error) {
+		    $scope.message = error;
+		});
+	    });
+	};
+
     }]);
 
 

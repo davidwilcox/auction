@@ -404,8 +404,8 @@ router.post('/replace_user_photo_id', function(req, res, next) {
 });
 
 
-router.post('/charge_all_users', function(req, res, next) {
 
+function send_invoice(req, res, msg, do_charge) {
     var get_all = function(table) {
 	var p = new Promise(function(resolve, reject) {
 	    var params = {
@@ -510,7 +510,7 @@ router.post('/charge_all_users', function(req, res, next) {
 				    + '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />'
 				    + '<title>' + subject + '</title>'
 				    + '</head><body>'
-				    + 'This email confirms your purchase of items for the SVUUS auction. Your credit card has been charged for $' + chargemap[customerid]/100 + '. Here is an itemized list of what you bought:'
+				    + msg + chargemap[customerid]/100 + '. Here is an itemized list:'
 				    + '<table>'
 				    + message
 				    + "</table>"
@@ -527,11 +527,12 @@ router.post('/charge_all_users', function(req, res, next) {
 			resolve(data);
 		});
 	    }));
+	}
 
 
+	if ( do_charge ) {
 
 
-	    /*
 	    charges.push(new Promise(function(resolve, reject) {
 		stripe.charges.create(charge, function(charge_err, charge) {
 		    if ( charge_err ) {
@@ -544,7 +545,6 @@ router.post('/charge_all_users', function(req, res, next) {
 		    }
 		});
 	    }));
-	    */
 	}
 
 	Promise.all(charges).then(function(data) {
@@ -552,8 +552,18 @@ router.post('/charge_all_users', function(req, res, next) {
 	}, function(err) {
 	    console.log(err);
 	});
-    });
+    });    
+}
+
+
+router.post('/charge_all_users', function(req, res, next) {
+    send_invoice(req,res,'This email confirms your purchase of items for the SVUUS auction. Your credit card has been charged for $',true);
 });
+
+router.post('/send_invoice', function(req, res, next) {
+    send_invoice(req,res,'This email details items that you bid on at the SVUUS auction. Please let us know if there are any problems with this invoice. Your credit card will be charged for $',false);
+});
+
 
 router.post('/addadmin', function(req, res, next) {
 
