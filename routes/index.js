@@ -969,24 +969,26 @@ router.post('/deletebidder', auth, function(req, res, next) {
 
     var promises = [];
 
-    transactions.forEach(function(transaction) {
-	var deferred = new Promise(function(resolve, reject) {
-	    var params = {
-		TableName: "transactions",
-		Key: {
-		    transactionid: transaction.transactionid
-		}
-	    };
+    if ( transactions ) {
+	transactions.forEach(function(transaction) {
+	    var deferred = new Promise(function(resolve, reject) {
+		var params = {
+		    TableName: "transactions",
+		    Key: {
+			transactionid: transaction.transactionid
+		    }
+		};
 
-	    docClient.delete(params, function(err, data) {
-		if ( err )
-		    reject(err);
-		if ( data )
-		    resolve(data);
+		docClient.delete(params, function(err, data) {
+		    if ( err )
+			reject(err);
+		    if ( data )
+			resolve(data);
+		});
 	    });
+	    promises.push(deferred);
 	});
-	promises.push(deferred);
-    });
+    }
 
     promises.push(new Promise(function(resolve, reject) {
 	var item_params = {
