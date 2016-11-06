@@ -143,11 +143,6 @@
       <div>
 	<font color="red">{{item.message}}</font>
       </div>
-      <div layout="row">
-	<div>
-	  <md-button class="md-primary md-raised" ng-click="deleteitem($event,item)">Delete Item</md-button>
-	</div>
-      </div>
     </div>
     <div flex="40" layout-pading>
       <div layout="row">
@@ -197,6 +192,20 @@
           <div>
             {{item.date | date:'medium'}}
           </div>
+	  <div>
+            <span class="md-headline">
+	      Buyers
+            </span>
+            <div ng-repeat="transaction in transactions_by_item[item.id]" layout="row">
+	      <div >{{transaction.bidnumber}} {{getFullName(tickets[transaction.bidnumber])}} <a href="mailto:{{tickets[transaction.bidnumber].buyer.email}}">{{tickets[transaction.bidnumber].buyer.email}}</a> {{tickets[transaction.bidnumber].buyer.phonenumber | tel}} {{transaction.sellprice | currency}}</div>
+	      <md-button class="md-icon-button" ng-click="removeBidderFromItem($event, item, transaction)" >
+		<md-icon>clear</md-icon>
+	      </md-button>
+            </div>
+            <div>
+	      <md-button class="md-primary md-raised" href="mailto:{{item.concated_emails}}">Email Buyers</md-button>
+            </div>
+	  </div>
         </div>
         <div flex="100">
 	  <div ng-if="item.donor.photoid">
@@ -208,20 +217,11 @@
 		   ngf-resize="{width: 500, height: 500}">
 	    <label class="md-button md-primary md-raised" for="uploadfileid-{{item.id}}">Replace Photo</label>
 	  </div>
-        </div>
-      </div>
-      <div>
-        <span class="md-headline">
-	  Buyers
-        </span>
-        <div ng-repeat="transaction in transactions_by_item[item.id]" layout="row">
-	  <div >{{transaction.bidnumber}} {{getFullName(tickets[transaction.bidnumber])}} <a href="mailto:{{tickets[transaction.bidnumber].buyer.email}}">{{tickets[transaction.bidnumber].buyer.email}}</a> {{tickets[transaction.bidnumber].buyer.phonenumber | tel}} {{transaction.sellprice | currency}}</div>
-	  <md-button class="md-icon-button" ng-click="removeBidderFromItem($event, item, transaction)" >
-	    <md-icon>clear</md-icon>
-	  </md-button>
-        </div>
-        <div>
-	  <md-button class="md-primary md-raised" href="mailto:{{item.concated_emails}}">Email Buyers</md-button>
+	  <div layout="row">
+	    <div>
+	      <md-button class="md-primary md-raised" ng-click="deleteitem($event,item)">Delete Item</md-button>
+	    </div>
+	  </div>
         </div>
       </div>
     </div>
