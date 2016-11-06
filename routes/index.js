@@ -499,7 +499,7 @@ function send_invoice(req, res, msg, subject, do_charge) {
 		}
 		
 		ses.sendEmail({
-		    Source: "admin@auction.svuus.org",
+		    Source: "kristen.thelen@gmail.com",
 		    Destination: {
 			ToAddresses: [
 			    customermap[customerid]
