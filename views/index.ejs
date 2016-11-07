@@ -45,7 +45,7 @@
 	    Buy Tickets
 	  </md-button>
         </a>
-        <a ui-sref-active="active" ui-sref="donateitem" ng-if="ctrl.isLoggedIn()">
+        <a ui-sref-active="active" ui-sref="donateitem" ng-if="ctrl.isAdmin()">
 	  <md-button class="md-primary md-raised">Donate Item</md-button>
         </a>
         <a ui-sref-active="active" ui-sref="myauction" ng-if="ctrl.isLoggedIn()" md-mode="right">
