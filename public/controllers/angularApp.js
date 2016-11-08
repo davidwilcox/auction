@@ -1119,7 +1119,7 @@ app.controller( 'LiveCatalogCtrl',[
     '$scope',
     'items',
     function($scope, items) {
-	items.performSearch({searchitemtype: "live"}).then(function(data) {
+	items.performSearch({searchitemtype: "live"}, "itemnumber").then(function(data) {
 	    $scope.tickets = data.tickets;
 	    $scope.items = data.items;
 	    $scope.items.forEach(function(item) {
@@ -1510,7 +1510,31 @@ app.controller("ChargeForAllItemsCtrl",[
     "$http",
     "$mdDialog",
     'auth',
-    function($scope, $http, $mdDialog, auth) {
+    "items",
+    function($scope, $http, $mdDialog, auth, items) {
+
+	items.performSearch({
+	}).then(function(data) {
+	    var s = '';
+	    var emails = [];
+	    for(var idx in data.tickets) {
+		var ticket = data.tickets[idx];
+		if ( ticket.buyer )
+		    emails.push(ticket.buyer.email);
+	    }
+	    emails.sort();
+	    emails = emails.filter(function(item, pos, ary) {
+		return !pos || item != ary[pos - 1];
+	    });
+	    emails.forEach(function(email) {
+		s += email + ",";
+	    });
+	    $scope.email_string = s;
+	}, function(err) {
+	    console.log(err);
+	    $scope.message = err;
+	});
+
 
 	$scope.charge = function(event) {
 
