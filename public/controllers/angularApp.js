@@ -1409,6 +1409,22 @@ app.controller( 'ModifyDonatedItemsCtrl', [
     '$mdDialog',
     function($scope, tickets, items, auth, $http, $mdDialog) {
 
+	
+	$scope.copyitem = function(item) {
+	    var newitem = JSON.parse(JSON.stringify(item));
+	    delete newitem.message;
+	    newitem.id = guid();
+	    $http.post("/submititem", newitem, {headers: {
+		Authorization: "Bearer " + auth.getToken()
+	    } } ).success(function(data) {
+		item.message = "Item duplicated.";
+		$scope.items.push(newitem);
+	    }).error(function(error) {
+		item.message = error;
+	    });
+	};
+
+
 	$scope.deleteitem = function(event, item) {
 	    
 	    // Appending dialog to document.body to cover sidenav in docs app
