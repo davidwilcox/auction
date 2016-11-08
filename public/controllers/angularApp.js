@@ -561,7 +561,6 @@ app.controller(
 		 lost: $stateParams.token,
 		 password: $scope.password
 	     }).then(function(data) {
-		 console.log(data);
 		 if ( data.data.changed ) {
 		     $scope.message = "Your password has been reset.";
 		 } else {
@@ -792,7 +791,6 @@ app.controller("MyTicketsCtrl", [
 	items.performSearch({
 	    buyeremail: auth.currentUserEmail()
 	}).then(function(data) {
-	    console.log(data.tickets_arr);
 	    $scope.tickets = data.tickets_arr;
 	    $scope.items = data.items;
 	    $scope.transactions_by_bidnum = data.transactions_by_bidnum;
@@ -1093,22 +1091,6 @@ app.controller( 'MyAuctionCtrl',[
     }]);
 
 
-app.controller( 'LiveCatalogCtrl',[
-    '$scope',
-    'items',
-    function($scope, items) {
-	items.performSearch({searchitemtype: "silent"}).then(function(data) {
-	    $scope.tickets = data.tickets;
-	    $scope.items = data.items;
-	    $scope.items.forEach(function(item) {
-		if ( item.eventdate )
-		    item.eventdate = new Date(item.eventdate);
-	    });
-	    $scope.transactions_by_item = data.transactions_by_item;
-	    $scope.getFullName = getFullName;
-	});
-    }]);
-
 app.controller( 'FixedPriceBidSheetCtrl',[
     '$scope',
     'items',
@@ -1144,6 +1126,8 @@ app.controller( 'LiveCatalogCtrl',[
 		    item.eventdate = new Date(item.eventdate);
 	    });
 	    $scope.transactions_by_item = data.transactions_by_item;
+	    $scope.getFullName = getFullName;
+	    $scope.today = new Date();
 	});
     }]);
 
