@@ -114,6 +114,7 @@ app.factory('items', ['$http', '$q', function($http, $q) {
 		if ( item.date )
 		    item.date = new Date(item.date);
 		if ( (!searchterms.email || item.email == searchterms.email)
+		     && (!searchterms.multiples || item.quantity > 1) 
 		     && searchItemType(item.type, searchterms.searchitemtype)
 		     && (!searchterms.searchdonorname || getFullName(item.donor).toLowerCase().includes(searchterms.searchdonorname.toLowerCase()))
 		     && (!searchterms.searchname || item.name.toLowerCase().includes(searchterms.searchname.toLowerCase()))) {
