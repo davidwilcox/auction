@@ -21,10 +21,10 @@
     <a ui-sref-active="active" ui-sref="fixed_price_bid_sheet" ng-show="isAdmin()">
       <md-button class="md-primary md-raised">Fixed Price Sheets</md-button>
     </a>
-    <a ui-sref-active="active" ui-sref="charge_for_items" >
+    <a ui-sref-active="active" ui-sref="charge_for_items" ng-show="isAdmin()">
       <md-button class="md-primary md-raised">Charge For Items</md-button>
     </a>
-    <a ui-sref-active="active" ui-sref="bid_cards" >
+    <a ui-sref-active="active" ui-sref="bid_cards" ng-show="isAdmin()">
       <md-button class="md-primary md-raised">Bid Cards</md-button>
     </a>
   </div>

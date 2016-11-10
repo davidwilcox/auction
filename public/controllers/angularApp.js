@@ -353,12 +353,20 @@ app.config([
 	    .state('viewregisteredpeople', {
 		url: '/viewregisteredpeople',
 		templateUrl: '/templates/viewregisteredpeople.html',
-		controller: 'ViewRegisteredPeopleCtrl'
+		controller: 'ViewRegisteredPeopleCtrl',
+		onEnter: function($state, auth) {
+		    if ( !auth.isAdmin() )
+			$state.go('home');
+		}
 	    })
 	    .state('modifydonateditems', {
 		url: '/modifydonateditems',
 		templateUrl: '/templates/modifydonateditems.html',
-		controller: 'ModifyDonatedItemsCtrl'
+		controller: 'ModifyDonatedItemsCtrl',
+		onEnter: function($state, auth) {
+		    if ( !auth.isAdmin() )
+			$state.go('home');
+		}
 	    })
 	    .state('fixed_price_bid_sheet', {
 		url: '/fixed_price_bid_sheet',
@@ -385,7 +393,7 @@ app.config([
 		templateUrl: '/templates/bid_cards.html',
 		controller: 'BidCardsCtrl',
 		onEnter: [ '$state', 'auth', function($state, auth) {
-		    if ( !auth.isLoggedIn() ) {
+		    if ( !auth.isAdmin() ) {
 			$state.go('home');
 		    }
 		}]
@@ -475,9 +483,14 @@ app.config([
 		    }
 		}]
  	    }).state('charge_for_items', {
-		     url: '/charge_for_items',
-		     templateUrl: "/templates/charge_for_items.html",
-		     controller: 'ChargeForAllItemsCtrl'
+		url: '/charge_for_items',
+		templateUrl: "/templates/charge_for_items.html",
+		controller: 'ChargeForAllItemsCtrl',
+		onEnter: function($state, auth) {
+		    if ( !auth.isAdmin() ) {
+			$state.go('home');
+		    }
+		}
 	    })
 	    .state('add_admin', {
 		url: '/add_admin',
