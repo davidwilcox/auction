@@ -11,9 +11,14 @@
 	    {{ticket.buyer.email}}
 	  </div>
 	</div>
-	<div style="font-size:2000%; font-weight:800;color:#555555">{{ticket.bidnumber}}</div>
+	<div style="font-size:2100%; font-weight:800;color:#555555">{{ticket.bidnumber}}</div>
 	<div flex />
       </div>
+      	<div ng-if="$index % 2 == 0">
+	  <br>
+	  <br>
+	  <br>
+	</div>
     </div>
   </div>
 </div>
