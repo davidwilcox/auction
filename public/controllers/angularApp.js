@@ -696,7 +696,7 @@ app.controller('ViewTicketCtrl', [
 app.controller(
     "BidCardsCtrl",
     function($scope, items) {
-	items.performSearch({maxBidNumber: 1000}).then(function(data) {
+	items.performSearch({maxBidNumber: 1000}, "lastname").then(function(data) {
 	    $scope.tickets = data.tickets_arr;
 	});
 	$scope.getFullName = getFullName;
