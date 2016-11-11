@@ -290,7 +290,7 @@ router.post('/uploadphoto', multipartyMiddleware, function(req, res, next) {
     var extension = req.body.filename.split('.').pop();
     var new_filename = guid() + '.' + extension;
     var AWS2 = require("aws-sdk");
-    var s3bucket = new AWS2.S3({params: {Bucket: 'svuus-photos'}});
+    var s3bucket = new AWS.S3({params: {Bucket: 'svuus-photos'}});
     fs.readFile(req.files.photo.path, function(err, buf) {
         if ( err )
             res.status(400).json({message: "could not read file."});

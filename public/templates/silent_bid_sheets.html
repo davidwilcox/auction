@@ -7,7 +7,7 @@
 </div>
 <div ng-repeat='var in items'>
   <div style='height: 8in; width: 30.7cm;'>
-    <div style='width: 14.85cm; float:left; word-wrap: normal;'>
+    <div style='width: 14.85cm; float:left; word-wrap: normal;' class="page-break-avoid">
       <div>
         <div layout="row">
           <div flex>
@@ -29,7 +29,7 @@
               <img ng-src="https://svuus-photos.s3.amazonaws.com/{{var[0].donor.photoid}}" ></img>
 	    </div>
             <p>
-              <b>Donated By {{var[0].donor.name}}</b>
+              <b>Donated By {{getFullName(var[0].donor)}}</b>
             </p>
           </span>
         </div>
@@ -56,7 +56,7 @@
         </table>
       </div>
     </div>
-    <div style='margin-left:1cm; float:left; word-wrap: normal; width:14.85cm; '>
+    <div style='margin-left:1cm; float:left; word-wrap: normal; width:14.85cm; 'class="page-break-avoid">
       <div>
         <div layout="row">
           <div flex>
@@ -80,7 +80,7 @@
               <img ng-src="https://svuus-photos.s3.amazonaws.com/{{var[1].donor.photoid}}">
 	    </div>
             <p>
-              <b>Donated By {{var[1].donor.name}}</b>
+              <b>Donated By {{getFullName(var[1].donor)}}</b>
             </p>
           </div>
         </div>

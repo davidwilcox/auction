@@ -1149,6 +1149,7 @@ app.controller( 'SilentBidSheetsCtrl',[
     '$scope',
     '$http',
     function($scope, $http) {
+	$scope.getFullName = getFullName;
 	$http.get("/all/items").error(
 	    function(error) {
 		console.log(error);
