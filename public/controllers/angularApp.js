@@ -149,6 +149,16 @@ app.factory('items', ['$http', '$q', function($http, $q) {
                         return -1;
                     return item1.number - item2.number;
 		};
+	    } else if ( sortval == "lastname" ) {
+		cmp = function(item1, item2) {
+		    if ( !item1.donor.lastname && !item2.donor.lastname )
+			return 0;
+		    if ( !item1.donor.lastname )
+			return 1;
+		    if ( !item2.donor.lastname )
+			return -1;
+		    return item1.donor.lastname.toLowerCase().localeCompare(item2.donor.lastname.toLowerCase());
+		};
 	    } else {
 		cmp = function(item1, item2) {
                     if ( !item1.type && !item2.type )
@@ -1148,27 +1158,24 @@ app.controller( 'LiveCatalogCtrl',[
 app.controller( 'SilentBidSheetsCtrl',[
     '$scope',
     '$http',
-    function($scope, $http) {
+    "items",
+    function($scope, $http, items) {
 	$scope.getFullName = getFullName;
-	$http.get("/all/items").error(
-	    function(error) {
-		console.log(error);
-		$scope.error = error;
-	    }).success(function(data) {
-		$scope.items = [];
-		obj = [];
-		data.forEach(function(item) {
-		    if ( item.type == "silent" ) {
-			obj.push(item);
-			if ( obj.length == 2 ) {
-			    $scope.items.push(obj);
-			    obj = [];
-			}
+	items.performSearch({serachitemtype: "silent"}, "lastname").then(function(data) {
+	    $scope.items = [];
+	    obj = [];
+	    data.items.forEach(function(item) {
+		if ( item.type == "silent" ) {
+		    obj.push(item);
+		    if ( obj.length == 2 ) {
+			$scope.items.push(obj);
+			obj = [];
 		    }
-		});
-		if (obj.length == 1)
-		    $scope.items.push(obj)
-	    })
+		}
+	    });
+	    if (obj.length == 1)
+		$scope.items.push(obj)
+	});
     }]);
 
 app.controller('ViewItemGenericCtrl', ["$scope", function($scope) {
