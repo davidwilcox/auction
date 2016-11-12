@@ -542,9 +542,6 @@ function send_invoice(req, res, msg, subject, do_charge) {
 		stripe.charges.create(charge, function(charge_err, charge) {
 		    if ( charge_err ) {
 			reject({err: charge_err});
-		    }
-		    else if ( cust_err ) {
-			reject({err: cust_err});
 		    } else {
 			resolve({charge_id: charge.id});
 		    }
