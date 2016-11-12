@@ -429,16 +429,16 @@ function send_invoice(req, res, msg, subject, do_charge) {
     promises.push(get_all("transactions"));
 
     Promise.all(promises).then(function(data) {
-	var m = new Map();
+	var m = {};
 
 	var items = data[1];
-	var bidder_to_items = new Map();
-	var indexed_items = new Map();
+	var bidder_to_items = {};
+	var indexed_items = {};
 	for(var idx in items) {
 	    var item = items[idx];
 	    indexed_items[item.id] = item;
 	}
-	var indexed_bidders = new Map();
+	var indexed_bidders = {};
 	for(var idx in data[0]) {
 	    var ticket = data[0][idx];
 	    indexed_bidders[ticket.bidnumber] = ticket;
@@ -460,9 +460,9 @@ function send_invoice(req, res, msg, subject, do_charge) {
 	    }
 	}
 
-	var customermap = new Map();
-	var chargemap = new Map();
-	var customer_to_bidnums = new Map();
+	var customermap = {};
+	var chargemap = {};
+	var customer_to_bidnums = {};
 	for(var idx in data[0]) {
 	    var ticket = data[0][idx];
 	    var name = ticket.firstname + " " + ticket.lastname;
