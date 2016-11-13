@@ -1188,6 +1188,7 @@ app.controller('ViewItemMyOwnCtrl', ["$scope", function($scope) {
 }]);
 
 
+
 app.controller('ViewItemAdminCtrl', ['$scope', 'auth', "$http", '$mdDialog', "Upload", function($scope, auth, $http, $mdDialog, Upload) {
     $scope.getFullName = getFullName;
     $scope.isAdmin = auth.isAdmin;
@@ -1202,6 +1203,66 @@ app.controller('ViewItemAdminCtrl', ['$scope', 'auth', "$http", '$mdDialog', "Up
             item.message = error;
         });
     };
+
+
+    $scope.showBuyers = function(ev) {
+	console.log("THERE");
+
+	$mdDialog.show( {
+	    templateUrl: "/templates/view_item_buyers.html",
+	    controller: DialogController,
+	    parent: angular.element(document.body),
+	    targetEvent: ev,
+	    clickOutsideToClose: true,
+	    locals: {
+		transactions_by_item: $scope.transactions_by_item,
+		item: $scope.item,
+		tickets: $scope.tickets
+	    }
+	});
+
+	/*
+	$mdDialog.show(
+	    $mdDialog.alert()
+		.parent(angular.element(document.body))
+		.clickOutsideToClose(true)
+		.targetEvent(ev)
+		.contentElement("#myDialog"));
+	*/
+    };
+
+    
+    var DialogController = function($scope, transactions_by_item, item, tickets) {
+	$scope.transactions_by_item = transactions_by_item;
+	$scope.item = item;
+	$scope.tickets = tickets;
+
+	$scope.removeBidderFromItem = function(event, item, transaction) {
+
+	    // Appending dialog to document.body to cover sidenav in docs app
+	    var confirm = $mdDialog.confirm()
+		.title('Are you sure you want to delete this transaction?')
+		.ariaLabel('Confirm Deletion')
+		.targetEvent(event)
+		.ok('Yes! Delete The transaction!')
+		.cancel('No! Whoops!');
+	    $mdDialog.show(confirm).then(function() {
+		$http.post("/deletetransaction", {
+		    transactionid: transaction.transactionid
+		}, {headers: {
+		    Authorization: "Bearer " + auth.getToken()
+		} } ).success(function(data) {
+		    var index = $scope.transactions_by_item[transaction.itemid].indexOf(transaction);
+		    $scope.transactions_by_item[transaction.itemid].splice(index,1);
+		    item.message = "Transaction deleted.";
+		}).error(function(error) {
+		    item.message = error;
+		});
+	    });
+	};
+
+    };
+
 
     
     $scope.upload = function(files,item) {

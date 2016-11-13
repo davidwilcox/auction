@@ -1,0 +1,14 @@
+<div>
+  <span class="md-headline">
+    Buyers
+  </span>
+  <div ng-repeat="transaction in transactions_by_item[item.id]" layout="row">
+    <div >{{transaction.bidnumber}} {{getFullName(tickets[transaction.bidnumber])}} <a href="mailto:{{tickets[transaction.bidnumber].buyer.email}}">{{tickets[transaction.bidnumber].buyer.email}}</a> {{tickets[transaction.bidnumber].buyer.phonenumber | tel}} {{transaction.sellprice | currency}}</div>
+    <md-button class="md-icon-button" ng-click="removeBidderFromItem($event, item, transaction)" >
+      <md-icon>clear</md-icon>
+    </md-button>
+  </div>
+  <div>
+    <md-button class="md-primary md-raised" href="mailto:{{item.concated_emails}}">Email Buyers</md-button>
+  </div>
+</div>
