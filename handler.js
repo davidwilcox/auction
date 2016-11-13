@@ -247,33 +247,37 @@ module.exports.allFromTable = function(event, context, callback) {
 
 
 module.exports.uploadphoto = function(event, context, callback) {
-//router.post('/uploadphoto', multipartyMiddleware, function(req, res, next) {
+    //router.post('/uploadphoto', multipartyMiddleware, function(req, res, next) {
 
-    if ( !req.files.photo ) {
+    var req = JSON.parse(event.body);
+    console.log(req);
+
+    if ( !req.photo ) {
 	callback({message : "Please fill in a photo"});
     }
-    if ( !req.body.filename ) {
+    if ( !req.filename ) {
 	callback({message: "Please fill in a filename"});
     }
 
-    var extension = req.body.filename.split('.').pop();
+    var extension = req.filename.split('.').pop();
     var new_filename = guid() + '.' + extension;
     var AWS2 = require("aws-sdk");
     var s3bucket = new AWS.S3({params: {Bucket: 'svuus-photos'}});
-    fs.readFile(req.files.photo.path, function(err, buf) {
-        if ( err )
-            callback({message: "could not read file."});
-        //var buf = new Buffer(req.body.photo.split(',')[1], 'base64');
-        var params = {Key: new_filename, Body: buf};
-        s3bucket.upload(params, function(err, data) {
-	    if ( err ) {
-	        callback({message: err});
-	    } else {
-	        callback(null,{
-		    statusCode: 200,
-		    body: {photoid : params.Key}});
-	    }
-        });
+    
+    //var buf = new Buffer(req.body.photo.split(',')[1], 'base64');
+    var params = {Key: new_filename, Body: new Buffer(req.photo.data)};
+    s3bucket.upload(params, function(err, data) {
+	if ( err ) {
+	    console.log(err);
+	    callback({message: err});
+	} else {
+	    console.log("UPLOADED:" + JSON.stringify({
+		statusCode: 200,
+		body: {photoid : params.Key}}));
+	    callback(null,{
+		statusCode: 200,
+		body: {photoid : params.Key}});
+	}
     });
 };
 

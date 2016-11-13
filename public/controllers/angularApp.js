@@ -1245,7 +1245,7 @@ app.controller('ViewItemAdminCtrl', function($scope, auth, $http, $mdDialog, Upl
     $scope.upload = function(files,item) {
         var file = files[0];
         file.upload = Upload.upload({
-            url: '/uploadphoto',
+            url: Constants.apiUrl() + '/uploadphoto',
             method: "POST",
             headers: {
                 'Content-Type': file.type
@@ -1656,7 +1656,7 @@ app.controller('MyProfileCtrl',[
         $scope.upload = function(files) {
             var file = files[0];
             file.upload = Upload.upload({
-                url: '/uploadphoto',
+                url: Constants.apiUrl() + '/uploadphoto',
                 method: "POST",
                 headers: {
                     'Content-Type': file.type
