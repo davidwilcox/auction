@@ -1,4 +1,4 @@
-var app = angular.module('auction', ['ngMessages', 'ui.router', 'pascalprecht.translate', 'ngSanitize', 'stripe.checkout', 'ngMaterial', 'duScroll', 'ngFileUpload'])
+var app = angular.module('auction', ['ngMessages', 'ui.router', 'pascalprecht.translate', 'ngSanitize', 'stripe.checkout', 'ngMaterial', 'duScroll', 'ngFileUpload', 'app.config'])
 
 
 
@@ -32,18 +32,18 @@ var getFullName = function(person) {
     return person.name;
 };
 
-app.factory('charges', ['$http', 'auth', function($http, auth) {
+app.factory('charges', function($http, auth, Constants) {
     var o = {
         charge: function(params)  {
-            return $http.post('/chargecustomer', params, {headers: {
+            return $http.post(Constants.apiUrl() + '/chargecustomer', params, {headers: {
 		Authorization: "Bearer " + auth.getToken() } });
         }
     };
     return o;
-}]);
+});
 
 
-app.factory('items', ['$http', '$q', function($http, $q) {
+app.factory('items', function($http, $q, Constants) {
     var o = {
     };
 
@@ -60,9 +60,9 @@ app.factory('items', ['$http', '$q', function($http, $q) {
 		queryString += "?";
 	    queryString += "searchitemnumber=" + searchterms.searchitemnumber;
 	}
-	promises.push($http.get('/allitems' + queryString));
-	promises.push($http.get('/all/tickets'));
-	promises.push($http.get('/all/transactions' ));
+	promises.push($http.get(Constants.apiUrl() + '/allitems' + queryString));
+	promises.push($http.get(Constants.apiUrl() + '/all/tickets'));
+	promises.push($http.get(Constants.apiUrl() + '/all/transactions' ));
 	var deferred = $q.defer();
 	$q.all(promises).then(function(data) {
 	    var items = [];
@@ -70,6 +70,8 @@ app.factory('items', ['$http', '$q', function($http, $q) {
 	    var tickets = {};
 	    var all_tickets = {};
 	    var tickets_arr = [];
+	    console.log(tickets_items);
+	    console.log(data);
 	    tickets_items.forEach(function(ticket) {
 		all_tickets[ticket.bidnumber] = ticket;
 		if ( searchterms.buyeremail
@@ -223,7 +225,7 @@ app.factory('items', ['$http', '$q', function($http, $q) {
     };
 
     return o;
-}]);
+});
 
 
 
@@ -240,28 +242,23 @@ function guid() {
 }
 
 
-app.factory('tickets', ['$http', function($http) {
+app.factory('tickets', function($http, Constants) {
 
     return {
 	purchase: function(ticket) {
-	    return $http.post('/createguest', ticket);
+	    return $http.post(Constants.apiUrl() + '/createguest', ticket);
 	},
 
 	getAll: function() {
-	    rtval = $http.get('/allguests').then(function(data) {
+	    rtval = $http.get(Constants.apiUrl() + '/all/tickets').then(function(data) {
 		return data.data;
 	    }, function(data) {
 		console.log("ERROR");
 	    });
 	    return rtval;
-	},
-
-        get: function(bidnumber) {
-            rtval = $http.post('/tickets', [bidnumber]);
-            return rtval;
-        }
+	}
     };
-}]);
+});
 
 app.filter('currency-no-change', ['$filter', function($filter) {
     return function(num) {
@@ -343,6 +340,8 @@ app.config([
     '$stateProvider',
     '$urlRouterProvider',
     function($stateProvider, $urlRouterProvider) {
+
+	console.log("H");
 
 	$stateProvider
 	    .state('buytickets', {
@@ -539,8 +538,8 @@ app.config([
                              function($stateParams, items) {
                                return items.get($stateParams.bidnumber);
                            }],
-                    items: ['$http', function($http) {
-                        return $http.get('/all/items');
+                    items: ['$http', "Constants", function($http, Constants) {
+                        return $http.get(Constants.apiUrl() + '/all/items');
                     }]
                 }
 	    }).state('viewitem', {
@@ -552,8 +551,8 @@ app.config([
                            function($stateParams, items) {
                                return items.get($stateParams.itemid);
                            }],
-                    item_tickets: ['$http', function($http) {
-                        return $http.get('/all/tickets');
+                    item_tickets: ['$http', "Constants", function($http, Constants) {
+                        return $http.get(Constants.apiUrl() + '/all/tickets');
                     }]
                 }
             }).state('forgot_password', {
@@ -574,13 +573,12 @@ app.config([
 
 app.controller(
     'ResetPasswordCtrl',
-    ['$http', '$scope', '$stateParams', '$state',
-     function($http, $scope, $stateParams, $state) {
+    function($http, $scope, $stateParams, $state, Constants) {
 	 $scope.password = '';
 	 $scope.confirmPassword = '';
 	 $scope.message = '';
 	 $scope.resetPassword = function() {
-	     $http.post('/reset_password', {
+	     $http.post(Constants.apiUrl() + '/reset_password', {
 		 email: $stateParams.email,
 		 lost: $stateParams.token,
 		 password: $scope.password
@@ -594,21 +592,20 @@ app.controller(
 		 $scope.error = error;
 	     });
 	 };
-     }]);
+     });
 
 app.controller(
     'ForgotPasswordCtrl',
-    ['$scope', '$http',
-     function($scope, $http) {
-	 $scope.register = function() {
-	     $http.post('/lost_password', {email: $scope.email})
-		 .then(function(data) {
-		     $scope.message = "An email has been sent to you to reset your password."
-		 }, function(err) {
-		     $scope.message = err;
-		 });
-	 };
-     }]);
+    function($scope, $http, Constants) {
+	$scope.register = function() {
+	    $http.post(Constants.apiUrl() + '/lost_password', {email: $scope.email})
+		.then(function(data) {
+		    $scope.message = "An email has been sent to you to reset your password."
+		}, function(err) {
+		    $scope.message = err;
+		});
+	};
+    });
 
 app.controller('ViewPersonNoChangeCtrl',
 	       ['$scope',
@@ -619,13 +616,13 @@ app.controller('ViewPersonNoChangeCtrl',
 
 app.controller(
     'ViewPersonCtrl',
-    function($scope, $http, auth) {
+    function($scope, $http, auth, Constants) {
 	$scope.getFullName = getFullName;
 	$scope.ticket.date = new Date($scope.ticket.date);
 	$scope.ageCategories = ["ADULT_TICKET", "HIGHSCHOOL_TICKET", "JUNIORHIGH_TICKET", "CHILD_TICKET"];
 	$scope.allFoodRestrictions = ["NONE_FOOD","VEGETARIAN_FOOD","VEGAN"];
 	$scope.saveticket = function(ticket) {
-	    $http.post("/modify_ticket", {ticket: ticket}, {headers: {
+	    $http.post(Constants.apiUrl() + "/modify_ticket", {ticket: ticket}, {headers: {
 		Authorization: "Bearer " + auth.getToken()
 	    } }).then(function(data) {
 		$scope.message = "Item Saved";
@@ -644,9 +641,9 @@ app.controller(
 
 app.controller(
     'AddAdminCtrl',
-    ['$http', '$scope', 'auth', '$mdDialog', function($http, $scope, auth, $mdDialog) {
+    function($http, $scope, auth, $mdDialog, Constants) {
 	$scope.addAdmin = function(email) {
-	    $http.post('/addadmin', {email: email}, {headers: {
+	    $http.post(Constants.apiUrl() + '/addadmin', {email: email}, {headers: {
 		Authorization: "Bearer " + auth.getToken() } }).then(function(res) {
 		    $mdDialog.show(
 			$mdDialog.alert()
@@ -665,7 +662,7 @@ app.controller(
 		});
 	};
 	
-    }]);
+    });
 
 app.directive('viewpersonNoChange', function() {
     return {
@@ -720,7 +717,8 @@ app.controller('ViewRegisteredPeopleCtrl', [
     '$mdDialog',
     '$http',
     '$q',
-    function($scope, tickets, auth, items, $mdDialog, $http, $q) {
+    "Constants",
+    function($scope, tickets, auth, items, $mdDialog, $http, $q, Constants) {
 	items.performSearch($scope.searchTerms).then(function(data) {
 	    $scope.tickets = data.tickets_arr;
 	    $scope.items = data.items;
@@ -732,7 +730,7 @@ app.controller('ViewRegisteredPeopleCtrl', [
 	});
 
 	var delete_bidder = function(bidnum) {
-	    $http.post("/deletebidder", {bidnumber: bidnum,
+	    $http.post(Constants.apiUrl() + "/deletebidder", {bidnumber: bidnum,
                                          transactions: $scope.transactions_by_bidnum[bidnum]}, {headers: {
 		Authorization: "Bearer " + auth.getToken() } }).then(
 		    function(data) {
@@ -807,10 +805,9 @@ app.controller("BuyticketsconfirmationCtrl", [
 
 app.controller("MyTicketsCtrl", [
     '$scope',
-    '$http',
     'auth',
     'items',
-    function($scope, $http, auth, items) {
+    function($scope, auth, items) {
 
 	items.performSearch({
 	    buyeremail: auth.currentUserEmail()
@@ -823,25 +820,6 @@ app.controller("MyTicketsCtrl", [
                 $scope.items_by_itemid[item.id] = item;
             });
 	});
-
-	/*
-	$http.get("/findtickets/" + auth.currentUser().email).success(function(data) {
-	    $scope.tickets = data;
-	    $http.get("/all/items").error(
-		function(error) {
-		    console.log(error);
-		    $scope.error = error;
-		}).success(function(data) {
-		    $scope.items = {};
-		    data.forEach(function(item) {
-			$scope.items[item.id] = item;
-		    });
-		});
-
-	}).error(function(error) {
-	    console.log(error);
-	});
-	*/
     }]);
 
 app.controller("MyInvoiceCtrl", [
@@ -876,7 +854,7 @@ app.controller("MyInvoiceCtrl", [
     }]);
 
 
-app.factory('auth', ['$http', '$window', '$q', function($http, $window, $q) {
+app.factory('auth', function($http, $window, $q, Constants) {
     var o = {
     };
     o.saveToken = function(token) {
@@ -904,7 +882,7 @@ app.factory('auth', ['$http', '$window', '$q', function($http, $window, $q) {
     };
     o.register = function(user) {
 	if ( user.confirmPassword == user.password ) {
-	    return $http.post('/register', user).success(function(data) {
+	    return $http.post(Constants.apiUrl() + '/register', user).success(function(data) {
 		o.saveToken(data.token);
 
 		var payload = JSON.parse($window.atob(o.getToken().split('.')[1]));
@@ -917,7 +895,7 @@ app.factory('auth', ['$http', '$window', '$q', function($http, $window, $q) {
 	$q.reject("password and confirm password did not match.");
     };
     o.logIn = function(user) {
-	return $http.post('/login', user).success(function(data) {
+	return $http.post(Constants.apiUrl() + '/login', user).success(function(data) {
 	    o.saveToken(data.token);
 	    var payload = JSON.parse($window.atob(o.getToken().split('.')[1]));
 	    console.log(payload.user);
@@ -942,7 +920,7 @@ app.factory('auth', ['$http', '$window', '$q', function($http, $window, $q) {
 	}
     };
     return o;
-}]);
+});
 
 var compareTo = function() {
     return {
@@ -1157,9 +1135,8 @@ app.controller( 'LiveCatalogCtrl',[
 
 app.controller( 'SilentBidSheetsCtrl',[
     '$scope',
-    '$http',
     "items",
-    function($scope, $http, items) {
+    function($scope, items) {
 	$scope.getFullName = getFullName;
 	items.performSearch({serachitemtype: "silent"}, "lastname").then(function(data) {
 	    $scope.items = [];
@@ -1189,13 +1166,13 @@ app.controller('ViewItemMyOwnCtrl', ["$scope", function($scope) {
 
 
 
-app.controller('ViewItemAdminCtrl', ['$scope', 'auth', "$http", '$mdDialog', "Upload", function($scope, auth, $http, $mdDialog, Upload) {
+app.controller('ViewItemAdminCtrl', function($scope, auth, $http, $mdDialog, Upload, Constants) {
     $scope.getFullName = getFullName;
     $scope.isAdmin = auth.isAdmin;
 
     $scope.saveitem = function(item) {
         delete item.message;
-        $http.post("/submititem", item, {headers: {
+        $http.post(Constants.apiUrl() + "/submititem", item, {headers: {
             Authorization: "Bearer " + auth.getToken()
         } } ).success(function(data) {
             item.message = "Item changed!";
@@ -1247,7 +1224,7 @@ app.controller('ViewItemAdminCtrl', ['$scope', 'auth', "$http", '$mdDialog', "Up
 		.ok('Yes! Delete The transaction!')
 		.cancel('No! Whoops!');
 	    $mdDialog.show(confirm).then(function() {
-		$http.post("/deletetransaction", {
+		$http.post(Constants.apiUrl() + "/deletetransaction", {
 		    transactionid: transaction.transactionid
 		}, {headers: {
 		    Authorization: "Bearer " + auth.getToken()
@@ -1303,7 +1280,7 @@ app.controller('ViewItemAdminCtrl', ['$scope', 'auth', "$http", '$mdDialog', "Up
 	    .ok('Yes! Delete The transaction!')
 	    .cancel('No! Whoops!');
 	$mdDialog.show(confirm).then(function() {
-	    $http.post("/deletetransaction", {
+	    $http.post(Constants.apiUrl() + "/deletetransaction", {
 		transactionid: transaction.transactionid
 	    }, {headers: {
 		Authorization: "Bearer " + auth.getToken()
@@ -1318,7 +1295,7 @@ app.controller('ViewItemAdminCtrl', ['$scope', 'auth', "$http", '$mdDialog', "Up
     };
 
     $scope.policies = ["KIDSFREE","KIDSFREECOUNT","EVERYBODYCOUNTS","THREEPRICES","OVER14","OVER21","KIDSPARTY"];
-}]);
+});
 
 
 app.directive('viewitem', function() {
@@ -1377,7 +1354,8 @@ app.controller('InsertBidsCtrl', [
     '$http',
     '$mdDialog',
     '$q',
-    function($scope, auth, items, $http, $mdDialog, $q) {
+    "Constants",
+    function($scope, auth, items, $http, $mdDialog, $q, Constants) {
 
 	items.performSearch($scope.searchTerms).then(function(data) {
 	    $scope.tickets = data.tickets;
@@ -1405,7 +1383,7 @@ app.controller('InsertBidsCtrl', [
 	    if ( !(bidnumber in $scope.tickets) ) {
 		return $q.resolve();
 	    }
-	    return $http.post("/addbuyer",content, {headers: {
+	    return $http.post(Constants.apiUrl() + "/addbuyer",content, {headers: {
 		Authorization: "Bearer " + auth.getToken() } });
 	    /*.success(function(data) {
 	      if ( !(itemid in $scope.transactions_by_item) ) {
@@ -1465,7 +1443,7 @@ app.controller('InsertBidsCtrl', [
 		.ok('Yes! Delete The transaction!')
 		.cancel('No! Whoops!');
 	    $mdDialog.show(confirm).then(function() {
-		$http.post("/deletetransaction", {
+		$http.post(Constants.apiUrl() + "/deletetransaction", {
 		    transactionid: transaction.transactionid
 		}, {headers: {
 		    Authorization: "Bearer " + auth.getToken()
@@ -1490,14 +1468,15 @@ app.controller( 'ModifyDonatedItemsCtrl', [
     'auth',
     '$http',
     '$mdDialog',
-    function($scope, tickets, items, auth, $http, $mdDialog) {
+    "Constants",
+    function($scope, tickets, items, auth, $http, $mdDialog, Constants) {
 
 	
 	$scope.copyitem = function(item) {
 	    var newitem = JSON.parse(JSON.stringify(item));
 	    delete newitem.message;
 	    newitem.id = guid();
-	    $http.post("/submititem", newitem, {headers: {
+	    $http.post(Constants.apiUrl() + "/submititem", newitem, {headers: {
 		Authorization: "Bearer " + auth.getToken()
 	    } } ).success(function(data) {
 		item.message = "Item duplicated.";
@@ -1523,7 +1502,7 @@ app.controller( 'ModifyDonatedItemsCtrl', [
 		item.transactions = $scope.transactions_by_item[item.id];
 		if ( !item.transactions )
 		    item.transactions = [];
-		$http.post("/deleteitem", item, {headers: {
+		$http.post(Constants.apiUrl() + "/deleteitem", item, {headers: {
 		    Authorization: "Bearer " + auth.getToken()
 		} } ).success(function(data) {
 		    var index = $scope.items.indexOf(item);
@@ -1593,7 +1572,8 @@ app.controller("ChargeForAllItemsCtrl",[
     "$mdDialog",
     'auth',
     "items",
-    function($scope, $http, $mdDialog, auth, items) {
+    "Constants",
+    function($scope, $http, $mdDialog, auth, items, Constants) {
 
 	items.performSearch({
 	}).then(function(data) {
@@ -1628,7 +1608,7 @@ app.controller("ChargeForAllItemsCtrl",[
 		.ok('Yes! Charge all purchasers!')
 		.cancel('No! Whoops!');
 	    $mdDialog.show(charge).then(function() {
-		$http.post("/charge_all_users", {headers: {
+		$http.post(Constants.apiUrl() + "/charge_all_users", {headers: {
 		    Authorization: "Bearer " + auth.getToken()
 		} } ).success(function(data) {
 		    $scope.message = "Success! Go check stripe now.";
@@ -1648,7 +1628,7 @@ app.controller("ChargeForAllItemsCtrl",[
 		.ok('Yes! Send the invoice!')
 		.cancel('No! Whoops!');
 	    $mdDialog.show(charge).then(function() {
-		$http.post("/send_invoice", {headers: {
+		$http.post(Constants.apiUrl() + "/send_invoice", {headers: {
 		    Authorization: "Bearer " + auth.getToken()
 		} } ).success(function(data) {
 		    $scope.message = "Success!";
@@ -1667,7 +1647,8 @@ app.controller('MyProfileCtrl',[
     'auth',
     '$http',
     "Upload",
-    function($scope, fileReader, auth, $http, Upload) {
+    "Constants",
+    function($scope, fileReader, auth, $http, Upload, Constants) {
 
 	$scope.user = auth.currentUser();
 
@@ -1688,7 +1669,7 @@ app.controller('MyProfileCtrl',[
                 file.result = response.data;
                 var photoid = file.result.photoid;
 
-                $http.post('/replace_user_photo_id', {
+                $http.post(Constants.apiUrl() + '/replace_user_photo_id', {
 		    email: auth.currentUserEmail(),
 		    photoid: file.result.photoid
 		}).then(function(data) {
