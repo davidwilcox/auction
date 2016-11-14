@@ -265,7 +265,7 @@ app.factory('tickets', ['$http', function($http) {
 
 app.filter('currency-no-change', ['$filter', function($filter) {
     return function(num) {
-
+	console.log("CUR");
         function isNumeric(num){
             return !isNaN(num)
         }
@@ -276,6 +276,23 @@ app.filter('currency-no-change', ['$filter', function($filter) {
         return num;
     };
 }]);
+
+
+
+app.filter('currencyNoChange', ['$filter', function($filter) {
+    return function(num) {
+	console.log("CUR");
+        function isNumeric(num){
+            return !isNaN(num)
+        }
+
+        if ( isNumeric(num) ) {
+            return $filter("currency")(num);
+        }
+        return num;
+    };
+}]);
+
 
 // allow you to format a text input field.
 // <input type="text" ng-model="test" format="number" />
