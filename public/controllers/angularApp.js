@@ -114,7 +114,7 @@ app.factory('items', ['$http', '$q', function($http, $q) {
 		if ( item.date )
 		    item.date = new Date(item.date);
 		if ( (!searchterms.email || item.email == searchterms.email)
-		     && (!searchterms.multiples || item.quantity > 1) 
+		     && (!searchterms.multiples || item.quantity > 1)
 		     && searchItemType(item.type, searchterms.searchitemtype)
 		     && (!searchterms.searchdonorname || getFullName(item.donor).toLowerCase().includes(searchterms.searchdonorname.toLowerCase()))
 		     && (!searchterms.searchname || item.name.toLowerCase().includes(searchterms.searchname.toLowerCase()))) {
@@ -865,10 +865,11 @@ app.controller("MyInvoiceCtrl", [
 	    for(var key in $scope.tickets) {
 		if ( $scope.transactions_by_bidnum.hasOwnProperty(key) ) {
 		    $scope.transactions_by_bidnum[key].forEach(function(transaction) {
-			if ( typeof(transaction.sellprice) == "string" ) {
+                        if ( transaction.sellprice[0] == "$" ) {
 			    $scope.totalInvoice += Number(transaction.sellprice.substring(1));
-			}
-			$scope.totalInvoice += Number(transaction.sellprice);
+			} else {
+			    $scope.totalInvoice += Number(transaction.sellprice);
+                        }
 		    });
 		}
 	    }
