@@ -1,0 +1,6 @@
+#!/bin/bash
+
+aws s3 sync public s3://www.schedulemychild.com --region us-west-2  --cache-control "max-age=600" --exclude "*config.js" --exclude "*.link"
+aws s3 cp views/index.html s3://www.schedulemychild.com --region us-west-2  --cache-control "max-age=600"
+aws cloudfront create-invalidation --distribution-id E1GEU4I4IB0S6I --paths "/*"
+aws s3 cp untracked_remote/config.js s3://www.schedulemychild.com/controllers/ --region us-west-2  --cache-control "max-age=600"
