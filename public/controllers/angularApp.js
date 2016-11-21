@@ -116,7 +116,7 @@ app.factory('items', function($http, $q, Constants) {
 		if ( item.date )
 		    item.date = new Date(item.date);
 		if ( (!searchterms.email || item.email == searchterms.email)
-		     && (!searchterms.multiples || item.quantity > 1) 
+		     && (!searchterms.multiples || item.quantity > 1)
 		     && searchItemType(item.type, searchterms.searchitemtype)
 		     && (!searchterms.searchdonorname || getFullName(item.donor).toLowerCase().includes(searchterms.searchdonorname.toLowerCase()))
 		     && (!searchterms.searchname || item.name.toLowerCase().includes(searchterms.searchname.toLowerCase()))) {
@@ -262,6 +262,21 @@ app.factory('tickets', function($http, Constants) {
 
 app.filter('currency-no-change', ['$filter', function($filter) {
     return function(num) {
+        function isNumeric(num){
+            return !isNaN(num)
+        }
+
+        if ( isNumeric(num) ) {
+            return $filter("currency")(num);
+        }
+        return num;
+    };
+}]);
+
+ 
+
+app.filter('currencyNoChange', ['$filter', function($filter) {
+    return function(num) {
 
         function isNumeric(num){
             return !isNaN(num)
@@ -273,6 +288,8 @@ app.filter('currency-no-change', ['$filter', function($filter) {
         return num;
     };
 }]);
+
+
 
 // allow you to format a text input field.
 // <input type="text" ng-model="test" format="number" />
@@ -843,10 +860,11 @@ app.controller("MyInvoiceCtrl", [
 	    for(var key in $scope.tickets) {
 		if ( $scope.transactions_by_bidnum.hasOwnProperty(key) ) {
 		    $scope.transactions_by_bidnum[key].forEach(function(transaction) {
-			if ( typeof(transaction.sellprice) == "string" ) {
+			if ( transaction.sellprice[0] == "$" ) {
 			    $scope.totalInvoice += Number(transaction.sellprice.substring(1));
-			}
-			$scope.totalInvoice += Number(transaction.sellprice);
+			} else {
+                            $scope.totalInvoice += Number(transaction.sellprice);
+                        }
 		    });
 		}
 	    }

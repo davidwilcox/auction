@@ -9,7 +9,7 @@
                 if ( $location.host() == "localhost" ) {
                     return "http://localhost:1465";
                 } else if ( $location.host() == "auction.svuus.org" || $location.host() == 'svuus-auction-web.s3-website-us-west-2.amazonaws.com' || $location.host() == 'dakq62eaafsg6.cloudfront.net' ) {
-                    return "https://pmbnpcsn2l.execute-api.us-west-2.amazonaws.com/prod/";
+                    return "https://5si6u1o4j6.execute-api.us-west-2.amazonaws.com/prod";
                 }
             };
             this.stripeKey = function() {
