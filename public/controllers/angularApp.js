@@ -1636,6 +1636,25 @@ app.controller("ChargeForAllItemsCtrl",[
 	    });
 	};
 
+	$scope.send_item_emails = function(event) {
+
+	    var dialog = $mdDialog.confirm()
+		.title("Send emails?")
+		.ariaLabel('Confirm Send.')
+		.targetEvent(event)
+		.ok('Yes! Send emails!')
+		.cancel('No! Whoops!');
+	    $mdDialog.show(dialog).then(function() {
+		$http.post(Constants.apiUrl() + "/send_item_emails", {headers: {
+		    Authorization: 'Bearer ' + auth.getToken()
+		} }).success(function(data) {
+		    $scope.message = 'Success!';
+		}).error(function(error) {
+		    $scope.message = error;
+		});
+	    });
+	};
+
 	$scope.send_invoice = function(event) {
 
 	    // Appending dialog to document.body to cover sidenav in docs app
