@@ -7,9 +7,9 @@
             this.apiUrl = function() {
                 console.log($location.host());
                 if ( $location.host() == "localhost" ) {
-                    return "http://localhost:1465";
+                    return "http://localhost:1466";
                 } else if ( $location.host() == "auction.svuus.org" || $location.host() == 'svuus-auction-web.s3-website-us-west-2.amazonaws.com' || $location.host() == 'dakq62eaafsg6.cloudfront.net' ) {
-                    return "https://5si6u1o4j6.execute-api.us-west-2.amazonaws.com/prod";
+                    return "https://nnr40fq1oj.execute-api.us-west-2.amazonaws.com/prod";
                 }
             };
             this.stripeKey = function() {
