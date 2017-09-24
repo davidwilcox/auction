@@ -1263,7 +1263,7 @@ app.controller('ViewItemAdminCtrl', function($scope, auth, $http, $mdDialog, Upl
     
     $scope.upload = function(files,item) {
         var file = files[0];
-        file.upload = Upload.upload({
+        file.upload = Upload.http({
             url: Constants.apiUrl() + '/uploadphoto',
             method: "POST",
             headers: {
@@ -1693,41 +1693,52 @@ app.controller('MyProfileCtrl',[
 
         $scope.upload = function(files) {
             var file = files[0];
-            file.upload = Upload.upload({
-                url: Constants.apiUrl() + '/uploadphoto',
-                method: "POST",
-                headers: {
-                    'Content-Type': file.type
-                },
-                data: {filename: file.name, photo: file}
-            });
 
-            file.upload.then(function (response) {
-                console.log(response);
-                file.result = response.data;
-                var photoid = file.result.photoid;
+            var reader = new FileReader();
+            reader.onload = function(e){
+                console.log("about to encode");
+                $scope.encoded_file = btoa(e.target.result.toString());
+            };
+            reader.readAsDataURL(file);
+            reader.onload = function() {
+                console.log(reader.result);
+                file.upload = Upload.http({
+                    url: Constants.apiUrl() + '/uploadphoto',
+                    method: "POST",
+                    headers: {
+                        'Content-Type': "application/json"//file.type
+                    },
+                    data: {filename: file.name, photo: reader.result}
+                });
 
-                $http.post(Constants.apiUrl() + '/replace_user_photo_id', {
-		    email: auth.currentUserEmail(),
-		    photoid: file.result.photoid
-		}).then(function(data) {
-		    var user = auth.currentUser();
-		    user.photoid = photoid;
-                    $scope.user.photoid = photoid;
-		    auth.saveUser(user);
-		    $scope.message = "Upload successful.";
-		}, function(err) {
-		    $scope.message = err;
-		});
+                file.upload.then(function (response) {
+                    console.log(response);
+                    file.result = response.data;
+                    var photoid = file.result.photoid;
 
-            }, function (err) {
-                console.log(err);
-                if (err.status > 0)
-                    $scope.errorMsg = response.status + ': ' + response.data;
-            }, function (evt) {
-                // Math.min is to fix IE which reports 200% sometimes
-                file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
-            });
+                    $http.post(Constants.apiUrl() + '/replace_user_photo_id', {
+		        email: auth.currentUserEmail(),
+		        photoid: file.result.photoid
+		    }).then(function(data) {
+		        var user = auth.currentUser();
+		        user.photoid = photoid;
+                        $scope.user.photoid = photoid;
+		        auth.saveUser(user);
+		        $scope.message = "Upload successful.";
+		    }, function(err) {
+		        $scope.message = err;
+		    });
+
+                }, function (err) {
+                    console.log(err);
+                    if (err.status > 0)
+                        $scope.errorMsg = response.status + ': ' + response.data;
+                }, function (evt) {
+                    // Math.min is to fix IE which reports 200% sometimes
+                    file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+                });
+
+            };
         };
 
     }]);
