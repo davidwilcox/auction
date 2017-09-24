@@ -1088,6 +1088,7 @@ app.controller('BuyTicketsCtrl', [
         $scope.doCheckout = function(token) {
             var promises = [];
 	    $scope.submitProgress = 0;
+            console.log("CHARGING");
             charges.charge({
                 purchaser: auth.currentUser().email,
                 stripe_token: token.id,

@@ -49,7 +49,8 @@ app.controller('DonateItemCtrl', [
     "$mdDialog",
     'auth',
     "Upload",
-    function($scope, $state, $http, $window, $mdDialog, auth, Upload) {
+    "Constants",
+    function($scope, $state, $http, $window, $mdDialog, auth, Upload, Constants) {
 
 	$scope.showIdeas = function(ev) {
 	    $mdDialog.show({
@@ -61,8 +62,8 @@ app.controller('DonateItemCtrl', [
 	    });
 	};
 
-	$scope.eventMinDate = new Date(2016, 10, 13);
-	$scope.eventMaxDate = new Date(2017, 11, 31);
+	$scope.eventMinDate = new Date(2017, 10, 13);
+	$scope.eventMaxDate = new Date(2018, 11, 31);
 
         $scope.$on("fileProgress", function(e, progress) {
             $scope.progress = progress.loaded / progress.total;
@@ -120,7 +121,7 @@ app.controller('DonateItemCtrl', [
 	    if ( !$scope.item.eventdate )
 		delete $scope.item.evendate;
 
-	    $http.post('/submititem', $scope.item,{headers: {
+	    $http.post(Constants.apiUrl() + '/submititem', $scope.item,{headers: {
 		Authorization: "Bearer " + auth.getToken() } }).success(function(data) {
 		    $state.go('donateitemconfirmation');
 		}).error(function(error) {
