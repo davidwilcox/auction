@@ -25,6 +25,90 @@ app.config(['$translateProvider', function ($translateProvider) {
     $translateProvider.useSanitizeValueStrategy('sanitize');
 }]);
 
+var get_resized_image_url = function(urlin) {
+    var img = document.createElement("img");
+    img.src = urlin;
+
+    var canvas = document.createElement('canvas');
+    var ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0);
+
+    var MAX_WIDTH = 800;
+    var MAX_HEIGHT = 600;
+    var width = img.width;
+    var height = img.height;
+
+    if (width > height) {
+        if (width > MAX_WIDTH) {
+            height *= MAX_WIDTH / width;
+            width = MAX_WIDTH;
+        }
+    } else {
+        if (height > MAX_HEIGHT) {
+            width *= MAX_HEIGHT / height;
+            height = MAX_HEIGHT;
+        }
+    }
+    canvas.width = width;
+    canvas.height = height;
+    var ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0, width, height);
+
+    var dataurl = canvas.toDataURL("image/jpg")
+    return dataurl;
+};
+
+var upload_photo = function(auth, Constants, Upload, $http, files, user, $scope) {
+    var file = files[0];
+
+    var reader = new FileReader();
+    reader.onload = function(e){
+        $scope.encoded_file = btoa(e.target.result.toString());
+    };
+    reader.readAsDataURL(file);
+    reader.onload = function() {
+
+        var dataurl = get_resized_image_url(reader.result);
+
+        file.upload = Upload.http({
+            url: Constants.apiUrl() + '/uploadphoto',
+            method: "POST",
+            headers: {
+                'Content-Type': "application/json"//file.type
+            },
+            data: {filename: file.name, photo: dataurl}
+        });
+
+        file.upload.then(function (response) {
+            file.result = response.data;
+            var photoid = file.result.photoid;
+            console.log(photoid);
+
+            $http.post(Constants.apiUrl() + '/replace_user_photo_id', {
+		email: auth.currentUserEmail(),
+		photoid: file.result.photoid
+	    }).then(function(data) {
+                if ( user ) {
+		    user.photoid = photoid;
+                    auth.saveUser(user);
+                }
+		$scope.message = "Upload successful.";
+	    }, function(err) {
+		$scope.message = err;
+	    });
+
+        }, function (err) {
+            console.log(err);
+            if (err.status > 0)
+                $scope.errorMsg = response.status + ': ' + response.data;
+        }, function (evt) {
+            // Math.min is to fix IE which reports 200% sometimes
+            file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+        });
+
+    };
+};
+
 
 var getFullName = function(person) {
     if ( person.firstname && person.lastname )
@@ -1216,18 +1300,9 @@ app.controller('ViewItemAdminCtrl', function($scope, auth, $http, $mdDialog, Upl
 		tickets: $scope.tickets
 	    }
 	});
-
-	/*
-	$mdDialog.show(
-	    $mdDialog.alert()
-		.parent(angular.element(document.body))
-		.clickOutsideToClose(true)
-		.targetEvent(ev)
-		.contentElement("#myDialog"));
-	*/
     };
 
-    
+
     var DialogController = function($scope, transactions_by_item, item, tickets) {
 	$scope.transactions_by_item = transactions_by_item;
 	$scope.item = item;
@@ -1260,32 +1335,46 @@ app.controller('ViewItemAdminCtrl', function($scope, auth, $http, $mdDialog, Upl
     };
 
 
-    
+
+
     $scope.upload = function(files,item) {
         var file = files[0];
-        file.upload = Upload.http({
-            url: Constants.apiUrl() + '/uploadphoto',
-            method: "POST",
-            headers: {
-                'Content-Type': file.type
-            },
-            data: {filename: file.name, photo: file}
-        });
 
-        file.upload.then(function (response) {
-            console.log(response);
-            file.result = response.data;
-            var photoid = file.result.photoid;
-	    item.donor.photoid = photoid;
-	    return $scope.saveitem(item);
-        }, function (err) {
-            console.log(err);
-            if (err.status > 0)
-                $scope.errorMsg = response.status + ': ' + response.data;
-        }, function (evt) {
-            // Math.min is to fix IE which reports 200% sometimes
-            file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
-        });
+        var reader = new FileReader();
+        reader.onload = function(e){
+            $scope.encoded_file = btoa(e.target.result.toString());
+        };
+        reader.readAsDataURL(file);
+        reader.onload = function() {
+
+            var dataurl = get_resized_image_url(reader.result);
+
+            file.upload = Upload.http({
+                url: Constants.apiUrl() + '/uploadphoto',
+                method: "POST",
+                headers: {
+                    'Content-Type': "application/json"//file.type
+                },
+                data: {filename: file.name, photo: dataurl}
+            });
+
+            file.upload.then(function (response) {
+                file.result = response.data;
+
+                var photoid = file.result.photoid;
+                item.donor.photoid = photoid;
+                return $scope.saveitem(item);
+
+            }, function (err) {
+                console.log(err);
+                if (err.status > 0)
+                    $scope.errorMsg = response.status + ': ' + response.data;
+            }, function (evt) {
+                // Math.min is to fix IE which reports 200% sometimes
+                file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+            });
+
+        };
     };
 
 
@@ -1690,55 +1779,7 @@ app.controller('MyProfileCtrl',[
 
 	$scope.user = auth.currentUser();
 
-
         $scope.upload = function(files) {
-            var file = files[0];
-
-            var reader = new FileReader();
-            reader.onload = function(e){
-                console.log("about to encode");
-                $scope.encoded_file = btoa(e.target.result.toString());
-            };
-            reader.readAsDataURL(file);
-            reader.onload = function() {
-                console.log(reader.result);
-                file.upload = Upload.http({
-                    url: Constants.apiUrl() + '/uploadphoto',
-                    method: "POST",
-                    headers: {
-                        'Content-Type': "application/json"//file.type
-                    },
-                    data: {filename: file.name, photo: reader.result}
-                });
-
-                file.upload.then(function (response) {
-                    console.log(response);
-                    file.result = response.data;
-                    var photoid = file.result.photoid;
-
-                    $http.post(Constants.apiUrl() + '/replace_user_photo_id', {
-		        email: auth.currentUserEmail(),
-		        photoid: file.result.photoid
-		    }).then(function(data) {
-		        var user = auth.currentUser();
-		        user.photoid = photoid;
-                        $scope.user.photoid = photoid;
-		        auth.saveUser(user);
-		        $scope.message = "Upload successful.";
-		    }, function(err) {
-		        $scope.message = err;
-		    });
-
-                }, function (err) {
-                    console.log(err);
-                    if (err.status > 0)
-                        $scope.errorMsg = response.status + ': ' + response.data;
-                }, function (evt) {
-                    // Math.min is to fix IE which reports 200% sometimes
-                    file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
-                });
-
-            };
+            upload_photo(auth, Constants, Upload, $http, files, $scope.user, $scope);
         };
-
     }]);

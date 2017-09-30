@@ -19,34 +19,15 @@ app.controller('RegisterCtrl', [
     'auth',
     'fileReader',
     "Upload",
-    function($scope, $state, $http, auth, fileReader, Upload) {
+    "Constants",
+    function($scope, $state, $http, auth, fileReader, Upload, Constants) {
 	$scope.user = {};
 
 
+
         $scope.upload = function(files) {
-            var file = files[0];
-            file.upload = Upload.upload({
-                url: '/uploadphoto',
-                method: "POST",
-                headers: {
-                    'Content-Type': file.type
-                },
-                data: {filename: file.name, photo: file}
-            });
-
-            file.upload.then(function (response) {
-                console.log(response);
-                file.result = response.data;
-            }, function (err) {
-                console.log(err);
-                if (err.status > 0)
-                    $scope.errorMsg = response.status + ': ' + response.data;
-            }, function (evt) {
-                // Math.min is to fix IE which reports 200% sometimes
-                file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
-            });
+            upload_photo(auth, Constants, Upload, $http, files, $scope.user, $scope);
         };
-
 
         $scope.getFile = function () {
             $scope.progress = 0;

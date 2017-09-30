@@ -85,29 +85,43 @@ app.controller('DonateItemCtrl', [
 
         $scope.upload = function(files) {
             var file = files[0];
-            file.upload = Upload.upload({
-                url: '/uploadphoto',
-                method: "POST",
-                headers: {
-                    'Content-Type': file.type
-                },
-                data: {filename: file.name, photo: file}
-            });
 
-            file.upload.then(function (response) {
-                console.log(response);
-                file.result = response.data;
-                $scope.donor.photoid = file.result.photoid;
-            }, function (err) {
-                console.log(err);
-                if (err.status > 0)
-                    $scope.errorMsg = response.status + ': ' + response.data;
-            }, function (evt) {
-                // Math.min is to fix IE which reports 200% sometimes
-                file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
-            });
+            var reader = new FileReader();
+            reader.onload = function(e){
+                $scope.encoded_file = btoa(e.target.result.toString());
+            };
+            reader.readAsDataURL(file);
+            reader.onload = function() {
+
+                var dataurl = get_resized_image_url(reader.result);
+
+                file.upload = Upload.http({
+                    url: Constants.apiUrl() + '/uploadphoto',
+                    method: "POST",
+                    headers: {
+                        'Content-Type': "application/json"//file.type
+                    },
+                    data: {filename: file.name, photo: dataurl}
+                });
+
+                file.upload.then(function (response) {
+                    file.result = response.data;
+                    var photoid = file.result.photoid;
+
+		    $scope.donor.photoid = photoid;
+		    $scope.message = "Upload successful.";
+
+                }, function (err) {
+                    console.log(err);
+                    if (err.status > 0)
+                        $scope.errorMsg = response.status + ': ' + response.data;
+                }, function (evt) {
+                    // Math.min is to fix IE which reports 200% sometimes
+                    file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+                });
+
+            };
         };
-
 
 
 	$scope.donateitem = function() {
