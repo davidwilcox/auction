@@ -117,6 +117,26 @@
           </div>
 
           <div>
+            Would you like to donate to the bar fund?
+            <br>
+            <md-input-container>
+              <label>Bar donation (optional)</label>
+              <input
+                 type="string"
+                 ng-model="bardonation"
+                 name="bardonation"
+                 format="currency-no-change"
+                 min="0"
+                 >
+            </md-input-container>
+            <md-button class="md-icon-button" aria-label="info" ng-click="showBarHelp($event)">
+              <md-icon>
+                info
+              </md-icon>
+            </md-button>
+          </div>
+
+          <div>
             <b>Total: ${{calculateTotal()}}</b>
           </div>
           <div>

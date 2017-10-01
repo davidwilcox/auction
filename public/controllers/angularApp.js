@@ -1085,7 +1085,8 @@ app.controller('BuyTicketsCtrl', [
     'tickets',
     'charges',
     'auth',
-    function($scope, $state, $document, tickets, charges, auth) {
+    "$mdDialog",
+    function($scope, $state, $document, tickets, charges, auth, $mdDialog) {
 	$scope.ticketTypes = ["ADULT_TICKET","HIGHSCHOOL_TICKET","JUNIORHIGH_TICKET","CHILD_TICKET"];
 	console.log($scope.ticketTypes);
 	$scope.tickets = [];
@@ -1093,6 +1094,18 @@ app.controller('BuyTicketsCtrl', [
 	$scope.numHighSchoolTickets = 0;
 	$scope.numJuniorHighTickets = 0;
 	$scope.numChildTickets = 0;
+        $scope.bardonation = 0;
+
+	$scope.showBarHelp = function(ev) {
+	    $mdDialog.show({
+		clickOutsideToClose: true,
+		templateUrl: '/templates/bar_help.html',
+		ariaLabel: 'Alert Dialog Demo',
+		targetEvent: ev,
+		fullscreen: true
+	    });
+	};
+
 
 	var createTicket = function() {
 	    var ticket = {
@@ -1138,7 +1151,8 @@ app.controller('BuyTicketsCtrl', [
             return $scope.numAdultTickets*20
                 +$scope.numHighSchoolTickets*12
                 +$scope.numJuniorHighTickets*5
-                +$scope.numChildTickets*5;
+                +$scope.numChildTickets*5
+                +($scope.bardonation == "" || isNaN($scope.bardonation) ? 0 : parseFloat($scope.bardonation));
         };
 
 	$scope.computeOrderDetails = function() {
@@ -1177,7 +1191,8 @@ app.controller('BuyTicketsCtrl', [
                 purchaser: auth.currentUser().email,
                 stripe_token: token.id,
                 amount: $scope.calculateTotal()*100,
-		tickets: $scope.tickets
+		tickets: $scope.tickets,
+                bar_donation: $scope.bardonation
             }).then(function(data) {
 		console.log(data);
 		$state.go('buyticketsconfirmation');
