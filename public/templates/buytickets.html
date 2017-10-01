@@ -43,6 +43,7 @@
                     <md-radio-button value="HIGHSCHOOL_TICKET"><b>High School Class</b>-Upstairs food, no bid card, $12</md-radio-button>
                     <md-radio-button value="JUNIORHIGH_TICKET"><b>Junior High Class</b>—Downstairs food, no bid card, $5</md-radio-button>
                     <md-radio-button value="CHILD_TICKET"><b>Elementary Classes</b>—Age five through 5th grade, downstairs food, special activities, $5</md-radio-button>
+                    <md-radio-button value="PREK_TICKET"><b>Pre-K Classes</b>—Under Age 5, Snacks, bring your own food, Childcare will be provided, $0</md-radio-button>
                   </md-radio-group>
 
                   <label>Dietary Restrictions</label>
@@ -115,6 +116,14 @@
             <span>x $5 =</span>
             <span>${{numChildTickets*5}}</span>
           </div>
+
+          <div>
+            <span>{{numPrekTickets}}</span>
+            <span>Pre-K Tickets</span>
+            <span>x $0 =</span>
+            <span>${{numPrekTickets*0}}</span>
+          </div>
+
 
           <div>
             Would you like to donate to the bar fund?

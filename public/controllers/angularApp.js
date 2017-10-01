@@ -16,6 +16,7 @@ app.config(['$translateProvider', function ($translateProvider) {
 	HIGHSCHOOL_TICKET: "High School",
 	JUNIORHIGH_TICKET: "Junior High School",
 	CHILD_TICKET: "Child",
+	PREK_TICKET: "Pre-K",
 	NONE_FOOD: "Regular",
 	VEGETARIAN_FOOD: "Vegetarian",
 	VEGAN: "Vegan",
@@ -720,7 +721,7 @@ app.controller(
     function($scope, $http, auth, Constants) {
 	$scope.getFullName = getFullName;
 	$scope.ticket.date = new Date($scope.ticket.date);
-	$scope.ageCategories = ["ADULT_TICKET", "HIGHSCHOOL_TICKET", "JUNIORHIGH_TICKET", "CHILD_TICKET"];
+	$scope.ageCategories = ["ADULT_TICKET", "HIGHSCHOOL_TICKET", "JUNIORHIGH_TICKET", "CHILD_TICKET", "PREK_TICKET"];
 	$scope.allFoodRestrictions = ["NONE_FOOD","VEGETARIAN_FOOD","VEGAN"];
 	$scope.saveticket = function(ticket) {
 	    $http.post(Constants.apiUrl() + "/modify_ticket", {ticket: ticket}, {headers: {
@@ -1087,7 +1088,7 @@ app.controller('BuyTicketsCtrl', [
     'auth',
     "$mdDialog",
     function($scope, $state, $document, tickets, charges, auth, $mdDialog) {
-	$scope.ticketTypes = ["ADULT_TICKET","HIGHSCHOOL_TICKET","JUNIORHIGH_TICKET","CHILD_TICKET"];
+	$scope.ticketTypes = ["ADULT_TICKET","HIGHSCHOOL_TICKET","JUNIORHIGH_TICKET","CHILD_TICKET", "PREK_TICKET"];
 	console.log($scope.ticketTypes);
 	$scope.tickets = [];
 	$scope.numAdultTickets = 1;
@@ -1152,6 +1153,7 @@ app.controller('BuyTicketsCtrl', [
                 +$scope.numHighSchoolTickets*12
                 +$scope.numJuniorHighTickets*5
                 +$scope.numChildTickets*5
+                +$scope.numPrekTickets*0
                 +($scope.bardonation == "" || isNaN($scope.bardonation) ? 0 : parseFloat($scope.bardonation));
         };
 
@@ -1160,6 +1162,7 @@ app.controller('BuyTicketsCtrl', [
 	    var highSchoolTickets = 0;
 	    var juniorHighTickets = 0;
 	    var childTickets = 0;
+	    var prekTickets = 0;
 	    $scope.tickets.forEach(function(ticket) {
 		switch (ticket.agegroup) {
 		case "ADULT_TICKET":
@@ -1174,6 +1177,9 @@ app.controller('BuyTicketsCtrl', [
 		case "CHILD_TICKET":
 		    childTickets++;
 		    break;
+		case "PREK_TICKET":
+		    prekTickets++;
+		    break;
 		}
 	    });
 
@@ -1181,6 +1187,7 @@ app.controller('BuyTicketsCtrl', [
 	    $scope.numHighSchoolTickets = highSchoolTickets;
 	    $scope.numJuniorHighTickets = juniorHighTickets;
 	    $scope.numChildTickets = childTickets;
+	    $scope.numPrekTickets = prekTickets;
 	};
 
         $scope.doCheckout = function(token) {
