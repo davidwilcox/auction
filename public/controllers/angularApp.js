@@ -1149,7 +1149,7 @@ app.controller('BuyTicketsCtrl', [
 	};
 
         $scope.calculateTotal = function() {
-            return $scope.numAdultTickets*20
+            return $scope.numAdultTickets*16
                 +$scope.numHighSchoolTickets*12
                 +$scope.numJuniorHighTickets*5
                 +$scope.numChildTickets*5
