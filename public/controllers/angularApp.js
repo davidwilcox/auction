@@ -1096,6 +1096,7 @@ app.controller('BuyTicketsCtrl', [
 	$scope.numJuniorHighTickets = 0;
 	$scope.numChildTickets = 0;
         $scope.bardonation = 0;
+        $scope.numPrekTickets = 0;
 
 	$scope.showBarHelp = function(ev) {
 	    $mdDialog.show({
