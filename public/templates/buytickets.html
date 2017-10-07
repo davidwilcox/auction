@@ -35,6 +35,22 @@
                     </md-button>
 		  </md-card-actions>
 	        </div>
+                <div>
+                  <md-input-container>
+                    <label>Contact email for this ticket holder</label>
+                    <input
+                       ng-model="ticket.buyer.email"
+                       size="40"
+                       >
+                  </md-input-container>
+                  <md-input-container>
+                    <label>Contact phone</label>
+                    <input
+                       ng-model="ticket.buyer.phonenumber"
+                       phone-input
+                       >
+                  </md-input-container>
+                </div>
 
                 <div>
 	          <label>Age Category</label>
@@ -61,22 +77,6 @@
 		    flex>
 		    Gluten Free?
 		  </md-checkbox>
-                </div>
-                <div>
-                  <md-input-container>
-                    <label>Contact email for this ticket holder</label>
-                    <input
-                       ng-model="ticket.buyer.email"
-                       size="40"
-                       >
-                  </md-input-container>
-                  <md-input-container>
-                    <label>Contact phone</label>
-                    <input
-                       ng-model="ticket.buyer.phonenumber"
-                       phone-input
-                       >
-                  </md-input-container>
                 </div>
             </div>
             </md-card> <!--panel-body-->
@@ -150,7 +150,7 @@
           </div>
           <div>
             <md-button stripe-checkout="doCheckout"
-		       data-email="{{currentUserEmail}}"
+		       data-email="{{currentUserEmail()}}"
 		       data-key="pk_live_Xhog0FzMxJt1QhvbsByoOJKr"
 		       data-name="SVUUS Auction"
 		       data-description="Tickets"
@@ -174,7 +174,7 @@
     <div layout-align="left" layout="row">
       <md-button ng-click="addTicket()" class="md-primary md-raised">Add additional ticket to order</md-button>
       <md-button stripe-checkout="doCheckout"
-		 data-email="{{currentUserEmail}}"
+		 data-email="{{currentUserEmail()}}"
 		 data-key="pk_live_Xhog0FzMxJt1QhvbsByoOJKr"
 		 data-name="SVUUS Auction"
 		 data-description="Tickets"

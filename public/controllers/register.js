@@ -47,6 +47,7 @@ app.controller('RegisterCtrl', [
 	    picture = $scope.imageSrc;
 
 	    var register = function() {
+                console.log('here');
 		auth.register($scope.user).error(function(error) {
 		    console.log($scope.user);
 		    $scope.error = error;

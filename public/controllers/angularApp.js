@@ -984,14 +984,17 @@ app.factory('auth', function($http, $window, $q, Constants) {
 	}
     };
     o.register = function(user) {
+        console.log("HERE");
 	if ( user.confirmPassword == user.password ) {
 	    return $http.post(Constants.apiUrl() + '/register', user).success(function(data) {
+                console.lg("MATCH");
 		o.saveToken(data.token);
 
 		var payload = JSON.parse($window.atob(o.getToken().split('.')[1]));
 		console.log(payload.user);
 		o.saveUser(payload.user);
 	    }).error(function(data) {
+                console.log("DELETING");
 		delete user['confirmPassword'];
 	    });
 	}
@@ -1055,6 +1058,8 @@ app.controller('LoginCtrl', [
 	$scope.user = {};
 	$scope.logIn = function() {
 	    auth.logIn($scope.user).error(function(error) {
+                console.log("ERROR");
+                console.log(error);
 		$scope.error = error;
 	    }).then(function() {
 		$state.go('home');
@@ -1111,24 +1116,27 @@ app.controller('BuyTicketsCtrl', [
 
 	var createTicket = function() {
 	    var ticket = {
-		name: "",
 		agegroup: "ADULT_TICKET",
 		foodRes: "NONE_FOOD",
 		buyer: auth.currentUser(),
 		date: Date(),
 		gluten: false,
-		login: auth.currentUser().email
+		login: auth.isLoggedIn() ? auth.currentUser().email : "NONE"
 	    };
 	    return ticket;
 	};
 
-	$scope.currentUserEmail = auth.currentUserEmail();
+	$scope.currentUserEmail = function() {
+            return auth.isLoggedIn() ? auth.currentUserEmail() : $scope.tickets[0].login;
+        }
 
 	var initializeTickets = function() {
 	    $scope.tickets = [];
 	    $scope.tickets[0] = createTicket();
-	    $scope.tickets[0].firstname = auth.currentUser().firstname;
-	    $scope.tickets[0].lastname = auth.currentUser().lastname;
+            if ( auth.isLoggedIn() ) {
+	        $scope.tickets[0].firstname = auth.currentUser().firstname;
+	        $scope.tickets[0].lastname = auth.currentUser().lastname;
+            }
 	}
 
 	initializeTickets();
@@ -1196,7 +1204,7 @@ app.controller('BuyTicketsCtrl', [
 	    $scope.submitProgress = 0;
             console.log("CHARGING");
             charges.charge({
-                purchaser: auth.currentUser().email,
+                purchaser: auth.isLoggedIn() ? auth.currentUser().email : $scope.tickets[0].login,
                 stripe_token: token.id,
                 amount: $scope.calculateTotal()*100,
 		tickets: $scope.tickets,

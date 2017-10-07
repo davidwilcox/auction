@@ -41,12 +41,12 @@
   <body ng-app="auction">
     <md-toolbar class="md-primary no-print" ng-controller="NavCtrl as ctrl">
       <span class="md-toolbar-tools">
-        <a ui-sref-active="active" ui-sref="buytickets" ng-show="ctrl.isLoggedIn()">
+        <a ui-sref-active="active" ui-sref="buytickets">
 	  <md-button class="md-primary md-raised" ui-sref-active="md-warn">
 	    Buy Tickets
 	  </md-button>
         </a>
-        <a ui-sref-active="active" ui-sref="donateitem" ng-if="ctrl.isAdmin()">
+        <a ui-sref-active="active" ui-sref="donateitem">
 	  <md-button class="md-primary md-raised">Donate Item</md-button>
         </a>
         <a ui-sref-active="active" ui-sref="myauction" ng-if="ctrl.isLoggedIn()" md-mode="right">

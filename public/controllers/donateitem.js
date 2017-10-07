@@ -73,15 +73,18 @@ app.controller('DonateItemCtrl', [
 	$scope.item = {
 	    name: ''
 	};
-	$scope.imageurl = auth.currentUser().photoid;
         $scope.itemMaxLength = 50;
 	$scope.descriptionMaxLength = 500;
-	user = auth.currentUser();
-	if ( user ) {
+        user = auth.currentUser();
+        if ( user ) {
 	    $scope.donor = user;
-	} else if ( $window.localStorage['donor-info'] ) {
-	    $scope.donor = $window.localStorage['donor-info'];
-	}
+	} else {
+            $scope.donor = {};
+            console.log($scope.donor);
+        }
+        console.log("HERE");
+	$scope.imageurl = $scope.donor.photoid;
+        console.log(JSON.stringify($scope.donor));
 
         $scope.upload = function(files) {
             var file = files[0];
@@ -127,7 +130,7 @@ app.controller('DonateItemCtrl', [
 	$scope.donateitem = function() {
 
 	    // persist user info.
-	    $window.localStorage['donor-info'] = $scope.donor;
+	    $window.localStorage['donor-info'] = JSON.stringify($scope.donor);
 	    $scope.item.donor = $scope.donor;
 	    $scope.item.email = auth.currentUserEmail();
             $scope.item.date = new Date();
@@ -143,4 +146,5 @@ app.controller('DonateItemCtrl', [
 		    $scope.error = error;
 		});
 	};
+        console.log(JSON.stringify($scope.donor));
     }]);
