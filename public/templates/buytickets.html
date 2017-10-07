@@ -36,11 +36,15 @@
 		  </md-card-actions>
 	        </div>
                 <div>
+                  <div ng-show="$index==0">
+                    Note, we need an email to send you updates on items you buy.
+                  </div>
                   <md-input-container>
                     <label>Contact email for this ticket holder</label>
                     <input
                        ng-model="ticket.buyer.email"
                        size="40"
+                       required
                        >
                   </md-input-container>
                   <md-input-container>
