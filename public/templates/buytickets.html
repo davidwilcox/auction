@@ -11,6 +11,13 @@
             Enter info here for your FIRST ticket.  If you need more than one ticket, click the blue “Add” button below, and scroll down to enter the additional info.
           </div>
         </md-toolbar>
+        <div ng-hide="isLoggedIn()">
+          <md-toolbar class="md-accent" layout-padding style="display: inline-block">
+            <div class="md-toolbar-tools" style="display: inline-block">
+              It seems like you are not logged in. We will email you the list of items/events that you buy at the auction, but that will be the only way to find out what you buy later. If you want to be able to check up through the year on the things you bought, please create an account.
+            </div>
+          </md-toolbar>
+        </div>
 	<div layout="column">
 	  <div ng-repeat="ticket in tickets track by $index">
             <div id="anchor{{$index}}">

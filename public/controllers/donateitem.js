@@ -85,6 +85,7 @@ app.controller('DonateItemCtrl', [
         console.log("HERE");
 	$scope.imageurl = $scope.donor.photoid;
         console.log(JSON.stringify($scope.donor));
+        $scope.isLoggedIn = auth.isLoggedIn;
 
         $scope.upload = function(files) {
             var file = files[0];

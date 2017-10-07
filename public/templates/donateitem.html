@@ -7,8 +7,13 @@
   <img style="width:100%" src="/images/Banner.png">
   -->
 
-  {{o | currency}}
-
+  <div ng-hide="isLoggedIn()">
+    <md-toolbar class="md-accent" layout-padding style="display: inline-block">
+      <div class="md-toolbar-tools" style="display: inline-block">
+        It seems like you are not logged in. We will email you the people that buy your event after the auction, but that will be the only way to find out. If you want to be able to check up on who bought your event, please create an account.
+      </div>
+    </md-toolbar>
+  </div>
   <form
      name="donateItemForm"
      ng-submit="donateItemForm.$valid && donateitem()"

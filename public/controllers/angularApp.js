@@ -1126,6 +1126,8 @@ app.controller('BuyTicketsCtrl', [
 	    return ticket;
 	};
 
+        $scope.isLoggedIn = auth.isLoggedIn;
+
 	$scope.currentUserEmail = function() {
             return auth.isLoggedIn() ? auth.currentUserEmail() : $scope.tickets[0].login;
         }
