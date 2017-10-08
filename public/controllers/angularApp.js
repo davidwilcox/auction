@@ -345,6 +345,24 @@ app.factory('tickets', function($http, Constants) {
     };
 });
 
+app.filter('currency-remove-dollar', ['$filter', function($filter) {
+    return function(num) {
+        if ( num && num.startsWith('$') )
+            num = num.substring(1);
+
+        function isNumeric(num){
+            return !isNaN(num)
+        }
+
+        if ( isNumeric(num) ) {
+            return $filter("currency")(num);
+        }
+        return num;
+    };
+}]);
+
+ 
+
 app.filter('currency-no-change', ['$filter', function($filter) {
     return function(num) {
         function isNumeric(num){
@@ -373,6 +391,9 @@ app.filter('currencyNoChange', ['$filter', function($filter) {
         return num;
     };
 }]);
+
+
+
 
 
 
@@ -1160,12 +1181,16 @@ app.controller('BuyTicketsCtrl', [
 	};
 
         $scope.calculateTotal = function() {
+            var bd = $scope.bardonation;
+            if ( bd && bd.startsWith('$') )
+                bd = bd.substring(1);
             return $scope.numAdultTickets*16
                 +$scope.numHighSchoolTickets*12
                 +$scope.numJuniorHighTickets*5
                 +$scope.numChildTickets*5
                 +$scope.numPrekTickets*0
-                +($scope.bardonation == "" || isNaN($scope.bardonation) ? 0 : parseFloat($scope.bardonation));
+                +(bd == "" || (isNaN(bd) )  ? 0 :
+                  parseFloat(bd));
         };
 
 	$scope.computeOrderDetails = function() {
