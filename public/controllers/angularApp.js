@@ -842,8 +842,24 @@ app.controller('ViewRegisteredPeopleCtrl', [
     '$q',
     "Constants",
     function($scope, tickets, auth, items, $mdDialog, $http, $q, Constants) {
-	items.performSearch($scope.searchTerms).then(function(data) {
+
+        var getBarDonation = function() {
+            var bd = 0;
+            if ( $scope.tickets) {
+                bd = $scope.tickets.reduce(function(prev, ticket) {
+                    var bd = 0;
+                    if ( ticket.bar_donation )
+                        bd += parseFloat(ticket.bar_donation);
+                    return prev + bd;
+                }, 0);
+            }
+            return bd;
+        };
+
+
+        items.performSearch($scope.searchTerms).then(function(data) {
 	    $scope.tickets = data.tickets_arr;
+            $scope.bardonation = getBarDonation();
 	    $scope.items = data.items;
 	    $scope.transactions_by_bidnum = data.transactions_by_bidnum;
             $scope.items_by_itemid = {};
@@ -884,6 +900,7 @@ app.controller('ViewRegisteredPeopleCtrl', [
 	$scope.performSearch = function() {
 	    items.performSearch($scope.searchTerms, $scope.sortval).then(function(data) {
 		$scope.tickets = data.tickets_arr;
+                $scope.totalbardonation = getBarDonation();
 		$scope.items = data.items;
 		$scope.transactions_by_bidnum = data.transactions_by_bidnum;
 	    });

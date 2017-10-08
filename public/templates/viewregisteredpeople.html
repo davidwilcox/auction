@@ -48,7 +48,8 @@
     <div>
       <md-button class="md-primary md-raised" ng-click="performSearch()">Search/Sort</md-button>
     </div>
-    <div ng-show="tickets"><h3>{{tickets.length}} People</h3></div>
+    <div ng-show="tickets"><h3>{{tickets.length}} People</h3>
+      <label>Total Bar Donation</label>{{bardonation | currency}}</div>
   </div>
   <md-virtual-repeat-container style="height:calc(100vh - 150px); overflow-y: auto;" >
     <div md-virtual-repeat="ticket in tickets" style="height:300px;">
