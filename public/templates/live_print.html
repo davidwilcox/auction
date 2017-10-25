@@ -1,0 +1,38 @@
+<div>
+  <style type="text/css" media="print">
+    @page {
+        size: landscape;
+    }
+  </style>
+</div>
+<div ng-repeat='item in items'>
+  <div layout="row">
+    <div style="min-width:30px;">
+      <div style="background-color:#CCCCCC;"><h3>{{item.number}}</h3></div>
+    </div>
+    <div>
+      <h1><font size="9">{{item.name}} ({{item.eventtypedtime ? item.eventtypedtime : (item.eventdate && item.eventdate > today) ? (item.eventdate | date) : ""}})</font></h1>
+    </div>
+  </div>
+  <div layout="row" >
+    <div layout="column" flex>
+      <div flex layout="column" layout-fill>
+        <div flex >
+          <div layout="row" flex>
+            <font size="5">
+              {{item.description}}
+	      <span flex="100" translate="{{::item.policy}}"></span>
+	      <p>Quantity: {{item.quantity}}.</p>
+	      <p>Min Bid: {{item.minvalue}}.</p>
+	      <p>Value: {{item.value}}.</p>
+            </font>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ppt-catalog-image-container">
+      <img ng-src="https://svuus-photos.s3.amazonaws.com/{{item.donor.photoid}}">
+    </div>
+  </div>
+  <div class="page-break"></div>
+</div>

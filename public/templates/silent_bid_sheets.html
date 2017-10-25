@@ -34,7 +34,7 @@
           </span>
         </div>
         <div layout-padding>
-          {{var[0].description}}            Item Value:&nbsp;&nbsp;{{var[0].value | currency}}
+          {{var[0].description}}            Item Value:&nbsp;&nbsp;{{var[0].value}}
         </div>
         <table border="1" width='100%'>
           <tr>
@@ -46,7 +46,7 @@
           <tr height="36">
             <td></td>
             <td></td>
-            <td>{{var[0].minvalue | currency}}</td>
+            <td>{{var[0].minvalue}}</td>
           </tr>
           <tr ng-repeat="i in [1,2,3,4,5,6,7,8,9,10,11]" height="36">
             <td></td>
@@ -85,7 +85,7 @@
           </div>
         </div>
         <div layout-padding>
-          {{var[1].description}} Item Value:&nbsp;&nbsp;{{var[0].value | currency}}
+          {{var[1].description}} Item Value:&nbsp;&nbsp;{{var[0].value}}
         </div>
 
         <table border="1" width='100%'>
@@ -98,7 +98,7 @@
           <tr  height="36">
             <td></td>
             <td></td>
-            <td>{{var[1].minvalue | currency}}</td>
+            <td>{{var[1].minvalue}}</td>
           </tr>
           <tr ng-repeat="i in [1,2,3,4,5,6,7,8,9,10,11]" height="36">
             <td></td>

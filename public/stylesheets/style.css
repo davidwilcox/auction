@@ -35,6 +35,11 @@
     margin: 9px
 }
 
+.ppt-catalog-image-container {
+    width:300px;
+    height:300px;
+}
+
 .live-catalog-image-container {
     width:120px;
     height:120px;
@@ -60,6 +65,15 @@
     max-width: 100%;
     max-height: 100%;
 }
+
+
+.ppt-catalog-image-container img {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+    max-height: 100%;
+}
+
 
 .silent-bid-sheet-image-container {
     width:200px;

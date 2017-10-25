@@ -540,6 +540,16 @@ app.config([
 		    }
 		}]
 	    })
+	    .state('live_print', {
+		url: '/live_print',
+		templateUrl: '/templates/live_print.html',
+		controller: 'LiveCatalogCtrl',
+		onEnter: [ '$state', 'auth', function($state, auth) {
+		    if ( !auth.isLoggedIn() ) {
+			$state.go('home');
+		    }
+		}]
+	    })
 	    .state('buyticketsconfirmation', {
 		url: '/buyticketsconfirmation',
 		templateUrl: '/templates/buyticketsconfirmation.html',
