@@ -858,8 +858,12 @@ app.controller('ViewRegisteredPeopleCtrl', [
             if ( $scope.tickets) {
                 bd = $scope.tickets.reduce(function(prev, ticket) {
                     var bd = 0;
-                    if ( ticket.bar_donation )
-                        bd += parseFloat(ticket.bar_donation);
+                    if ( ticket.bar_donation ) {
+                        var bard = ticket.bar_donation;
+                        if ( bard.startsWith("$") )
+                            bard = bard.substring(1);
+                        bd += parseFloat(bard);
+                    }
                     return prev + bd;
                 }, 0);
             }
