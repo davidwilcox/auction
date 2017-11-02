@@ -55,7 +55,9 @@ var get_resized_image_url = function(urlin) {
     var ctx = canvas.getContext("2d");
     ctx.drawImage(img, 0, 0, width, height);
 
-    var dataurl = canvas.toDataURL("image/jpg")
+    var dataurl = canvas.toDataURL("image/jpg");
+    if ( dataurl.length < 100 )
+        return urlin;
     return dataurl;
 };
 
@@ -1428,6 +1430,8 @@ app.controller('ViewItemAdminCtrl', function($scope, auth, $http, $mdDialog, Upl
 
     $scope.upload = function(files,item) {
         var file = files[0];
+        if ( !file )
+            return;
 
         var reader = new FileReader();
         reader.onload = function(e){
