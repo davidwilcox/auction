@@ -123,11 +123,15 @@ app.factory('charges', function($http, auth, Constants) {
     var o = {
         charge: function(params)  {
             return $http.post(Constants.apiUrl() + '/chargecustomer', params, {headers: {
-		Authorization: "Bearer " + auth.getToken() } });
+		Authorization: "Bearer " + auth.getToken() } }).then(function(data) {
+		    o.users = data;
+		    return data;
+		})
         }
     };
     return o;
 });
+
 
 
 app.factory('items', function($http, $q, Constants) {
@@ -955,7 +959,9 @@ app.controller("DonateItemsConfirmationCtrl", [
 
 app.controller("BuyticketsconfirmationCtrl", [
     '$scope',
-    function($scope) {
+    "charges",
+    function($scope, charges) {
+	console.log(charges.users);
 	
     }]);
 
