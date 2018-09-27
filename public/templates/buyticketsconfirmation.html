@@ -3,4 +3,13 @@
   <div>
     The festivities start promptly at 6:00pm on Saturday, November 11th, 2017.  There are no physical tickets.  Just show up and we’ll give you your bid card.  See you there!
   </div>
+  <div ng-repeat="user in users">
+    <md-card layout-padding>
+      First Name: {{user.firstname}}
+      <br>
+      Last Name: {{user.lastname}}
+      <br>
+      Bid Number: {{user.bidnumber}}
+    </md-card>
+  </div>
 </div>

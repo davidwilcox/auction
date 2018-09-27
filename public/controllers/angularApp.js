@@ -962,7 +962,8 @@ app.controller("BuyticketsconfirmationCtrl", [
     "charges",
     function($scope, charges) {
 	console.log(charges.users);
-	
+
+	$scope.users = charges.users.data;
     }]);
 
 app.controller("MyTicketsCtrl", [
