@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export AWS_PROFILE=old
+
 aws s3 sync public s3://svuus-auction-web --region us-west-2  --cache-control "max-age=600" --exclude "*.link"
 aws s3 cp views/index.html s3://svuus-auction-web --region us-west-2  --cache-control "max-age=600"
 aws cloudfront create-invalidation --distribution-id E11BZRLSK6SUXG --paths "/*"
