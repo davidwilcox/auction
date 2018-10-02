@@ -1225,10 +1225,10 @@ app.controller('BuyTicketsCtrl', [
             if ( bd && bd.startsWith('$') )
                 bd = bd.substring(1);
             return $scope.numAdultTickets*16
-                +$scope.numHighSchoolTickets*12
+                +$scope.numHighSchoolTickets*16
                 +$scope.numJuniorHighTickets*5
                 +$scope.numChildTickets*5
-                +$scope.numPrekTickets*0
+                +$scope.numPrekTickets*5
                 +(bd == "" || (isNaN(bd) )  ? 0 :
                   parseFloat(bd));
         };
