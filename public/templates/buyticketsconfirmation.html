@@ -9,7 +9,9 @@
       <br>
       Last Name: {{user.lastname}}
       <br>
-      Bid Number: {{user.bidnumber}}
+      <div ng-if="user.bidnumber < 1000">
+	Bid Number: {{user.bidnumber}}
+      </div>
     </md-card>
   </div>
 </div>
