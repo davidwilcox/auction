@@ -67,8 +67,8 @@
 	          <label>Age Category</label>
 	          <md-radio-group ng-model="ticket.agegroup" ng-change="computeOrderDetails()" required>
                     <md-radio-button value="ADULT_TICKET"><b>Adult</b>-Upstairs food, bid card, $16</md-radio-button>
-                    <md-radio-button value="HIGHSCHOOL_TICKET"><b>High School Class</b>-Upstairs food, no bid card, $16</md-radio-button>
-                    <md-radio-button value="JUNIORHIGH_TICKET"><b>Junior High Class</b>—Downstairs food, no bid card, $5</md-radio-button>
+                    <md-radio-button value="HIGHSCHOOL_TICKET"><b>High School Class</b>-Age 14+, Upstairs food, no bid card, $16</md-radio-button>
+                    <md-radio-button value="JUNIORHIGH_TICKET"><b>Junior High Class</b>—Age up to 13, Downstairs food, no bid card, $5</md-radio-button>
                     <md-radio-button value="CHILD_TICKET"><b>Elementary Classes</b>—Age five through 5th grade, downstairs food, special activities, $5</md-radio-button>
                     <md-radio-button value="PREK_TICKET"><b>Pre-K Classes</b>—Under Age 5, downstairs food, Childcare will be provided, $5</md-radio-button>
                   </md-radio-group>
@@ -109,7 +109,7 @@
           <div>
             <span>{{numHighSchoolTickets}}</span>
             <span>High School Tickets</span>
-            <span>x $12 =</span>
+            <span>x $16 =</span>
             <span>${{numHighSchoolTickets*16}}</span>
           </div>
 
@@ -131,7 +131,7 @@
           <div>
             <span>{{numPrekTickets}}</span>
             <span>Pre-K Tickets</span>
-            <span>x $0 =</span>
+            <span>x $5 =</span>
             <span>${{numPrekTickets*5}}</span>
           </div>
 
