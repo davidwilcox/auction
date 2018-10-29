@@ -2,15 +2,18 @@
   <div layout="row" class="page-break-avoid">
     <div layout-padding style="width:140px">
       <div class="show-border" ng-if="item.number">
+        <label>Number:</label>
         {{::item.number}}
       </div>
       <div class="show-border" ng-if="!item.number">
+        <label>Number:</label>
         No Num
       </div>
       <div class="show-border">
         {{::item.name}}
       </div>
       <div class="show-border">
+        <label>Quantity:</label>
         {{::item.quantity}}
       </div>
       <div layout-padding>
@@ -28,8 +31,6 @@
     <div class="show-border" style="height: 200px">
     </div>
     <div>
-      {{numrows}}
-      {{numcols}}
       <table>
         <tr ng-repeat="i in row">
           <td ng-repeat="j in col">
