@@ -91,6 +91,10 @@ table, th, td {
     border: 1px solid black;
 }
 
+.show-border {
+    border:1px solid black;
+}
+
 
 table {
     border-collapse: collapse;

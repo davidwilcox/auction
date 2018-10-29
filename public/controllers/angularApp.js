@@ -497,6 +497,11 @@ app.config([
 			$state.go('home');
 		}
 	    })
+            .state('spottersheets', {
+                url: '/spottersheets',
+                templateUrl: '/templates/spottersheets.html',
+                controller: 'SpotterSheetsCtrl',
+            })
 	    .state('modifydonateditems', {
 		url: '/modifydonateditems',
 		templateUrl: '/templates/modifydonateditems.html',
@@ -1334,12 +1339,31 @@ app.controller( 'LiveCatalogCtrl',[
 	});
     }]);
 
+app.controller( 'SpotterSheetsCtrl',[
+    '$scope',
+    "items",
+    function($scope, items) {
+        items.performSearch({searchitemtype: 'live'}, 'itemnumber').then(function(data) {
+            console.log(data);
+            $scope.items = data.items;
+            $scope.numrows = 4;
+            $scope.numcols = 7;
+            $scope.row = [];
+            $scope.col = [];
+            for(let r = 0; r < 4; ++r)
+                $scope.row.push(r);
+            for(let r = 0; r < 7; ++r)
+                $scope.col.push(r);
+            $scope.getFullName = getFullName;
+        });
+    }]);
+
 app.controller( 'SilentBidSheetsCtrl',[
     '$scope',
     "items",
     function($scope, items) {
 	$scope.getFullName = getFullName;
-	items.performSearch({serachitemtype: "silent"}, "lastname").then(function(data) {
+	items.performSearch({searchitemtype: "silent"}, "lastname").then(function(data) {
 	    $scope.items = [];
 	    obj = [];
 	    data.items.forEach(function(item) {

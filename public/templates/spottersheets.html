@@ -1,0 +1,43 @@
+<div ng-repeat="item in items">
+  <div layout="row" class="page-break-avoid">
+    <div layout-padding style="width:140px">
+      <div class="show-border" ng-if="item.number">
+        {{::item.number}}
+      </div>
+      <div class="show-border" ng-if="!item.number">
+        No Num
+      </div>
+      <div class="show-border">
+        {{::item.name}}
+      </div>
+      <div class="show-border">
+        {{::item.quantity}}
+      </div>
+      <div layout-padding>
+        Donated By: {{getFullName(item.donor)}}
+      </div>
+    </div>
+    <div class="show-border" style="height: 200px">
+    </div>
+    <div layout-padding>
+      Price:
+      <br>
+      <div class="show-border" style="height: 70px; width: 140px;">
+      </div>
+    </div>
+    <div class="show-border" style="height: 200px">
+    </div>
+    <div>
+      {{numrows}}
+      {{numcols}}
+      <table>
+        <tr ng-repeat="i in row">
+          <td ng-repeat="j in col">
+            <div class="show-border" style="width:50px; height:40px;">
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
