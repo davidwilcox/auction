@@ -1,7 +1,7 @@
 <div ng-repeat="item in items">
   <div layout="row">
     <div flex>
-      <h2> 
+      <h2>
         {{::item.name}}
       </h2>
     </div>
@@ -39,12 +39,16 @@
 	<tr>
           <td width='70%'><label>Name (Just sign up—no bidding):</label></td>
           <td><label>Bidder ID#</label></td>
+          <td><label>Kid</label></td>
+          <td><label>Adult</label></td>
 	  <td></td>
 	</tr>
 	<tr ng-repeat="i in range(item.quantity) track by $index" height='36' class="page-break-avoid">
           <td></td>
           <td></td>
-          <td>{{::item.value | currency}}</td>
+          <td></td>
+          <td></td>
+          <td>{{::item.value}}</td>
 	</tr>
       </table>
     </div>

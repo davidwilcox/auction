@@ -521,6 +521,11 @@ app.config([
 		    }
 		}]
 	    })
+            .state('raffle_sheets', {
+                url: '/raffle_sheets',
+                templateUrl: '/templates/raffle_sheets.html',
+                controller: 'RaffleSheetsCtrl'
+            })
 	    .state('silent_bid_sheets', {
 		url: '/silent_bid_sheets',
 		templateUrl: '/templates/silent_bid_sheets.html',
@@ -1317,6 +1322,8 @@ app.controller( 'FixedPriceBidSheetCtrl',[
 		    item.eventdate = new Date(item.eventdate);
 		if ( typeof item.quantity == "string" )
 		    item.quantity = parseInt(item.quantity);
+                if ( typeof item.value == "number" )
+                    item.value = "$" + item.value
 	    });
 	    $scope.transactions_by_item = data.transactions_by_item;
 	});
@@ -1354,6 +1361,16 @@ app.controller( 'SpotterSheetsCtrl',[
                 $scope.row.push(r);
             for(let r = 0; r < 7; ++r)
                 $scope.col.push(r);
+            $scope.getFullName = getFullName;
+        });
+    }]);
+
+app.controller( 'RaffleSheetsCtrl',[
+    '$scope',
+    "items",
+    function($scope, items) {
+        items.performSearch({searchitemtype: 'raffle'}, 'itemnumber').then(function(data) {
+            $scope.items = data.items;
             $scope.getFullName = getFullName;
         });
     }]);
