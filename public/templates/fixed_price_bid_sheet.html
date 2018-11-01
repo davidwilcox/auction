@@ -39,15 +39,17 @@
 	<tr>
           <td width='70%'><label>Name (Just sign up—no bidding):</label></td>
           <td><label>Bidder ID#</label></td>
-          <td><label>Kid</label></td>
-          <td><label>Adult</label></td>
-	  <td></td>
+          <td ng-if="hasSeparateKidsPrice(item.policy)"><label>Kid</label></td>
+          <td ng-if="hasSeparateKidsPrice(item.policy)"><label>Adult</label></td>
+          <td ng-if="item.policy==='THREEPRICES'"><label>Family</label></td>
+    	  <td></td>
 	</tr>
 	<tr ng-repeat="i in range(item.quantity) track by $index" height='36' class="page-break-avoid">
           <td></td>
           <td></td>
-          <td></td>
-          <td></td>
+          <td ng-if="hasSeparateKidsPrice(item.policy)"></td>
+          <td ng-if="hasSeparateKidsPrice(item.policy)"></td>
+          <td ng-if="item.policy==='THREEPRICES'"></td>
           <td>{{::item.value}}</td>
 	</tr>
       </table>

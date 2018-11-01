@@ -1326,6 +1326,9 @@ app.controller( 'FixedPriceBidSheetCtrl',[
                     item.value = "$" + item.value
 	    });
 	    $scope.transactions_by_item = data.transactions_by_item;
+            $scope.hasSeparateKidsPrice = (policy) => {
+                return policy === 'KIDSFREE' || policy === 'KIDSFREECOUNT' || policy === 'KIDSPARTY' || policy === 'THREEPRICES';
+            };
 	});
     }]);
 
