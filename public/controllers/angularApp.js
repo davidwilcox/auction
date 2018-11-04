@@ -854,6 +854,14 @@ app.controller(
     function($scope, items) {
 	items.performSearch({maxBidNumber: 1000}, "lastname").then(function(data) {
 	    $scope.tickets = data.tickets_arr;
+            for(let i = 0; i < 30; ++i) {
+                $scope.tickets.push({
+                    bidnumber: $scope.tickets.length+i+1,
+                    firstname: '',
+                    lastname: ''
+                });
+            }
+            console.log($scope.tickets);
 	});
 	$scope.getFullName = getFullName;
     });
@@ -1234,11 +1242,11 @@ app.controller('BuyTicketsCtrl', [
             var bd = $scope.bardonation;
             if ( bd && bd.startsWith('$') )
                 bd = bd.substring(1);
-            return $scope.numAdultTickets*16
-                +$scope.numHighSchoolTickets*16
-                +$scope.numJuniorHighTickets*5
-                +$scope.numChildTickets*5
-                +$scope.numPrekTickets*5
+            return $scope.numAdultTickets*20
+                +$scope.numHighSchoolTickets*20
+                +$scope.numJuniorHighTickets*7
+                +$scope.numChildTickets*7
+                +$scope.numPrekTickets*7
                 +(bd == "" || (isNaN(bd) )  ? 0 :
                   parseFloat(bd));
         };
