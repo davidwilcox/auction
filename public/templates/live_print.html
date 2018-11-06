@@ -30,8 +30,12 @@
         </div>
       </div>
     </div>
-    <div class="ppt-catalog-image-container">
-      <img ng-src="https://svuus-photos.s3.amazonaws.com/{{item.donor.photoid}}">
+    <div>
+      <div class="ppt-catalog-image-container">
+        <img ng-src="https://svuus-photos.s3.amazonaws.com/{{item.donor.photoid}}">
+      </div>
+      <br>
+      <h2>Donated By:{{getFullName(item.donor)}}</h2>
     </div>
   </div>
   <div class="page-break"></div>

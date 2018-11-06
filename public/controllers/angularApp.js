@@ -1284,25 +1284,36 @@ app.controller('BuyTicketsCtrl', [
 	    $scope.numPrekTickets = prekTickets;
 	};
 
-        $scope.doCheckout = function(token) {
-            var promises = [];
-	    $scope.submitProgress = 0;
-            console.log("CHARGING");
-            charges.charge({
-                purchaser: auth.isLoggedIn() ? auth.currentUser().email : $scope.tickets[0].login,
-                stripe_token: token.id,
+        var handler = StripeCheckout.configure({
+            key: 'pk_live_Xhog0FzMxJt1QhvbsByoOJKr',
+            locale: 'auto',
+            token: function(token) {
+                var promises = [];
+	        $scope.submitProgress = 0;
+                console.log("CHARGING");
+                charges.charge({
+                    purchaser: auth.isLoggedIn() ? auth.currentUser().email : $scope.tickets[0].login,
+                    stripe_token: token.id,
+                    amount: $scope.calculateTotal()*100,
+		    tickets: $scope.tickets,
+                    bar_donation: $scope.bardonation
+                }).then(function(data) {
+		    console.log(data);
+		    $state.go('buyticketsconfirmation');
+                }, function(err) {
+                    console.log(err);
+                });
+            }
+        });
+        $scope.startCheckout = function() {
+            console.log("STARTING CHECKOUT");
+            handler.open({
                 amount: $scope.calculateTotal()*100,
-		tickets: $scope.tickets,
-                bar_donation: $scope.bardonation
-            }).then(function(data) {
-		console.log(data);
-		$state.go('buyticketsconfirmation');
-            }, function(err) {
-                console.log(err);
+                name: 'SVUUS Auction',
+                description: 'Tickets',
+                email: $scope.currentUserEmail()
             });
-
         };
-
     }]);
 
 

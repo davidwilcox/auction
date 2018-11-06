@@ -3,198 +3,189 @@
   <div ng-show="submitProgress">
     <md-progress-linear md-mode="determinate" value="{{submitProgress}}"></md-progress-linear>
   </div>
-  <div layout="column" layout-padding>
-    <div layout="row" >
-      <div flex="66">
-        <md-toolbar class="md-warn" layout-padding style="display: inline-block">
-          <div class="md-toolbar-tools" style="display: inline-block">
-            Enter info here for your FIRST ticket.  If you need more than one ticket, click the blue “Add” button below, and scroll down to enter the additional info.
-          </div>
-        </md-toolbar>
-        <div ng-hide="isLoggedIn()">
-          <md-toolbar class="md-accent" layout-padding style="display: inline-block">
+  <form ng-submit="startCheckout()">
+    <div layout="column" layout-padding>
+      <div layout="row" >
+        <div flex="66">
+          <md-toolbar class="md-warn" layout-padding style="display: inline-block">
             <div class="md-toolbar-tools" style="display: inline-block">
-              It seems like you are not logged in. We will email you the list of items/events that you buy at the auction, but that will be the only way to find out what you buy later. If you want to be able to check up through the year on the things you bought, please create an account.
+              Enter info here for your FIRST ticket.  If you need more than one ticket, click the blue “Add” button below, and scroll down to enter the additional info.
             </div>
           </md-toolbar>
-        </div>
-	<div layout="column">
-	  <div ng-repeat="ticket in tickets track by $index">
-            <div id="anchor{{$index}}">
-	      <md-card layout-padding>
-	        <div layout="row" flex>
+          <div ng-hide="isLoggedIn()">
+            <md-toolbar class="md-accent" layout-padding style="display: inline-block">
+              <div class="md-toolbar-tools" style="display: inline-block">
+                It seems like you are not logged in. We will email you the list of items/events that you buy at the auction, but that will be the only way to find out what you buy later. If you want to be able to check up through the year on the things you bought, please create an account.
+              </div>
+            </md-toolbar>
+          </div>
+	  <div layout="column">
+	    <div ng-repeat="ticket in tickets track by $index">
+              <div id="anchor{{$index}}">
+	        <md-card layout-padding>
+	          <div layout="row" flex>
+                    <div>
+		      <md-input-container>
+		        <label>First Name</label>
+		        <input ng-model="ticket.firstname" size="30" autofocus required>
+		      </md-input-container>
+                    </div>
+		    <div flex>
+		      <md-input-container>
+		        <label>Last Name</label>
+		        <input ng-model="ticket.lastname" size="30" required>
+		      </md-input-container>
+                    </div>
+
+                    <md-card-actions>
+                      <md-button class="md-icon-button" ng-click="removeTicket($index)" >
+                        <md-icon>clear</md-icon>
+                      </md-button>
+		    </md-card-actions>
+	          </div>
                   <div>
-		    <md-input-container>
-		      <label>First Name</label>
-		      <input ng-model="ticket.firstname" size="30" autofocus required>
-		    </md-input-container>
-                  </div>
-		  <div flex>
-		    <md-input-container>
-		      <label>Last Name</label>
-		      <input ng-model="ticket.lastname" size="30" required>
-		    </md-input-container>
+                    <div ng-show="$index==0">
+                      Note, we need an email to send you updates on items you buy.
+                    </div>
+                    <md-input-container>
+                      <label>Contact email for this ticket holder</label>
+                      <input
+                        ng-model="ticket.buyer.email"
+                        size="40"
+                        required
+                        >
+                    </md-input-container>
+                    <md-input-container>
+                      <label>Contact phone</label>
+                      <input
+                        ng-model="ticket.buyer.phonenumber"
+                        phone-input
+                        >
+                    </md-input-container>
                   </div>
 
-                  <md-card-actions>
-                    <md-button class="md-icon-button" ng-click="removeTicket($index)" >
-                      <md-icon>clear</md-icon>
-                    </md-button>
-		  </md-card-actions>
-	        </div>
-                <div>
-                  <div ng-show="$index==0">
-                    Note, we need an email to send you updates on items you buy.
+                  <div>
+	            <label>Age Category</label>
+	            <md-radio-group ng-model="ticket.agegroup" ng-change="computeOrderDetails()" required>
+                      <md-radio-button value="ADULT_TICKET"><b>Adult</b>-Upstairs food, bid card, $20</md-radio-button>
+                      <md-radio-button value="HIGHSCHOOL_TICKET"><b>High School Class</b>-Age 14+, Upstairs food, no bid card, $20</md-radio-button>
+                      <md-radio-button value="JUNIORHIGH_TICKET"><b>Junior High Class</b>—Age up to 13, Downstairs food, no bid card, $7</md-radio-button>
+                      <md-radio-button value="CHILD_TICKET"><b>Elementary Classes</b>—Age five through 5th grade, downstairs food, special activities, $7</md-radio-button>
+                      <md-radio-button value="PREK_TICKET"><b>Pre-K Classes</b>—Under Age 5, downstairs food, Childcare will be provided, $7</md-radio-button>
+                    </md-radio-group>
+
+                    <label>Dietary Restrictions</label>
+                    <md-radio-group ng-model="ticket.foodRes">
+                      <md-radio-button value="NONE_FOOD">Regular</md-radio-button>
+                      <md-radio-button value="VEGETARIAN_FOOD">Vegetarian</md-radio-button>
+		      <md-radio-button value="VEGAN">Vegan</md-radio-button>
+		      <!--
+		          <md-radio-button value="GLUTENFREE_FOOD">Gluten-free</md-radio-button>
+		          -->
+                    </md-radio-group>
+		    <md-checkbox
+		      ng-model="ticket.gluten"
+		      class="md-warn md-align-top-left"
+		      flex>
+		      Gluten Free?
+		    </md-checkbox>
                   </div>
-                  <md-input-container>
-                    <label>Contact email for this ticket holder</label>
-                    <input
-                       ng-model="ticket.buyer.email"
-                       size="40"
-                       required
-                       >
-                  </md-input-container>
-                  <md-input-container>
-                    <label>Contact phone</label>
-                    <input
-                       ng-model="ticket.buyer.phonenumber"
-                       phone-input
-                       >
-                  </md-input-container>
-                </div>
+              </div>
+              </md-card> <!--panel-body-->
+            </div> <!--ticket repeater-->
+          </div>
+        </div>
 
-                <div>
-	          <label>Age Category</label>
-	          <md-radio-group ng-model="ticket.agegroup" ng-change="computeOrderDetails()" required>
-                    <md-radio-button value="ADULT_TICKET"><b>Adult</b>-Upstairs food, bid card, $20</md-radio-button>
-                    <md-radio-button value="HIGHSCHOOL_TICKET"><b>High School Class</b>-Age 14+, Upstairs food, no bid card, $20</md-radio-button>
-                    <md-radio-button value="JUNIORHIGH_TICKET"><b>Junior High Class</b>—Age up to 13, Downstairs food, no bid card, $7</md-radio-button>
-                    <md-radio-button value="CHILD_TICKET"><b>Elementary Classes</b>—Age five through 5th grade, downstairs food, special activities, $7</md-radio-button>
-                    <md-radio-button value="PREK_TICKET"><b>Pre-K Classes</b>—Under Age 5, downstairs food, Childcare will be provided, $7</md-radio-button>
-                  </md-radio-group>
-
-                  <label>Dietary Restrictions</label>
-                  <md-radio-group ng-model="ticket.foodRes">
-                    <md-radio-button value="NONE_FOOD">Regular</md-radio-button>
-                    <md-radio-button value="VEGETARIAN_FOOD">Vegetarian</md-radio-button>
-		    <md-radio-button value="VEGAN">Vegan</md-radio-button>
-		    <!--
-		    <md-radio-button value="GLUTENFREE_FOOD">Gluten-free</md-radio-button>
-		    -->
-                  </md-radio-group>
-		  <md-checkbox
-		    ng-model="ticket.gluten"
-		    class="md-warn md-align-top-left"
-		    flex>
-		    Gluten Free?
-		  </md-checkbox>
-                </div>
+        <div flex="33">
+          <md-card layout-padding>
+            <div>Order Summary</div>
+            
+            <div>
+              <span>{{numAdultTickets}}</span>
+              <span>Adult Tickets</span>
+              <span>x $20 =</span>
+              <span>${{numAdultTickets*20}}</span>
             </div>
-            </md-card> <!--panel-body-->
-          </div> <!--ticket repeater-->
+            
+            <div>
+              <span>{{numHighSchoolTickets}}</span>
+              <span>High School Tickets</span>
+              <span>x $20 =</span>
+              <span>${{numHighSchoolTickets*20}}</span>
+            </div>
+
+            <div>
+              <span>{{numJuniorHighTickets}}</span>
+              <span>Junior High Tickets</span>
+              <span>x $7 =</span>
+              <span>${{numJuniorHighTickets*7}}</span>
+            </div>
+
+            
+            <div>
+              <span>{{numChildTickets}}</span>
+              <span>Child Tickets</span>
+              <span>x $7 =</span>
+              <span>${{numChildTickets*7}}</span>
+            </div>
+
+            <div>
+              <span>{{numPrekTickets}}</span>
+              <span>Pre-K Tickets</span>
+              <span>x $7 =</span>
+              <span>${{numPrekTickets*7}}</span>
+            </div>
+
+
+            <div>
+              Would you like to donate to the bar fund?
+              <br>
+              <md-input-container>
+                <label>Bar donation (optional)</label>
+                <input
+                  type="string"
+                  ng-model="bardonation"
+                  name="bardonation"
+                  format="currency-remove-dollar"
+                  min="0"
+                  >
+              </md-input-container>
+              <md-button class="md-icon-button" aria-label="info" ng-click="showBarHelp($event)">
+                <md-icon>
+                  info
+                </md-icon>
+              </md-button>
+            </div>
+
+            <div>
+              <b>Total: ${{calculateTotal()}}</b>
+            </div>
+            <div>
+              <md-button class="md-primary md-raised"
+                         type="submit"
+		         >
+	        Purchase Tickets
+              </md-button>
+              <md-button ng-click="addTicket()" class="md-primary md-raised">Add additional ticket to order</md-button>
+            </div>
+
+          </md-card>
+	  <md-toolbar class="md-warn" layout-padding flex style="display: inline-block">
+            <div class="md-toolbar-tools" flex style="display: inline-block">
+	      A few days after the auction completes, we will charge the card you enter here for the items bought.
+            </div>
+	  </md-toolbar>
         </div>
       </div>
-
-      <div flex="33">
-        <md-card layout-padding>
-          <div>Order Summary</div>
-          
-          <div>
-            <span>{{numAdultTickets}}</span>
-            <span>Adult Tickets</span>
-            <span>x $20 =</span>
-            <span>${{numAdultTickets*20}}</span>
-          </div>
-          
-          <div>
-            <span>{{numHighSchoolTickets}}</span>
-            <span>High School Tickets</span>
-            <span>x $20 =</span>
-            <span>${{numHighSchoolTickets*20}}</span>
-          </div>
-
-          <div>
-            <span>{{numJuniorHighTickets}}</span>
-            <span>Junior High Tickets</span>
-            <span>x $7 =</span>
-            <span>${{numJuniorHighTickets*7}}</span>
-          </div>
-
-          
-          <div>
-            <span>{{numChildTickets}}</span>
-            <span>Child Tickets</span>
-            <span>x $7 =</span>
-            <span>${{numChildTickets*7}}</span>
-          </div>
-
-          <div>
-            <span>{{numPrekTickets}}</span>
-            <span>Pre-K Tickets</span>
-            <span>x $7 =</span>
-            <span>${{numPrekTickets*7}}</span>
-          </div>
-
-
-          <div>
-            Would you like to donate to the bar fund?
-            <br>
-            <md-input-container>
-              <label>Bar donation (optional)</label>
-              <input
-                 type="string"
-                 ng-model="bardonation"
-                 name="bardonation"
-                 format="currency-remove-dollar"
-                 min="0"
-                 >
-            </md-input-container>
-            <md-button class="md-icon-button" aria-label="info" ng-click="showBarHelp($event)">
-              <md-icon>
-                info
-              </md-icon>
-            </md-button>
-          </div>
-
-          <div>
-            <b>Total: ${{calculateTotal()}}</b>
-          </div>
-          <div>
-            <md-button stripe-checkout="doCheckout"
-		       data-email="{{currentUserEmail()}}"
-		       data-key="pk_live_Xhog0FzMxJt1QhvbsByoOJKr"
-		       data-name="SVUUS Auction"
-		       data-description="Tickets"
-		       data-amount="{{calculateTotal()*100}} | currency"
-                       class="md-primary md-raised"
-		       >
-	      Purchase Tickets
-            </md-button>
-            <md-button ng-click="addTicket()" class="md-primary md-raised">Add additional ticket to order</md-button>
-          </div>
-
-        </md-card>
-	<md-toolbar class="md-warn" layout-padding flex style="display: inline-block">
-          <div class="md-toolbar-tools" flex style="display: inline-block">
-	    A few days after the auction completes, we will charge the card you enter here for the items bought.
-          </div>
-	</md-toolbar>
+      <div id="bottom"></div>
+      <div layout-align="left" layout="row">
+        <md-button ng-click="addTicket()" class="md-primary md-raised">Add additional ticket to order</md-button>
+        <md-button class="md-primary md-raised"
+                   type="submit">
+	  Purchase Tickets
+        </md-button>
       </div>
     </div>
-    <div id="bottom"></div>
-    <div layout-align="left" layout="row">
-      <md-button ng-click="addTicket()" class="md-primary md-raised">Add additional ticket to order</md-button>
-      <md-button stripe-checkout="doCheckout"
-		 data-email="{{currentUserEmail()}}"
-		 data-key="pk_live_Xhog0FzMxJt1QhvbsByoOJKr"
-		 data-name="SVUUS Auction"
-		 data-description="Tickets"
-		 data-amount="{{calculateTotal()*100}} | currency"
-                 class="md-primary md-raised"
-		 >
-	Purchase Tickets
-      </md-button>
-    </div>
-  </div>
+  </form>
 
 </div> <!--main container-->
