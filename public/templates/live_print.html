@@ -11,7 +11,7 @@
       <div style="background-color:#CCCCCC;"><h3>{{item.number}}</h3></div>
     </div>
     <div>
-      <h1><font size="9">{{item.name}} ({{item.eventtypedtime ? item.eventtypedtime : (item.eventdate && item.eventdate > today) ? (item.eventdate | date) : ""}})</font></h1>
+      <h1><font size="9">{{item.name}} {{getEventDate(item)}}</font></h1>
     </div>
   </div>
   <div layout="row" >

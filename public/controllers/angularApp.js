@@ -1353,8 +1353,9 @@ app.controller( 'FixedPriceBidSheetCtrl',[
 
 app.controller( 'LiveCatalogCtrl',[
     '$scope',
+    '$filter',
     'items',
-    function($scope, items) {
+    function($scope, $filter, items) {
 	items.performSearch({searchitemtype: "live"}, "itemnumber").then(function(data) {
 	    $scope.tickets = data.tickets;
 	    $scope.items = data.items;
@@ -1364,7 +1365,23 @@ app.controller( 'LiveCatalogCtrl',[
 	    });
 	    $scope.transactions_by_item = data.transactions_by_item;
 	    $scope.getFullName = getFullName;
-	    $scope.today = new Date();
+	    let today = new Date();
+            $scope.getEventDate = function(item) {
+                let returnstr = '';
+                console.log(item.eventtypedtime);
+                if ( item.eventtypedtime || (item.eventdate && item.eventdate > today) ) {
+                    returnstr += '(';
+                    if ( item.eventdate ) {
+                        returnstr += $filter('date')(item.eventdate);
+                        if ( item.eventtypedtime )
+                            returnstr += ' - ';
+                    }
+                    if ( item.eventtypedtime )
+                        returnstr += item.eventtypedtime;
+                    returnstr += ')';
+                }
+                return returnstr;
+            };
 	});
     }]);
 
