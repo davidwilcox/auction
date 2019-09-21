@@ -15,6 +15,8 @@ app.config(['$translateProvider', function ($translateProvider) {
 	ADULT_TICKET: "Adult",
 	HIGHSCHOOL_TICKET: "High School",
 	JUNIORHIGH_TICKET: "Junior High School",
+	JR_VOLUNTEER_TICKET: "Junior High School Volunteer",
+	HIGH_VOLUNTEER_TICKET: "High School Volunteer",
 	CHILD_TICKET: "Child",
 	PREK_TICKET: "Pre-K",
 	NONE_FOOD: "Regular",
@@ -1181,6 +1183,9 @@ app.controller('BuyTicketsCtrl', [
 	$scope.numChildTickets = 0;
         $scope.bardonation = 0;
         $scope.numPrekTickets = 0;
+        $scope.numJrVolunteerTickets = 0;
+        $scope.numHighVolunteerTickets = 0;
+        $scope.numAbsenteeTickets = 0;
 
 	$scope.showBarHelp = function(ev) {
 	    $mdDialog.show({
@@ -1247,8 +1252,17 @@ app.controller('BuyTicketsCtrl', [
                 +$scope.numJuniorHighTickets*5
                 +$scope.numChildTickets*5
                 +$scope.numPrekTickets*5
+                +$scope.numJrVolunteerTickets*0
+                +$scope.numHighVolunteerTickets*0
+                +$scope.numAbsenteeTickets*0
                 +(bd == "" || (isNaN(bd) )  ? 0 :
                   parseFloat(bd));
+        };
+
+        $scope.hasAbsenteeBidder = function() {
+            return $scope.tickets.find(function(ticket) {
+                return ticket.agegroup == "ABSENTEE_TICKET";
+            });
         };
 
 	$scope.computeOrderDetails = function() {
@@ -1257,6 +1271,9 @@ app.controller('BuyTicketsCtrl', [
 	    var juniorHighTickets = 0;
 	    var childTickets = 0;
 	    var prekTickets = 0;
+	    var numJrVolunteerTickets = 0;
+	    var numHighVolunteerTickets = 0;
+	    var numAbsenteeTickets = 0;
 	    $scope.tickets.forEach(function(ticket) {
 		switch (ticket.agegroup) {
 		case "ADULT_TICKET":
@@ -1274,6 +1291,15 @@ app.controller('BuyTicketsCtrl', [
 		case "PREK_TICKET":
 		    prekTickets++;
 		    break;
+		case "ABSENTEE_TICKET":
+		    numAbsenteeTickets++;
+		    break;
+		case "JR_VOLUNTEER_TICKET":
+		    numJrVolunteerTickets++;
+		    break;
+		case "HIGH_VOLUNTEER_TICKET":
+		    numHighVolunteerTickets++;
+		    break;
 		}
 	    });
 
@@ -1282,10 +1308,13 @@ app.controller('BuyTicketsCtrl', [
 	    $scope.numJuniorHighTickets = juniorHighTickets;
 	    $scope.numChildTickets = childTickets;
 	    $scope.numPrekTickets = prekTickets;
+	    $scope.numAbsenteeTickets = numAbsenteeTickets;
+	    $scope.numJrVolunteerTickets = numJrVolunteerTickets;
+	    $scope.numHighVolunteerTickets = numHighVolunteerTickets;
 	};
 
         var handler = StripeCheckout.configure({
-            key: 'pk_live_Xhog0FzMxJt1QhvbsByoOJKr',
+            key: 'pk_test_TplRtT5yloUqkARvZ1QR4dzt',
             locale: 'auto',
             token: function(token) {
                 var promises = [];
