@@ -486,7 +486,7 @@ function send_invoice(req, res, msg, subject, do_charge) {
 		}
 		
 		ses.sendEmail({
-		    Source: "kristen.thelen@gmail.com",
+		    Source: "kristenamay@gmail.com",
 		    Destination: {
 			ToAddresses: [
 			    customermap[customerid]
@@ -544,7 +544,7 @@ function send_invoice(req, res, msg, subject, do_charge) {
 	}, function(err) {
 	    console.log(err);
 	});
-    });    
+    });
 }
 
 module.exports.ChargeAllUsers = function(event, context, callback) {
