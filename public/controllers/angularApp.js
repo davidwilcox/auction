@@ -1314,7 +1314,7 @@ app.controller('BuyTicketsCtrl', [
 	};
 
         var handler = StripeCheckout.configure({
-            key: 'pk_test_TplRtT5yloUqkARvZ1QR4dzt',
+            key: 'pk_live_Xhog0FzMxJt1QhvbsByoOJKr',
             locale: 'auto',
             token: function(token) {
                 var promises = [];
