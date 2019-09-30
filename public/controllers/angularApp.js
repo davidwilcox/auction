@@ -1068,7 +1068,7 @@ app.factory('auth', function($http, $window, $q, Constants) {
         console.log("HERE");
 	if ( user.confirmPassword == user.password ) {
 	    return $http.post(Constants.apiUrl() + '/register', user).success(function(data) {
-                console.lg("MATCH");
+                console.log("MATCH");
 		o.saveToken(data.token);
 
 		var payload = JSON.parse($window.atob(o.getToken().split('.')[1]));
