@@ -1,4 +1,5 @@
-<div ng-repeat='item in items'>
+<h1>Live Auction</h1>
+<div ng-repeat='item in items track by $index'>
   <div class="page-break-avoid">
     <div layout="row">
       <div style="min-width:30px;">
@@ -28,5 +29,10 @@
         <img ng-src="https://svuus-photos.s3.amazonaws.com/{{item.donor.photoid}}">
       </div>
     </div>
+  </div>
+  <div ng-show="$index == halfItemsSize">
+    <div class="page-break" />
+    <h1>Intermission</h1>
+    <div class="page-break" />
   </div>
 </div>

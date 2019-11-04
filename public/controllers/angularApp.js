@@ -513,6 +513,16 @@ app.config([
 			$state.go('home');
 		}
 	    })
+	    .state('fixed_reference_sheet', {
+		url: '/fixed_reference_sheet',
+		templateUrl: '/templates/fixed_reference_sheet.html',
+		controller: 'FixedReferenceSheetCtrl',
+		onEnter: [ '$state', 'auth', function($state, auth) {
+		    if ( !auth.isLoggedIn() ) {
+			$state.go('home');
+		    }
+		}]
+	    })
 	    .state('fixed_price_bid_sheet', {
 		url: '/fixed_price_bid_sheet',
 		templateUrl: '/templates/fixed_price_bid_sheet.html',
@@ -537,6 +547,16 @@ app.config([
 			$state.go('home');
 		    }
 		}]
+	    })
+	    .state('silent_reference_sheet', {
+	      url: '/silent_reference_sheet',
+	      templateUrl: '/templates/silent_reference_sheet.html',
+	      controller: 'SilentReferenceSheetCtrl',
+	      onEnter: [ '$state', 'auth', function($state, auth) {
+		if ( !auth.isLoggedIn() ) {
+		  $state.go('home');
+		}
+	      }]
 	    })
 	    .state('bid_cards', {
 		url: '/bid_cards',
@@ -1380,6 +1400,36 @@ app.controller( 'FixedPriceBidSheetCtrl',[
 	});
     }]);
 
+
+app.controller( 'FixedReferenceSheetCtrl',[
+    '$scope',
+    'items',
+    function($scope, items) {
+        $scope.range = function(num) {
+            return new Array(num);
+        };
+
+	$scope.getFullName = getFullName;
+
+	items.performSearch({searchitemtype: "fixed"}).then(function(data) {
+	    $scope.tickets = data.tickets;
+	    $scope.items = data.items;
+	    $scope.items.forEach(function(item) {
+		if ( item.eventdate )
+		    item.eventdate = new Date(item.eventdate);
+		if ( typeof item.quantity == "string" )
+		    item.quantity = parseInt(item.quantity);
+                if ( typeof item.value == "number" )
+                    item.value = "$" + item.value;
+	    });
+	    $scope.transactions_by_item = data.transactions_by_item;
+            $scope.hasSeparateKidsPrice = (policy) => {
+                return policy === 'KIDSFREE' || policy === 'KIDSFREECOUNT' || policy === 'KIDSPARTY' || policy === 'THREEPRICES';
+            };
+	});
+    }]);
+
+
 app.controller( 'LiveCatalogCtrl',[
     '$scope',
     '$filter',
@@ -1394,6 +1444,7 @@ app.controller( 'LiveCatalogCtrl',[
 	    });
 	    $scope.transactions_by_item = data.transactions_by_item;
 	    $scope.getFullName = getFullName;
+            $scope.halfItemsSize = Math.floor($scope.items.length/2);
 	    let today = new Date();
             $scope.getEventDate = function(item) {
                 let returnstr = '';
@@ -1463,6 +1514,20 @@ app.controller( 'SilentBidSheetsCtrl',[
 	    if (obj.length == 1)
 		$scope.items.push(obj)
 	});
+    }]);
+
+app.controller( 'SilentReferenceSheetCtrl',[
+    '$scope',
+    "items",
+    function($scope, items) {
+	$scope.getFullName = getFullName;
+	items.performSearch({searchitemtype: "silent"}, "lastname").then(function(data) {
+	  $scope.items = data.items.filter(function(item) {
+            return item.type == "silent";
+          });
+          console.log($scope.items);
+	});
+      $scope.getFullName = getFullName;
     }]);
 
 app.controller('ViewItemGenericCtrl', ["$scope", function($scope) {
