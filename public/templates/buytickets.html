@@ -77,6 +77,9 @@
                     </div>
                     <md-input-container>
                       <md-select ng-model="ticket.agegroup" ng-change="computeOrderDetails()" required>
+                        <md-option value="ADULT_TICKET"><b>Adult</b>-Main Auction, $10</md-option>
+                        <md-option value="CHILD_TICKET"><b>Kids</b>Children's Auction, $5</md-option>
+                        <!--
                         <md-option value="ADULT_TICKET"><b>Adult</b>-Upstairs food, bid card, $20</md-option>
                         <md-option value="ABSENTEE_TICKET"><b>Absentee</b>-No food, $0</md-option>
                         <md-option value="HIGHSCHOOL_TICKET"><b>High School Class</b>-Age 14+, Upstairs food, no bid card, $20</md-option>
@@ -85,19 +88,18 @@
                         <md-option value="JR_VOLUNTEER_TICKET"><b>Junior High Volunteers</b>—Age up to 13, Downstairs food, no bid card, $0</md-option>
                         <md-option value="CHILD_TICKET"><b>Elementary Classes</b>—Age five through 5th grade, downstairs food, special activities, $7</md-option>
                         <md-option value="PREK_TICKET"><b>Pre-K Classes</b>—Under Age 5, downstairs food, Childcare will be provided, $7</md-option>
+                        -->
                       </md-select>
                     </md-input-container>
 
                     <div>
                       <label>Dietary Restrictions</label>
                     </div>
-                    <md-radio-group ng-model="ticket.foodRes">
+                    <!--
+                    <md-radio-group ng-model="ticket.foodRes" >
                       <md-radio-button value="NONE_FOOD">Regular</md-radio-button>
                       <md-radio-button value="VEGETARIAN_FOOD">Vegetarian</md-radio-button>
-		      <md-radio-button value="VEGAN">Vegan</md-radio-button>
-		      <!--
-		          <md-radio-button value="GLUTENFREE_FOOD">Gluten-free</md-radio-button>
-		          -->
+                      <md-radio-button value="VEGAN">Vegan</md-radio-button>
                     </md-radio-group>
 		    <md-checkbox
 		      ng-model="ticket.gluten"
@@ -105,6 +107,7 @@
 		      flex>
 		      Gluten Free?
 		    </md-checkbox>
+                    -->
                   </div>
               </div>
               </md-card> <!--panel-body-->
@@ -119,10 +122,11 @@
             <div>
               <span>{{numAdultTickets}}</span>
               <span>Adult Tickets</span>
-              <span>x $20 =</span>
-              <span>${{numAdultTickets*20}}</span>
+              <span>x $10 =</span>
+              <span>${{numAdultTickets*10}}</span>
             </div>
-            
+
+            <!--
             <div>
               <span>{{numAbsenteeTickets}}</span>
               <span>Absentee Tickets</span>
@@ -144,14 +148,14 @@
               <span>${{numJuniorHighTickets*7}}</span>
             </div>
 
-            
+            -->
             <div>
               <span>{{numChildTickets}}</span>
               <span>Child Tickets</span>
-              <span>x $7 =</span>
-              <span>${{numChildTickets*7}}</span>
+              <span>x $5 =</span>
+              <span>${{numChildTickets*5}}</span>
             </div>
-
+<!--
             <div>
               <span>{{numPrekTickets}}</span>
               <span>Pre-K Tickets</span>
@@ -173,12 +177,12 @@
               <span>x $0 =</span>
               <span>${{numHighVolunteerTickets*0}}</span>
             </div>
-
+-->
             <div>
-              Would you like to donate to the bar fund?
+              Would you like to donate a little extra?
               <br>
               <md-input-container>
-                <label>Bar donation (optional)</label>
+                <label>Extra donation (optional)</label>
                 <input
                   type="string"
                   ng-model="bardonation"
@@ -187,11 +191,13 @@
                   min="0"
                   >
               </md-input-container>
+              <!--
               <md-button class="md-icon-button" aria-label="info" ng-click="showBarHelp($event)">
                 <md-icon>
                   info
                 </md-icon>
               </md-button>
+              -->
             </div>
 
             <div>
