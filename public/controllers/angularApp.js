@@ -1267,11 +1267,11 @@ app.controller('BuyTicketsCtrl', [
             var bd = $scope.bardonation;
             if ( bd && bd.startsWith('$') )
                 bd = bd.substring(1);
-            return $scope.numAdultTickets*5
-                +$scope.numHighSchoolTickets*5
-                +$scope.numJuniorHighTickets*5
-                +$scope.numChildTickets*0
-                +$scope.numPrekTickets*0
+            return $scope.numAdultTickets*16
+                +$scope.numHighSchoolTickets*16
+                +$scope.numJuniorHighTickets*16
+                +$scope.numChildTickets*4
+                +$scope.numPrekTickets*4
                 +$scope.numJrVolunteerTickets*0
                 +$scope.numHighVolunteerTickets*0
                 +$scope.numAbsenteeTickets*0

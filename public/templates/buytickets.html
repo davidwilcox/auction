@@ -77,8 +77,8 @@
                     </div>
                     <md-input-container>
                       <md-select ng-model="ticket.agegroup" ng-change="computeOrderDetails()" required>
-                        <md-option value="ADULT_TICKET"><b>Adult</b>-Main Auction, $5</md-option>
-                        <md-option value="CHILD_TICKET"><b>Kids</b>-Children's Auction, $0</md-option>
+                        <md-option value="ADULT_TICKET"><b>Adult</b>-Main Auction, $16</md-option>
+                        <md-option value="CHILD_TICKET"><b>Kids</b>-Children's Auction, $4</md-option>
                         <!--
                         <md-option value="ADULT_TICKET"><b>Adult</b>-Upstairs food, bid card, $20</md-option>
                         <md-option value="ABSENTEE_TICKET"><b>Absentee</b>-No food, $0</md-option>
@@ -122,7 +122,7 @@
             <div>
               <span>{{numAdultTickets}}</span>
               <span>Adult Tickets</span>
-              <span>x $5 =</span>
+              <span>x $16 =</span>
               <span>${{numAdultTickets*5}}</span>
             </div>
 
@@ -152,7 +152,7 @@
             <div>
               <span>{{numChildTickets}}</span>
               <span>Child Tickets</span>
-              <span>x $0 =</span>
+              <span>x $4 =</span>
               <span>${{numChildTickets*0}}</span>
             </div>
 <!--
