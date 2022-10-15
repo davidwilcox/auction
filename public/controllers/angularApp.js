@@ -1274,7 +1274,7 @@ app.controller('BuyTicketsCtrl', [
                 +$scope.numPrekTickets*4
                 +$scope.numJrVolunteerTickets*0
                 +$scope.numHighVolunteerTickets*0
-                +$scope.numAbsenteeTickets*0
+                +$scope.numAbsenteeTickets*8
                 +(bd == "" || (isNaN(bd) )  ? 0 :
                   parseFloat(bd));
         };
