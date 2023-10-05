@@ -1342,8 +1342,8 @@ app.controller('BuyTicketsCtrl', [
 	    $scope.numChildTickets = childTickets;
 	    $scope.numPrekTickets = prekTickets;
 	    $scope.numAbsenteeTickets = numAbsenteeTickets;
-	    $scope.numAbsenteeTickets = numFriendTickets;
-	    $scope.numAbsenteeTickets = numFirstTimeTickets;
+	    $scope.numFriendTickets = numFriendTickets;
+	    $scope.numFirstTimeTickets = numFirstTimeTickets;
 	    $scope.numJrVolunteerTickets = numJrVolunteerTickets;
 	    $scope.numHighVolunteerTickets = numHighVolunteerTickets;
 	};
