@@ -1200,6 +1200,8 @@ app.controller('BuyTicketsCtrl', [
 	$scope.numAdultTickets = 1;
 	$scope.numHighSchoolTickets = 0;
 	$scope.numJuniorHighTickets = 0;
+	$scope.numFriendTickets = 0;
+	$scope.numFirstTimeTickets = 0;
 	$scope.numChildTickets = 0;
         $scope.bardonation = 0;
         $scope.numPrekTickets = 0;
@@ -1269,7 +1271,8 @@ app.controller('BuyTicketsCtrl', [
                 bd = bd.substring(1);
             return $scope.numAdultTickets*16
                 +$scope.numHighSchoolTickets*16
-                +$scope.numJuniorHighTickets*8
+                +$scope.numFriendTickets*8
+                +$scope.numFirstTimeTickets*8
                 +$scope.numChildTickets*5
                 +$scope.numPrekTickets*5
                 +$scope.numJrVolunteerTickets*8
@@ -1291,6 +1294,8 @@ app.controller('BuyTicketsCtrl', [
 	    var juniorHighTickets = 0;
 	    var childTickets = 0;
 	    var prekTickets = 0;
+            var numFirstTimeTickets = 0;
+            var numFriendTickets = 0;
 	    var numJrVolunteerTickets = 0;
 	    var numHighVolunteerTickets = 0;
 	    var numAbsenteeTickets = 0;
@@ -1317,6 +1322,12 @@ app.controller('BuyTicketsCtrl', [
 		case "JR_VOLUNTEER_TICKET":
 		    numJrVolunteerTickets++;
 		    break;
+		case "FRIEND":
+		    numFriendTickets++;
+		    break;
+		case "FIRST_TIME":
+		    numFirstTimeTickets++;
+		    break;
 		case "HIGH_VOLUNTEER_TICKET":
 		    numHighVolunteerTickets++;
 		    break;
@@ -1329,6 +1340,8 @@ app.controller('BuyTicketsCtrl', [
 	    $scope.numChildTickets = childTickets;
 	    $scope.numPrekTickets = prekTickets;
 	    $scope.numAbsenteeTickets = numAbsenteeTickets;
+	    $scope.numAbsenteeTickets = numFriendTickets;
+	    $scope.numAbsenteeTickets = numFirstTimeTickets;
 	    $scope.numJrVolunteerTickets = numJrVolunteerTickets;
 	    $scope.numHighVolunteerTickets = numHighVolunteerTickets;
 	};
