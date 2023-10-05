@@ -17,6 +17,8 @@ app.config(['$translateProvider', function ($translateProvider) {
 	JUNIORHIGH_TICKET: "Junior High School",
 	JR_VOLUNTEER_TICKET: "Junior High School Volunteer",
 	HIGH_VOLUNTEER_TICKET: "High School Volunteer",
+        FRIEND: "Bring a friend",
+        FIRST_TIME: "First time attendee",
 	CHILD_TICKET: "Child",
 	PREK_TICKET: "Pre-K",
 	NONE_FOOD: "Regular",
@@ -790,7 +792,7 @@ app.controller(
     function($scope, $http, auth, Constants) {
 	$scope.getFullName = getFullName;
 	$scope.ticket.date = new Date($scope.ticket.date);
-	$scope.ageCategories = ["ADULT_TICKET", "HIGHSCHOOL_TICKET", "JUNIORHIGH_TICKET", "CHILD_TICKET", "PREK_TICKET"];
+	$scope.ageCategories = ["ADULT_TICKET", "HIGHSCHOOL_TICKET", "JUNIORHIGH_TICKET", "CHILD_TICKET", "PREK_TICKET", "FRIEND", "FIRST_TIME"];
 	$scope.allFoodRestrictions = ["NONE_FOOD","VEGETARIAN_FOOD","VEGAN"];
 	$scope.saveticket = function(ticket) {
 	    $http.post(Constants.apiUrl() + "/modify_ticket", {ticket: ticket}, {headers: {
@@ -1194,7 +1196,7 @@ app.controller('BuyTicketsCtrl', [
     'auth',
     "$mdDialog",
     function($scope, $state, $document, tickets, charges, auth, $mdDialog) {
-	$scope.ticketTypes = ["ADULT_TICKET","HIGHSCHOOL_TICKET","JUNIORHIGH_TICKET","CHILD_TICKET", "PREK_TICKET"];
+	$scope.ticketTypes = ["ADULT_TICKET","HIGHSCHOOL_TICKET","JUNIORHIGH_TICKET","CHILD_TICKET", "PREK_TICKET", "FRIEND", "FIRST_TIME"];
 	console.log($scope.ticketTypes);
 	$scope.tickets = [];
 	$scope.numAdultTickets = 1;
