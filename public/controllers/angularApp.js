@@ -1269,10 +1269,10 @@ app.controller('BuyTicketsCtrl', [
                 bd = bd.substring(1);
             return $scope.numAdultTickets*16
                 +$scope.numHighSchoolTickets*16
-                +$scope.numJuniorHighTickets*16
-                +$scope.numChildTickets*4
-                +$scope.numPrekTickets*4
-                +$scope.numJrVolunteerTickets*0
+                +$scope.numJuniorHighTickets*8
+                +$scope.numChildTickets*5
+                +$scope.numPrekTickets*5
+                +$scope.numJrVolunteerTickets*8
                 +$scope.numHighVolunteerTickets*0
                 +$scope.numAbsenteeTickets*8
                 +(bd == "" || (isNaN(bd) )  ? 0 :
