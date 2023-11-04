@@ -1,0 +1,53 @@
+<div>
+  <style type="text/css" media="print">
+    @page {
+        size: landscape;
+    }
+  </style>
+</div>
+<div ng-repeat='var in items'>
+  <div style='width: 30.6cm;' class="page-break-avoid">
+    <div style='width: 14.45cm; float:left; word-wrap: normal; float: left;' class="page-break-avoid">
+      <div>
+        <div><h3>Silent Auction</h3></div>
+        <div><h5>Item Number: {{var[0].number}}</h5></div>
+        <div><h5>Item Description: {{var[0].name}}</h5></div>
+        <table border="1" width="100%">
+          <tr>
+            <td>
+              <h5>Winning Bidder<br>(Name & Auction Number)</h5>
+            </td>
+            <td>
+              <h4>Amount item sold for:</h4>
+            </td>
+          </tr>
+          <tr height="60">
+            <td></td>
+            <td></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <div style='width: 14.45cm; float:left; word-wrap: normal; float:right;' class="page-break-avoid">
+      <div>
+        <div><h3>Silent Auction</h3></div>
+        <div><h5>Item Number: {{var[1].number}}</h5></div>
+        <div><h5>Item Description: {{var[1].name}}</h5></div>
+        <table border="1" width="100%">
+          <tr>
+            <td>
+              <h5>Winning Bidder<br>(Name & Auction Number)</h5>
+            </td>
+            <td>
+              <h4>Amount item sold for:</h4>
+            </td>
+          </tr>
+          <tr height="60">
+            <td></td>
+            <td></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

@@ -540,6 +540,16 @@ app.config([
                 templateUrl: '/templates/raffle_sheets.html',
                 controller: 'RaffleSheetsCtrl'
             })
+	    .state('silent_win_cards', {
+		url: '/silent_win_cards',
+		templateUrl: '/templates/silent_win_cards.html',
+		controller: 'SilentWinCardsCtrl',
+		onEnter: [ '$state', 'auth', function($state, auth) {
+		    if ( !auth.isLoggedIn() ) {
+			$state.go('home');
+		    }
+		}]
+	    })
 	    .state('silent_bid_sheets', {
 		url: '/silent_bid_sheets',
 		templateUrl: '/templates/silent_bid_sheets.html',
@@ -1510,6 +1520,29 @@ app.controller( 'RaffleSheetsCtrl',[
     }]);
 
 app.controller( 'SilentBidSheetsCtrl',[
+    '$scope',
+    "items",
+    function($scope, items) {
+	$scope.getFullName = getFullName;
+	items.performSearch({searchitemtype: "silent"}, "lastname").then(function(data) {
+	    $scope.items = [];
+	    obj = [];
+	    data.items.forEach(function(item) {
+		if ( item.type == "silent" ) {
+		    obj.push(item);
+		    if ( obj.length == 2 ) {
+			$scope.items.push(obj);
+			obj = [];
+		    }
+		}
+	    });
+	    if (obj.length == 1)
+		$scope.items.push(obj)
+	});
+    }]);
+
+
+app.controller( 'SilentWinCardsCtrl',[
     '$scope',
     "items",
     function($scope, items) {

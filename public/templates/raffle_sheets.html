@@ -1,0 +1,21 @@
+<div ng-repeat="item in items track by $index">
+  <div layout="row" class="page-break-avoid">
+    <div flex="70" layout-padding>
+      <center>
+        <h1>{{$index+1}}</h1>
+        <h1>{{item.name}}</h1>
+        <h3>{{item.description}}</h3>
+      </center>
+    </div>
+    <div layout-paddingx>
+      <span style='float:right'>
+	<div class='raffle-sheet-image-container' style="background-color:#CCCCCC;">
+          <img ng-src="https://svuus-photos.s3.amazonaws.com/{{item.donor.photoid}}" ></img>
+	</div>
+        <p>
+          <b>Donated By {{getFullName(item.donor)}}</b>
+        </p>
+      </span>
+    </div>
+  </div>
+</div>
