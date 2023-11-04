@@ -1550,6 +1550,15 @@ app.controller( 'SilentWinCardsCtrl',[
 	items.performSearch({searchitemtype: "silent"}, "lastname").then(function(data) {
 	    $scope.items = [];
 	    obj = [];
+            data.items = data.items.sort(function(item1, item2) {
+                if ( !item1.number && !item2.number )
+                    return 0;
+                if ( !item1.number )
+                    return 1;
+                if ( !item2.number )
+                    return -1;
+                return item1.number - item2.number;
+            });
 	    data.items.forEach(function(item) {
 		if ( item.type == "silent" ) {
 		    obj.push(item);
