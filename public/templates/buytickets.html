@@ -77,11 +77,11 @@
                     </div>
                     <md-input-container>
                       <md-select ng-model="ticket.agegroup" ng-change="computeOrderDetails()" required>
-                        <md-option value="ADULT_TICKET"><b>Adult</b>-Main Auction, $16</md-option>
-                        <md-option value="CHILD_TICKET"><b>Youth/Kids</b>-Ages 0-17, $5</md-option>
-                        <md-option value="ABSENTEE_TICKET"><b>Absentee</b>-$8</md-option>
-                        <md-option value="FIRST_TIME"><b>First Time Attendee</b>-Main Auction, $8</md-option>
-                        <md-option value="FRIEND"><b>Bring a friend</b>-Main Auction, $8</md-option>
+                        <md-option value="ADULT_TICKET"><b>Adult</b>-Main Auction, $20</md-option>
+                        <md-option value="CHILD_TICKET"><b>Youth/Kids</b>-Ages 0-17, $7</md-option>
+                        <md-option value="ABSENTEE_TICKET"><b>Absentee</b>-$10</md-option>
+                        <md-option value="FIRST_TIME"><b>First Time Attendee</b>-Main Auction, $10</md-option>
+                        <md-option value="FRIEND"><b>Bring a friend</b>-Main Auction, $10</md-option>
                         <!--
                         <md-option value="ADULT_TICKET"><b>Adult</b>-Upstairs food, bid card, $20</md-option>
                         <md-option value="HIGHSCHOOL_TICKET"><b>High School Class</b>-Age 14+, Upstairs food, no bid card, $20</md-option>
@@ -122,15 +122,15 @@
             <div>
               <span>{{numAdultTickets}}</span>
               <span>Adult Tickets</span>
-              <span>x $16 =</span>
-              <span>${{numAdultTickets*5}}</span>
+              <span>x $20 =</span>
+              <span>${{numAdultTickets*20}}</span>
             </div>
 
             <div>
               <span>{{numAbsenteeTickets}}</span>
               <span>Absentee Tickets</span>
-              <span>x $8 =</span>
-              <span>${{numAbsenteeTickets*8}}</span>
+              <span>x $10 =</span>
+              <span>${{numAbsenteeTickets*10}}</span>
             </div>
             
             <!--
@@ -145,22 +145,22 @@
             <div>
               <span>{{numFirstTimeTickets}}</span>
               <span>First Time Attendees</span>
-              <span>x $8 =</span>
-              <span>${{numFirstTimeTickets*8}}</span>
+              <span>x $10 =</span>
+              <span>${{numFirstTimeTickets*10}}</span>
             </div>
 
             <div>
               <span>{{numFriendTickets}}</span>
               <span>Bring a Friends</span>
-              <span>x $8 =</span>
-              <span>${{numFriendTickets*8}}</span>
+              <span>x $10 =</span>
+              <span>${{numFriendTickets*10}}</span>
             </div>
 
             <div>
               <span>{{numChildTickets}}</span>
               <span>Child Tickets</span>
-              <span>x $5 =</span>
-              <span>${{numChildTickets*0}}</span>
+              <span>x $7 =</span>
+              <span>${{numChildTickets*7}}</span>
             </div>
 <!--
             <div>
