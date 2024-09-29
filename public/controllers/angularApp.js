@@ -1281,15 +1281,15 @@ app.controller('BuyTicketsCtrl', [
             var bd = $scope.bardonation;
             if ( bd && bd.startsWith('$') )
                 bd = bd.substring(1);
-            return $scope.numAdultTickets*20
+            return $scope.numAdultTickets*16
                 +$scope.numHighSchoolTickets*16
-                +$scope.numFriendTickets*10
-                +$scope.numFirstTimeTickets*10
-                +$scope.numChildTickets*7
-                +$scope.numPrekTickets*7
+                +$scope.numFriendTickets*8
+                +$scope.numFirstTimeTickets*8
+                +$scope.numChildTickets*5
+                +$scope.numPrekTickets*5
                 +$scope.numJrVolunteerTickets*8
                 +$scope.numHighVolunteerTickets*0
-                +$scope.numAbsenteeTickets*10
+                +$scope.numAbsenteeTickets*8
                 +(bd == "" || (isNaN(bd) )  ? 0 :
                   parseFloat(bd));
         };
