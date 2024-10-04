@@ -62,8 +62,8 @@ app.controller('DonateItemCtrl', [
 	    });
 	};
 
-	$scope.eventMinDate = new Date(2023, 10, 13);
-	$scope.eventMaxDate = new Date(2024, 11, 31);
+	$scope.eventMinDate = new Date(2024, 10, 13);
+	$scope.eventMaxDate = new Date(2025, 11, 31);
 
         $scope.$on("fileProgress", function(e, progress) {
             $scope.progress = progress.loaded / progress.total;
