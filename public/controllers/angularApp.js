@@ -540,6 +540,16 @@ app.config([
                 templateUrl: '/templates/raffle_sheets.html',
                 controller: 'RaffleSheetsCtrl'
             })
+	    .state('silent_win_cards', {
+		url: '/silent_win_cards',
+		templateUrl: '/templates/silent_win_cards.html',
+		controller: 'SilentWinCardsCtrl',
+		onEnter: [ '$state', 'auth', function($state, auth) {
+		    if ( !auth.isLoggedIn() ) {
+			$state.go('home');
+		    }
+		}]
+	    })
 	    .state('silent_bid_sheets', {
 		url: '/silent_bid_sheets',
 		templateUrl: '/templates/silent_bid_sheets.html',
@@ -1271,15 +1281,15 @@ app.controller('BuyTicketsCtrl', [
             var bd = $scope.bardonation;
             if ( bd && bd.startsWith('$') )
                 bd = bd.substring(1);
-            return $scope.numAdultTickets*20
+            return $scope.numAdultTickets*16
                 +$scope.numHighSchoolTickets*16
-                +$scope.numFriendTickets*10
-                +$scope.numFirstTimeTickets*10
-                +$scope.numChildTickets*7
-                +$scope.numPrekTickets*7
+                +$scope.numFriendTickets*8
+                +$scope.numFirstTimeTickets*8
+                +$scope.numChildTickets*5
+                +$scope.numPrekTickets*5
                 +$scope.numJrVolunteerTickets*8
                 +$scope.numHighVolunteerTickets*0
-                +$scope.numAbsenteeTickets*10
+                +$scope.numAbsenteeTickets*8
                 +(bd == "" || (isNaN(bd) )  ? 0 :
                   parseFloat(bd));
         };
@@ -1517,6 +1527,38 @@ app.controller( 'SilentBidSheetsCtrl',[
 	items.performSearch({searchitemtype: "silent"}, "lastname").then(function(data) {
 	    $scope.items = [];
 	    obj = [];
+	    data.items.forEach(function(item) {
+		if ( item.type == "silent" ) {
+		    obj.push(item);
+		    if ( obj.length == 2 ) {
+			$scope.items.push(obj);
+			obj = [];
+		    }
+		}
+	    });
+	    if (obj.length == 1)
+		$scope.items.push(obj)
+	});
+    }]);
+
+
+app.controller( 'SilentWinCardsCtrl',[
+    '$scope',
+    "items",
+    function($scope, items) {
+	$scope.getFullName = getFullName;
+	items.performSearch({searchitemtype: "silent"}, "lastname").then(function(data) {
+	    $scope.items = [];
+	    obj = [];
+            data.items = data.items.sort(function(item1, item2) {
+                if ( !item1.number && !item2.number )
+                    return 0;
+                if ( !item1.number )
+                    return 1;
+                if ( !item2.number )
+                    return -1;
+                return item1.number - item2.number;
+            });
 	    data.items.forEach(function(item) {
 		if ( item.type == "silent" ) {
 		    obj.push(item);
